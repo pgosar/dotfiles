@@ -40,7 +40,6 @@ If you don't want all my files, you can easily remove the lines that remove and 
 <hr />
 
 ### Dependencies
-My vimrc requires [vim-plug](https://github.com/junegunn/vim-plug). Look at its README for details on usage. Refer to [CoC's README](https://github.com/neoclide/coc.nvim) for details on using the LSP provider.
 
 zsh requires [powerline](powerline/powerline) with the [Meslo nerd font](https://github.com/ryanoasis/nerd-fonts) and [oh my zsh](https://github.com/ohmyzsh/ohmyzsh)
 
