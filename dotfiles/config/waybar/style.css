@@ -1,0 +1,204 @@
+@import "machiatto.css";
+
+* {
+    color: @lavender;
+    border: 0;
+    padding: 0 0;
+    font-family:FiraCode;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+window#waybar {
+    border: 0px solid rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#workspaces button {
+    color: @base;
+    border-radius: 50%;
+    margin: 0px 0px;
+    padding: 4px 6px 2px 0px;
+}
+
+#workspaces button:hover {
+    color: @mauve;
+    border-radius: 20px; 
+}
+
+#workspaces button:hover * {
+    color: @mauve;
+}
+
+#workspaces * {
+    color: whitesmoke;
+}
+
+#workspaces {
+    border-style: solid;
+    background-color: @base;
+    opacity: 1;
+    border-radius: 10px;
+    margin: 8px 0px 8px 8px;
+}
+
+#workspaces button.focused {
+    color: @mauve;
+    border-radius: 20px; 
+}
+
+#workspaces button.focused * {
+    color: @mauve;
+}
+#mode {
+    color: #ebcb8b;
+}
+
+#clock, #custom-swap, #custom-cava-internal, #battery, #cpu, #memory,#idle_inhibitor, #temperature,#custom-keyboard-layout, #backlight, #network, #pulseaudio, #mode, #tray, #custom-pacman, #custom-launcher, #custom-notification, #custom-weather {
+    padding: 5px 8px;
+    border-style: solid;
+    background-color: shade(@base, 1); 
+    opacity: 1;
+    margin: 8px 0;
+}
+/* -----------------------------------------------------------------------------
+ * Module styles
+ * -------------------------------------------------------------------------- */
+#custom-cava-internal {
+    border-radius: 10px;
+    color: @mauve;
+}
+
+#custom-swap {
+    border-radius: 10px;
+    color: @base;
+    margin-left: 15px;
+    background-color: @mauve;
+}
+ 
+#clock, #custom-weather {
+ color: @sky;
+ border-radius: 10px;
+ margin: 8px 10px;
+}
+
+#custom-notification {
+  font-size: 22px;
+
+ border-radius: 10px;
+ margin: 8px 10px;
+}
+
+#backlight {
+    color: @yellow;
+    border-radius: 10px 0 0 10px;
+}
+
+#battery {
+    color: #d8dee9;
+    border-radius: 0 10px 10px 0;
+    margin-right: 10px;
+}
+
+#battery.charging {
+    color: #81a1c1;
+}
+
+@keyframes blink {
+    to {
+        color: @red;
+    }
+}
+
+#battery.critical:not(.charging) {
+    color: #bf616a;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#cpu {
+    color: @sky;
+}
+#cpu #cpu-icon {
+    color: @sky;
+}
+
+#memory {
+    background-color: #d3869b;
+    color: @base;
+}
+
+#network.disabled {
+    color: #bf616a;
+}
+
+#network{
+    color: @green;
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+#network.disconnected {
+    color: #bf616a;
+}
+
+#pulseaudio {
+    color: @flamingo;
+}
+
+#pulseaudio.muted {
+    color: #3b4252;
+}
+
+#temperature {
+    color: @teal;
+    border-radius: 10px 0 0 10px;
+}
+
+#temperature.critical {
+    color: @red;
+}
+
+#idle_inhibitor {
+   background-color: #ebcb8b;
+   color: @base;
+}
+
+#tray {
+    margin: 8px 10px;
+    border-radius: 10px;
+}
+
+#custom-launcher {
+    background-color: @blue; 
+    color: @base;
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin-left: 15px;
+}
+
+#window{
+    border-style: hidden;
+    margin-left: 10px;
+    margin-right: 10px;
+    color:#eceff4;
+}    
+#mode{
+    margin-bottom:3px;
+}
+
+.custom-spotify {
+    padding: 0 10px;
+    margin: 0 4px;
+    color: @blue;
+}
+
+#custom-keyboard-layout{
+   color: @peach;
+   font-size: 22px;
+    border-radius: 0 10px 10px 0;
+    margin-right: 10px;
+}
