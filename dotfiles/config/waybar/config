@@ -1,0 +1,119 @@
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    "height": 54,
+    "margin": "0 0 0 0",
+    "modules-left": ["custom/launcher", "wlr/workspaces", "custom/spotify"],
+    "modules-center": ["clock", "custom/weather"],
+    "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
+    "cpu", "battery", "tray", "custom/notification"], 
+    
+ // Modules configuration
+ 
+    "wlr/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}",
+        "on-click": "activate",
+    },
+      "custom/spotify": {
+      "exec": "/usr/bin/python3 /home/chilly/.config/waybar/scripts/mediaplayer.py",
+      "format": "  {}",
+      "max-length": 60,
+      "return-type": "json",
+      "on-click": "playerctl play-pause",
+      "on-scroll-up": "playerctl next",
+      "on-scroll-down": "playerctl previous"
+    },
+    "tray": {
+        "icon-size": 24,
+        "spacing": 10
+    },
+    "clock": {
+        "format": "   {:%a %d %b  %H:%M}",
+        "format-alt": "  {:%d/%m/%Y  %H:%M:%S}",
+        "interval": 1
+    },
+    "custom/weather": {
+        "exec": "~/.config/waybar/scripts/weather.sh",
+        "format": "{}",
+        "return-type": "json",
+        "interval": 1800,
+        "tooltip": "true",
+        "on-click": "xdg-open https://wttr.in/"
+    },
+    "cpu": {
+        "format": "  {usage: >3}%",
+        "on-click": "kitty -e bashtop"
+    },
+    "temperature": {
+        "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+        "critical-threshold": 80,
+        "format-critical": "{temperatureC}°C ",
+        "format": "  {temperatureC}°C"
+    },
+    "backlight": {
+        "format": "{icon} {percent: >3}%",
+        "format-icons": ["", "󰃠"],
+        "on-scroll-down": "brightnessctl -c backlight set 5%-",
+        "on-scroll-up": "brightnessctl -c backlight set +5%"
+    },
+    "battery": {
+        "states": {
+            "good": 70,
+            "warning": 30,
+            "critical": 15
+        },       
+        "format": "{icon} {capacity: >3}%",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "pulseaudio": {
+        "scroll-step": 1,
+        "format": "{icon} {volume: >3}%",
+        "format-bluetooth": "{icon} {volume: >3}%",
+        "format-muted":" muted",
+        "format-icons": {
+            "Headphones": " ",
+            "handsfree": " ",
+            "Headset": " ",
+            "phone": " ",
+            "portable": " ",
+            "car": " ",
+            "default": ["", " "]
+        },
+        "on-click": "pavucontrol",
+        "on-scroll-up": "pamixer -ui 2 && pamixer --get-volume > /dev/null",
+        "on-scroll-down": "pamixer -ud 2 && pamixer --get-volume > /dev/null"
+    },
+   "custom/keyboard-layout": {
+      	"interval": 1,
+      	"format": " ", 
+      	"tooltip": false,
+        "on-click": "~/.config/waybar/scripts/openVirtualKeyboard.sh &",
+  },
+     "custom/launcher": {
+    	"format":" ",
+    	"on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
+    	"tooltip": false,
+  },
+    "custom/notification": {
+      "tooltip": false,
+      "format": "{icon}",
+      "format-icons": {
+        "notification": "<span foreground='red'><sup></sup></span>",
+        "none": " ",
+        "dnd-notification": "<span foreground='red'><sup></sup></span>",
+        "dnd-none": " ",
+        "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+        "inhibited-none": " ",
+        "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+        "dnd-inhibited-none": " ",
+      },
+      "return-type": "json",
+      "exec-if": "which swaync-client",
+      "exec": "swaync-client -swb",
+      "on-click": "swaync-client -t -sw",
+      "on-click-right": "swaync-client -d -sw",
+      "escape": true,
+    },
+}
