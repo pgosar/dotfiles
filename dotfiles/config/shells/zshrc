@@ -21,6 +21,7 @@ export ZSH="$HOME/.oh-my-zsh"
 export DOTFILES="$HOME/code/useful-things/dotfiles"
 export EDITOR='nvim'
 export VISUAL='nvim'
+export QT_SCREEN_SCALE_FACTORS="1;1"
 
 
 # ---- Terminal Settings -----------------------------------------------------
@@ -85,3 +86,4 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 fortune                                                  # daily fortune
 source ~/.local/share/lscolors.sh
+export PATH=$PATH:/home/chilly/.spicetify

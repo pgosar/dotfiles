@@ -1,7 +1,8 @@
 configuration {
 	modes: "window,drun,run";
-	font: "mono 32";
+	font: "Fira Code 20";
 	show-icons: true;
+  icon-theme: "candy-icons";
 	terminal: "rofi-sensible-terminal";
 	drun-display-format: "{icon} {name}";
 	display-window: "Windows:";

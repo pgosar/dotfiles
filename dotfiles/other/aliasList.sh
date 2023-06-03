@@ -44,9 +44,22 @@ python3 ~/.local/kitty.app/kitty-convert-dump.py > ~/.local/kitty.app/kitty-sess
 tn="tmux new-session -s" \
 ta="tmux attach-session -t" \
 tl="tmux ls" \
-wiki="wikiSummary.py"
+wiki="wikiSummary.py" \
+lock="swaylock \
+        --screenshots \
+        --clock \
+        --indicator \
+        --indicator-radius 100 \
+        --indicator-thickness 7 \
+        --effect-blur 7x5 \
+        --effect-vignette 0.5:0.5 \
+        --ring-color bb00cc \
+        --key-hl-color 880033 \
+        --line-color 00000000 \
+        --inside-color 00000088 \
+        --separator-color 00000000 \
+        --fade-in 0.2"
 
 # other
-eval $(thefuck --alias)
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
