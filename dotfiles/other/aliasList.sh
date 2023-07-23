@@ -9,7 +9,8 @@ alias \
     py="bpython" \
     cd="cd -P" \
     v="nvim" \
-    ps="procs"
+    ps="procs" \
+    :q="exit"
 
 # git stuff
 alias \
@@ -40,8 +41,8 @@ alias \
     kd="kitty +kitten diff" \
     save="kitty @ ls > ~/.local/kitty.app/kitty-dump.json; cat ~/.local/kitty.app/kitty-dump.json |
 python3 ~/.local/kitty.app/kitty-convert-dump.py > ~/.local/kitty.app/kitty-session.kitty" \
-wiki="wikiSummary.py" \
-lock="swaylock \
+    wiki="wikiSummary.py" \
+    lock="swaylock \
         --screenshots \
         --clock \
         --indicator \
