@@ -20,7 +20,7 @@ alias \
     reword="git commit --amend" \
     untrack="git rm --cache" \
     uncommit="git reset --soft HEAD^" \
-    root="cd $(git rev-parse --show-cdup)"
+    groot='cd $(git rev-parse --show-toplevel 2>/dev/null)'
 
 # verbosity and prompting
 alias \
@@ -34,17 +34,12 @@ alias \
     hh="hstr" \
     yt="youtube-dl --add-metadata -ic" \
     fd="~/.cargo/bin/fd" \
-    mux="tmuxinator" \
-    ling="github-linguist --breakdown" \
     mlp="mlp --no-browser" \
     icat="kitty +kitten icat" \
     hg="kitty +kitten hyperlinked_grep" \
     kd="kitty +kitten diff" \
     save="kitty @ ls > ~/.local/kitty.app/kitty-dump.json; cat ~/.local/kitty.app/kitty-dump.json |
 python3 ~/.local/kitty.app/kitty-convert-dump.py > ~/.local/kitty.app/kitty-session.kitty" \
-tn="tmux new-session -s" \
-ta="tmux attach-session -t" \
-tl="tmux ls" \
 wiki="wikiSummary.py" \
 lock="swaylock \
         --screenshots \

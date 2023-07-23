@@ -43,18 +43,18 @@ unalias -a                                             # remove preset aliases
 # ---- Plugins ---------------------------------------------------------------
 
 plugins=(
-  git
-  copyfile
-  command-not-found
-  colored-man-pages
-  history-substring-search
-  last-working-dir
-  safe-paste
-  vi-mode
-  zsh-interactive-cd
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  poetry
+    git
+    copyfile
+    command-not-found
+    colored-man-pages
+    history-substring-search
+    last-working-dir
+    safe-paste
+    vi-mode
+    zsh-interactive-cd
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    poetry
 )
 
 
