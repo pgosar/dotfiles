@@ -23,7 +23,7 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export QT_SCREEN_SCALE_FACTORS="1;1"
 export LIBGUESTFS_BACKEND=direct
-
+export DOCKER_BUILDKIT=1
 # ---- Terminal Settings -----------------------------------------------------
 
 DISABLE_MAGIC_FUNCTIONS="true"

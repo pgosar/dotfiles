@@ -6,10 +6,10 @@
     "modules-left": ["custom/launcher", "wlr/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/weather"],
     "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
-    "cpu", "battery", "tray", "custom/notification"], 
-    
+    "cpu", "battery", "tray", "custom/notification"],
+
  // Modules configuration
- 
+
     "wlr/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
@@ -63,7 +63,7 @@
             "good": 70,
             "warning": 30,
             "critical": 15
-        },       
+        },
         "format": "{icon} {capacity: >3}%",
         "format-icons": ["", "", "", "", ""]
     },
@@ -82,12 +82,12 @@
             "default": ["", " "]
         },
         "on-click": "pavucontrol",
-        "on-scroll-up": "pamixer -ui 2 && pamixer --get-volume > /dev/null",
-        "on-scroll-down": "pamixer -ud 2 && pamixer --get-volume > /dev/null"
+        "on-scroll-up": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%-"
     },
    "custom/keyboard-layout": {
       	"interval": 1,
-      	"format": " ", 
+      	"format": " ",
       	"tooltip": false,
         "on-click": "~/.config/waybar/scripts/openVirtualKeyboard.sh &",
   },
