@@ -13,17 +13,18 @@
 # ---- Environment Variables -------------------------------------------------
 
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/code/useful-things/scripts/python:$PATH"
-export PATH="$HOME/code/useful-things/scripts/shell:$PATH"
+export PATH="$HOME/code/dotfiles/scripts/python:$PATH"
+export PATH="$HOME/code/dotfiles/scripts/shell:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
-export DOTFILES="$HOME/code/useful-things/dotfiles"
+export DOTFILES="$HOME/code/dotfiles/dotfiles"
 export EDITOR='nvim'
 export VISUAL='nvim'
 export QT_SCREEN_SCALE_FACTORS="1;1"
 export LIBGUESTFS_BACKEND=direct
 export DOCKER_BUILDKIT=1
+
 # ---- Terminal Settings -----------------------------------------------------
 
 DISABLE_MAGIC_FUNCTIONS="true"
@@ -87,4 +88,3 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 fortune                                                  # daily fortune
 source ~/.local/share/lscolors.sh
-export PATH=$PATH:/home/chilly/.spicetify
