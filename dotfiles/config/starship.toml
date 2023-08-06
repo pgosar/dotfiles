@@ -59,13 +59,13 @@ symbol = " "
 symbol = " "
 
 [memory_usage]
-symbol = " "
+symbol = "󰍛 "
 
 [meson]
 symbol = "喝 "
 
 [nim]
-symbol = " "
+symbol = " "
 
 [nix_shell]
 symbol = " "
@@ -90,7 +90,7 @@ FreeBSD = " "
 Garuda = "﯑ "
 Gentoo = " "
 HardenedBSD = "ﲊ "
-Illumos = " "
+Illumos = " "
 Linux = " "
 Mabox = " "
 Macos = " "
@@ -100,7 +100,7 @@ MidnightBSD = " "
 Mint = " "
 NetBSD = " "
 NixOS = " "
-OpenBSD = " "
+OpenBSD = " "
 openSUSE = " "
 OracleLinux = " "
 Pop = " "
@@ -112,10 +112,10 @@ Solus = "ﴱ "
 SUSE = " "
 Ubuntu = " "
 Unknown = " "
-Windows = " "
+Windows = " "
 
 [package]
-symbol = " "
+symbol = " "
 
 [pijul_channel]
 symbol = "🪺 "
