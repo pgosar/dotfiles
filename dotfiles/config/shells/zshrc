@@ -89,7 +89,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # ---- Terminal Commands -----------------------------------------------------
 
 fortune                                                  # daily fortune
-source ~/.local/share/lscolors.sh
+source ~/.local/share/LS_COLORS/lscolors.sh
 
 source /home/chilly/.config/broot/launcher/bash/br
 eval "$(register-python-argcomplete pipx)"
