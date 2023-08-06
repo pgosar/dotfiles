@@ -6,16 +6,18 @@
     "modules-left": ["custom/launcher", "wlr/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/weather"],
     "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
-    "cpu", "battery", "tray", "custom/notification"],
+    "cpu", "battery", "tray"],
 
  // Modules configuration
-
-    "wlr/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "format": "{name}",
+      "wlr/workspaces": {
         "on-click": "activate",
-    },
+        "format": "{icon}",
+        "active-only": false,
+        "format-icons": {
+          "default": "",
+          "active": ""
+        }
+      },
       "custom/spotify": {
       "exec": "/usr/bin/python3 /home/chilly/.config/waybar/scripts/mediaplayer.py",
       "format": "  {}",
@@ -96,24 +98,4 @@
     	"on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
     	"tooltip": false,
   },
-    "custom/notification": {
-      "tooltip": false,
-      "format": "{icon}",
-      "format-icons": {
-        "notification": "<span foreground='red'><sup></sup></span>",
-        "none": " ",
-        "dnd-notification": "<span foreground='red'><sup></sup></span>",
-        "dnd-none": " ",
-        "inhibited-notification": "<span foreground='red'><sup></sup></span>",
-        "inhibited-none": " ",
-        "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
-        "dnd-inhibited-none": " ",
-      },
-      "return-type": "json",
-      "exec-if": "which swaync-client",
-      "exec": "swaync-client -swb",
-      "on-click": "swaync-client -t -sw",
-      "on-click-right": "swaync-client -d -sw",
-      "escape": true,
-    },
 }
