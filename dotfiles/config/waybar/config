@@ -10,8 +10,8 @@
 
  // Modules configuration
       "wlr/workspaces": {
-        "on-click": "activate",
         "format": "{icon}",
+        "on-click": "activate",
         "active-only": false,
         "format-icons": {
           "default": "",
