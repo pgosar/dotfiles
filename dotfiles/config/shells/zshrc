@@ -94,3 +94,5 @@ source ~/.local/share/LS_COLORS/lscolors.sh
 
 source /home/chilly/.config/broot/launcher/bash/br
 eval "$(register-python-argcomplete pipx)"
+source /usr/share/nvm/init-nvm.sh
+# source /opt/intel/oneapi/setvars.sh

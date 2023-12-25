@@ -51,6 +51,7 @@
 	default = upstream
 	# push tags ttoo
 	followTags = true
+	autoSetupRemote = true
 [status]
   # Display submodule rev change summaries in status
   submoduleSummary = true

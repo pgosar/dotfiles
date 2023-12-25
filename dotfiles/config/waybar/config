@@ -3,13 +3,13 @@
     "position": "top", // Waybar position (top|bottom|left|right)
     "height": 54,
     "margin": "0 0 0 0",
-    "modules-left": ["custom/launcher", "wlr/workspaces", "custom/spotify"],
+    "modules-left": ["custom/launcher", "hyprland/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/weather"],
     "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
     "cpu", "battery", "tray"],
 
  // Modules configuration
-      "wlr/workspaces": {
+      "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
         "active-only": false,
