@@ -48,6 +48,7 @@ unalias -a                                             # remove preset aliases
 
 plugins=(
     git
+    pip
     copyfile
     command-not-found
     colored-man-pages
@@ -60,7 +61,6 @@ plugins=(
     zsh-syntax-highlighting
     poetry
 )
-
 
 # ---- Load Scripts ----------------------------------------------------------
 
@@ -96,3 +96,4 @@ source /home/chilly/.config/broot/launcher/bash/br
 eval "$(register-python-argcomplete pipx)"
 source /usr/share/nvm/init-nvm.sh
 # source /opt/intel/oneapi/setvars.sh
+source /usr/share/doc/pkgfile/command-not-found.zsh

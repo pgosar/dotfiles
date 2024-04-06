@@ -1,7 +1,8 @@
 {
+
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
-    "height": 54,
+    "height": 40,
     "margin": "0 0 0 0",
     "modules-left": ["custom/launcher", "hyprland/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/weather"],
@@ -28,8 +29,8 @@
       "on-scroll-down": "playerctl previous"
     },
     "tray": {
-        "icon-size": 24,
-        "spacing": 10
+        "icon-size": 16,
+        "spacing": 6
     },
     "clock": {
         "format": "   {:%a %d %b  %H:%M}",
@@ -55,7 +56,7 @@
         "format": "  {temperatureC}°C"
     },
     "backlight": {
-        "format": "{icon} {percent: >3}%",
+        "format": " {percent: >3}%",
         "format-icons": ["", "󰃠"],
         "on-scroll-down": "brightnessctl -c backlight set 5%-",
         "on-scroll-up": "brightnessctl -c backlight set +5%"
@@ -73,16 +74,8 @@
         "scroll-step": 1,
         "format": "{icon} {volume: >3}%",
         "format-bluetooth": "{icon} {volume: >3}%",
-        "format-muted":" muted",
-        "format-icons": {
-            "Headphones": " ",
-            "handsfree": " ",
-            "Headset": " ",
-            "phone": " ",
-            "portable": " ",
-            "car": " ",
-            "default": ["", " "]
-        },
+        "format-muted":"󰝟 muted",
+        "format-icons": ["󰖀", "󰕾 "],
         "on-click": "pavucontrol",
         "on-scroll-up": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%+",
         "on-scroll-down": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%-"
