@@ -2,9 +2,9 @@
 
 # random
 alias \
-    ls="exa -F --color=auto --group-directories-first" \
-    sl="exa -F --color=auto --group-directories-first" \
-    lsa="exa -a" \
+    ls="eza -F --color=auto --group-directories-first" \
+    sl="eza -F --color=auto --group-directories-first" \
+    lsa="eza -a" \
     grep="grep --color=auto" \
     py="bpython" \
     cd="cd -P" \
