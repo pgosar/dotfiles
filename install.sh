@@ -17,7 +17,7 @@ mkdir -p ~/.config/ranger
 mkdir -p ~/.config/dunst
 mkdir -p ~/.config/hypr
 
-export DOTFILES_DIR=~/code/dotfiles/
+source ./dotfiles_env.sh
 
 ln -s "$DOTFILES_DIR/config/rc.conf" ~/.config/ranger/rc.conf
 ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
