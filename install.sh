@@ -17,13 +17,15 @@ mkdir -p ~/.config/ranger
 mkdir -p ~/.config/dunst
 mkdir -p ~/.config/hypr
 
-ln -s ~/code/dotfiles/config/rc.conf ~/.config/ranger/rc.conf
-ln -s ~/code/dotfiles/config/hypr ~/.config/hypr
-ln -s ~/code/dotfiles/config/kitty ~/.config/kitty/
-ln -s ~/code/dotfiles/config/zshrc ~/.zshrc
-ln -s ~/code/dotfiles/config/rofi ~/.config/rofi
-ln -s ~/code/dotfiles/config/gitconfig ~/.gitconfig
-ln -s ~/code/dotfiles/config/dunst ~/.config/dunst
-ln -s ~/code/dotfiles/config/starship.toml ~/.config/starship.toml
-ln -s ~/code/dotfiles/config/topgrade.toml ~/.config/topgrade.toml
-ln -s ~/code/dotfiles/config/tmux.conf ~/.tmux.conf
+export DOTFILES_DIR=~/code/dotfiles/
+
+ln -s "$DOTFILES_DIR/config/rc.conf" ~/.config/ranger/rc.conf
+ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
+ln -s "$DOTFILES_DIR/config/kitty" ~/.config/kitty/
+ln -s "$DOTFILES_DIR/config/zshrc" ~/.zshrc
+ln -s "$DOTFILES_DIR/config/rofi" ~/.config/rofi
+ln -s "$DOTFILES_DIR/config/gitconfig" ~/.gitconfig
+ln -s "$DOTFILES_DIR/config/dunst" ~/.config/dunst
+ln -s "$DOTFILES_DIR/config/starship.toml" ~/.config/starship.toml
+ln -s "$DOTFILES_DIR/config/topgrade.toml" ~/.config/topgrade.toml
+ln -s "$DOTFILES_DIR/config/tmux.conf" ~/.tmux.conf
