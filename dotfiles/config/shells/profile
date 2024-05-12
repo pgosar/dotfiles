@@ -1,7 +1,0 @@
-if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-  exec Hyprland
-fi
-
-export VISUAL=nvim
-export EDITOR=nvim
-. "$HOME/.cargo/env"

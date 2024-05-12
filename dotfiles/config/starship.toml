@@ -1,3 +1,5 @@
+format = '$all'
+
 [aws]
 symbol = "  "
 
@@ -8,19 +10,8 @@ symbol = " "
 symbol = " "
 
 [conda]
+format = '[$symbol$environment](dimmed green) '
 symbol = " "
-
-[dart]
-symbol = " "
-
-[directory]
-read_only = " 󰌾"
-
-[docker_context]
-symbol = " "
-
-[elixir]
-symbol = " "
 
 [elm]
 symbol = " "

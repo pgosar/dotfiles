@@ -1,6 +1,6 @@
 #   ________         ______         __    __
 #  |        \       /      \       |  \  |  \
-    #   \$$$$$$$$      |  $$$$$$\      | $$  | $$
+#   \$$$$$$$$      |  $$$$$$\      | $$  | $$
 #      /  $$       | $$___\$$      | $$__| $$
 #     /  $$         \$$    \       | $$    $$
 #    /  $$          _\$$$$$$\      | $$$$$$$$
@@ -55,11 +55,12 @@ plugins=(
     history-substring-search
     last-working-dir
     safe-paste
-    vi-mode
     zsh-interactive-cd
     zsh-autosuggestions
     zsh-syntax-highlighting
     poetry
+    vi-mode
+    # zsh-vi-mode
 )
 
 # ---- Load Scripts ----------------------------------------------------------
@@ -89,7 +90,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # ---- Terminal Commands -----------------------------------------------------
 
-fortune                                                  # daily fortune
+fortune
 source ~/.local/share/LS_COLORS/lscolors.sh
 
 source /home/chilly/.config/broot/launcher/bash/br
@@ -97,3 +98,7 @@ eval "$(register-python-argcomplete pipx)"
 source /usr/share/nvm/init-nvm.sh
 # source /opt/intel/oneapi/setvars.sh
 source /usr/share/doc/pkgfile/command-not-found.zsh
+[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
+
+export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
+autoload -U compinit; compinit
