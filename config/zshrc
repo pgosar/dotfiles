@@ -19,7 +19,7 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
-export DOTFILES="$HOME/code/dotfiles/dotfiles"
+export DOTFILES="$HOME/code/dotfiles"
 export EDITOR='nvim'
 export VISUAL='nvim'
 export QT_SCREEN_SCALE_FACTORS="1;1"
@@ -65,7 +65,7 @@ plugins=(
 
 # ---- Load Scripts ----------------------------------------------------------
 
-loadpath=$DOTFILES/other/
+loadpath=$DOTFILES/config
 source $ZSH/oh-my-zsh.sh > /dev/null 2>&1                     # load oh-my-zsh
 if [ -f $loadpath/aliasList.sh ]; then                              # load aliases
     source $loadpath/aliasList.sh
