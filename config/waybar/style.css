@@ -63,6 +63,7 @@ window#waybar {
 #idle_inhibitor,
 #temperature,
 #custom-keyboard-layout,
+#bluetooth,
 #backlight,
 #network,
 #pulseaudio,
@@ -100,7 +101,8 @@ window#waybar {
 
 #clock,
 #custom-spotify,
-#custom-weather {
+#custom-weather,
+#bluetooth {
   color: @sky;
   border-radius: 6px;
   margin: 6px 8px;

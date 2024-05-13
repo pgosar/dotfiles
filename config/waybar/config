@@ -7,7 +7,7 @@
     "modules-left": ["custom/launcher", "hyprland/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/weather"],
     "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
-    "cpu", "battery", "tray"],
+    "cpu", "battery", "bluetooth", "tray"],
 
  // Modules configuration
       "hyprland/workspaces": {
@@ -67,9 +67,20 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{icon} {capacity: >3}%",
+        "format": "{icon}  {capacity: >3}%",
         "format-icons": ["", "", "", "", ""]
     },
+  "bluetooth": {
+    "format": " {status}",
+    "format-icons": ["", "", "", "", ""],
+    "format-connected": " {device_alias}",
+    "format-connected-battery": " {device_alias} {icon}   {device_battery_percentage}%",
+    // "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+  },
     "pulseaudio": {
         "scroll-step": 1,
         "format": "{icon} {volume: >3}%",
@@ -88,7 +99,6 @@
   },
      "custom/launcher": {
     	"format":" ",
-    	"on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
     	"tooltip": false,
   },
 }
