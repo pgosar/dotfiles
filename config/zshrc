@@ -99,6 +99,6 @@ source /usr/share/nvm/init-nvm.sh
 # source /opt/intel/oneapi/setvars.sh
 source /usr/share/doc/pkgfile/command-not-found.zsh
 [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
-
+source <(fzf --zsh)
 export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 autoload -U compinit; compinit

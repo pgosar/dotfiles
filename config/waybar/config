@@ -56,7 +56,7 @@
         "format": "  {temperatureC}°C"
     },
     "backlight": {
-        "format": " {percent: >3}%",
+        "format": "{icon} {percent: >3}%",
         "format-icons": ["", "󰃠"],
         "on-scroll-down": "brightnessctl -c backlight set 5%-",
         "on-scroll-up": "brightnessctl -c backlight set +5%"
