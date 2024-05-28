@@ -18,7 +18,6 @@ for _, source in ipairs({
 	"core.utils.utils",
 	"core.utils.notify",
 	"core.autocommands",
-	-- "language-server-configs.ls_init",
 }) do
 	local status_ok, fault = pcall(require, source)
 	if not status_ok then
@@ -54,7 +53,3 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 end
 
 vim.cmd.colorscheme(user_config.colorscheme)
-
--- ensure that this is called after all setup even if server not configured
-pcall(require, "lsp-zero")
-

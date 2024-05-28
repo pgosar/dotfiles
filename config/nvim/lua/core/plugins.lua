@@ -69,16 +69,8 @@ require("lazy").setup({
 	{
 		"VonHeikemen/lsp-zero.nvim",
 		cond = enabled(group, "lsp_zero"),
-		event = "VimEnter",
-		branch = "v2.x",
-		config = function()
-			require("plugin-configs.lsp")
-		end,
-		dependencies = {
-			{ "neovim/nvim-lspconfig" },
-			{ "williamboman/mason.nvim" },
-			{ "williamboman/mason-lspconfig.nvim" },
-		},
+		branch = "v3.x",
+		dependencies = {},
 	},
 	{
 		"folke/neodev.nvim",
@@ -197,6 +189,18 @@ require("lazy").setup({
 			{
 				"nvim-neotest/nvim-nio",
 			},
+		},
+	},
+	{
+		"neovim/nvim-lspconfig",
+		event = { "BufReadPre", "BufNewFile" },
+		cmd = { "LspInfo", "LspInstall", "LspStart" },
+		config = function()
+			require("plugin-configs.lsp")
+		end,
+		dependencies = {
+			{ "williamboman/mason-lspconfig.nvim" },
+			{ "williamboman/mason.nvim" },
 		},
 	},
 	{
