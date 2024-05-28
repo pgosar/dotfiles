@@ -1,3 +1,1 @@
-# My Dotfiles
-
-Work In Progress
+use the install script

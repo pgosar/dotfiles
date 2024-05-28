@@ -10,11 +10,13 @@ rm -rf ~/.config/rofi
 rm -rf ~/.config/dunst
 rm -rf ~/.config/hypr
 rm -rf ~/.config/waybar
+rm -rf ~/.config/nvim
 rm -f ~/.config/starship.toml
 rm -f ~/.config/topgrade.toml
 
 source ./dotfiles_env.sh
 
+ln -s "$DOTFILES_DIR/config/nvim" ~/.config/nvim
 ln -s "$DOTFILES_DIR/config/ranger" ~/.config/ranger
 ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
 ln -s "$DOTFILES_DIR/config/kitty" ~/.config/kitty
