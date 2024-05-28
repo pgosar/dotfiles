@@ -323,7 +323,80 @@ require("lazy").setup({
 			require("plugin-configs.zenmode")
 		end,
 	},
-	plugins,
+
+	{
+		"simrat39/rust-tools.nvim",
+		ft = "rust",
+		cond = enabled(group, "rust_tools"),
+		config = function()
+			require("plugin-configs.rust-tools")
+		end,
+	},
+	{
+		"mfussenegger/nvim-dap-python",
+		ft = "python",
+		cond = enabled(group, "dap_python") and enabled(group, "dap"),
+		config = function()
+			require("plugin-configs.dap-python")
+		end,
+	},
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		cond = enabled(group, "cmp") and enabled(group, "copilot"),
+		event = "InsertEnter",
+		dependencies = {
+			"zbirenbaum/copilot-cmp",
+			config = function()
+				require("copilot_cmp").setup()
+			end,
+		},
+		config = function()
+			require("plugin-configs.copilot")
+		end,
+	},
+	{
+		"okuuva/auto-save.nvim",
+		event = "VeryLazy",
+		cond = enabled(group, "autosave"),
+		config = function()
+			require("plugin-configs.autosave")
+		end,
+	},
+	{
+		"skywind3000/asyncrun.vim",
+		event = "VeryLazy",
+		cond = enabled(group, "asyncrun"),
+	},
+	{
+		"tadmccorkle/markdown.nvim",
+		ft = "markdown",
+		cond = enabled(group, "markdown"),
+		config = function()
+			require("plugin-configs.markdown")
+		end,
+	},
+	{
+		"catppuccin/nvim",
+		lazy = false,
+		cond = enabled(group, "catppuccin"),
+		config = function()
+			require("plugin-configs.catppuccin")
+		end,
+	},
+	{
+		"nvim-lualine/lualine.nvim",
+		event = "VeryLazy",
+		cond = enabled(group, "lualine"),
+		config = function()
+			require("plugin-configs.lualine")
+		end,
+	},
+	{
+		"Bekaboo/dropbar.nvim",
+		lazy = false, -- done by default
+		cond = enabled(group, "dropbar"),
+	},
 }, {
 	defaults = { lazy = true },
 	performance = {

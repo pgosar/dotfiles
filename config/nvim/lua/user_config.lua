@@ -1,5 +1,3 @@
--- use a user-config.lua file to provide your own configuration
-
 local M = {}
 
 -- add any null-ls sources you want here
@@ -53,7 +51,7 @@ M.mason_ensure_installed = {
 		"html-lsp",
 		"jq",
 		"json-lsp",
-		"lua-language-server",
+		"lua-language-erver",
 		"prettierd",
 		"basedpyright",
 		"rust-analyzer",
@@ -90,15 +88,6 @@ M.formatting_servers = {
 		"cmake",
 		"systemverilog",
 		"markdown",
-	},
-}
-
-M.options = {
-	opt = {
-		conceallevel = 3,
-		spell = true,
-		spelllang = "en_us",
-		spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
 	},
 }
 
@@ -150,82 +139,6 @@ M.enable_plugins = {
 	zen = true,
 }
 
-M.plugins = {
-	{
-		"simrat39/rust-tools.nvim",
-		ft = "rust",
-		cond = M.enable_plugins.rust_tools,
-		config = function()
-			require("user.plugin-configs.rust-tools")
-		end,
-	},
-	{
-		"mfussenegger/nvim-dap-python",
-		ft = "python",
-		cond = M.enable_plugins.dap_python and M.enable_plugins.dap,
-		config = function()
-			require("user.plugin-configs.dap-python")
-		end,
-	},
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		cond = M.enable_plugins.cmp and M.enable_plugins.copilot,
-		event = "InsertEnter",
-		dependencies = {
-			"zbirenbaum/copilot-cmp",
-			config = function()
-				require("copilot_cmp").setup()
-			end,
-		},
-		config = function()
-			require("user.plugin-configs.copilot")
-		end,
-	},
-	{
-		"okuuva/auto-save.nvim",
-		event = "VeryLazy",
-		cond = M.enable_plugins.autosave,
-		config = function()
-			require("user.plugin-configs.autosave")
-		end,
-	},
-	{
-		"skywind3000/asyncrun.vim",
-		event = "VeryLazy",
-		cond = M.enable_plugins.asyncrun,
-	},
-	{
-		"tadmccorkle/markdown.nvim",
-		ft = "markdown",
-		cond = M.enable_plugins.markdown,
-		config = function()
-			require("user.plugin-configs.markdown")
-		end,
-	},
-	{
-		"catppuccin/nvim",
-		lazy = false,
-		cond = M.enable_plugins.catppuccin,
-		config = function()
-			require("user.plugin-configs.catppuccin")
-		end,
-	},
-	{
-		"nvim-lualine/lualine.nvim",
-		event = "VeryLazy",
-		cond = M.enable_plugins.lualine,
-		config = function()
-			require("user.plugin-configs.lualine")
-		end,
-	},
-	{
-		"Bekaboo/dropbar.nvim",
-		event = "VeryLazy",
-		cond = M.enable_plugins.dropbar,
-	},
-}
-
 M.autocommands = {
 	alpha_folding = true,
 	treesitter_folds = true,
@@ -234,11 +147,14 @@ M.autocommands = {
 	session_saved_notification = true,
 	css_colorizer = true,
 	cmp = true,
+	trouble = true,
 	term_spelling = true,
 }
 
+M.colorscheme = "catppuccin"
+
 M.user_conf = function()
-	require("user.init")
+	pcall(require, "lsp-zero")
 end
 
 return M

@@ -11,6 +11,16 @@ if enabled(group, "img_paste") then
 	map("n", "<leader>p", "<CMD>PasteImage<CR>", { desc = "Paste clipboard image" })
 end
 
+-- Dropbar
+if enabled(group, "dropbar") then
+	map("n", "<C-p>", "<CMD>lua require('dropbar.api').picrk()<CR>")
+end
+
+-- Markdown
+if enabled(group, "markdown") then
+	map({ "n", "i" }, "<M-CR>", "<Cmd>MDListItemBelow<CR>")
+end
+
 -- DAP
 if enabled(group, "dap") then
 	_G.dap = require("dap")

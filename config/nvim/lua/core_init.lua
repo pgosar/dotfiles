@@ -16,7 +16,9 @@ for _, source in ipairs({
 	"core.plugins",
 	"core.keybindings",
 	"core.utils.utils",
+	"core.utils.notify",
 	"core.autocommands",
+	-- "language-server-configs.ls_init",
 }) do
 	local status_ok, fault = pcall(require, source)
 	if not status_ok then
@@ -25,7 +27,7 @@ for _, source in ipairs({
 end
 
 local enabled = require("core.utils.utils").enabled
-local exist, user_config = pcall(require, "user.user_config")
+local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 
 if enabled(group, "notify") then
@@ -36,8 +38,6 @@ vim.api.nvim_create_user_command("CyberUpdate", function()
 	require("core.utils.utils").update_all()
 end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 
-pcall(vim.cmd.colorscheme, "onedark")
-
 -- fix commentstrings to work with native nvim commenting
 if enabled(group, "treesitter") then
 	local get_option = vim.filetype.get_option
@@ -47,6 +47,14 @@ if enabled(group, "treesitter") then
 	end
 end
 
-if exist and type(user_config) == "table" and user_config.user_conf then
-	user_config.user_conf()
+-- setup spellcheck
+local spell_words = {}
+for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
+	table.insert(spell_words, word)
 end
+
+vim.cmd.colorscheme(user_config.colorscheme)
+
+-- ensure that this is called after all setup even if server not configured
+pcall(require, "lsp-zero")
+

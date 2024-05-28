@@ -8,18 +8,34 @@ lsp.set_sign_icons({
 	info = "»",
 })
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.foldingRange = {
-	dynamicRegistration = false,
-	lineFoldingOnly = true,
-}
-local exist, user_config = pcall(require, "user.user_config")
-local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
+
+lsp.set_server_config({
+	capabilities = {
+		textDocument = {
+			foldingRange = {
+				dynamicRegistration = false,
+				lineFoldingOnly = true,
+			},
+		},
+		offsetEncoding = { "utf-16" },
+	},
+})
+
+local exist, user_config = pcall(require, "user_config")
+local formatting_servers = exist and type(user_config) == "table" and user_config.formatting_servers or {}
 lsp.format_on_save({
 	format_opts = {
 		async = false,
 		timeout_ms = 10000,
 	},
-	servers = user_config.formatting_servers,
+	servers = formatting_servers,
 })
-lsp.setup()
+local lspconfig = require("lspconfig")
+require('mason-lspconfig').setup({
+  ensure_installed = {},
+  handlers = {
+    function(server_name)
+      lspconfig[server_name].setup({})
+    end,
+  },
+})
