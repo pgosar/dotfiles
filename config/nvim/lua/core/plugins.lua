@@ -346,7 +346,7 @@ require("lazy").setup({
 		end,
 	},
 
-	{ "folke/todo-comments.nvim", cond = enabled(group, "todo_comments"), event = "VeryLazy" },
+	{ "folke/todo-comments.nvim", cond = enabled(group, "todo_comments"), event = "VeryLazy", opts = {} },
 	{
 		"akinsho/toggleterm.nvim",
 		cond = enabled(group, "toggleterm"),
@@ -383,7 +383,7 @@ require("lazy").setup({
 		end,
 	},
 	-- TODO: last vim script plugin for replacement
-	{
+  {
 		"mg979/vim-visual-multi",
 		event = "VeryLazy",
 		cond = enabled(group, "multicursor"),

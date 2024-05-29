@@ -41,9 +41,8 @@ end
 
 -- Trouble
 if enabled(group, "trouble") then
-	map("n", "<leader>tr", "<CMD>TroubleToggle lsp_references<CR>")
-	map("n", "<leader>td", "<CMD>TroubleToggle lsp_definitions<CR>")
-	map("n", "<leader>cd", "<CMD>TroubleToggle<CR>")
+	map("n", "<leader>tf", "<CMD>TroubleToggle document_diagnostics<CR>")
+	map("n", "<leader>tt", "<CMD>TroubleToggle todo<CR>")
 end
 
 -- UFO
@@ -74,7 +73,11 @@ map("n", "m", "<CMD>noh<CR>")
 -- Movement
 -- in insert mode, type <c-d> and your cursor will move past the next separator
 -- such as quotes, parens, brackets, etc.
-map("i", "<C-d>", "<left><c-o>/[\"';)>}\\]]<cr><c-o><CMD>noh<cr><right>")
+map(
+	"i",
+	"<C-d>",
+	"<CMD>set shortmess+=S<CR><left><c-o>/[\"';)>}\\]]<cr><c-o><CMD>noh<CR><CMD>set shortmess-=S<CR><right>"
+)
 map("i", "<C-b>", "<C-o>0")
 map("i", "<C-a>", "<C-o>A")
 
