@@ -11,6 +11,13 @@ if enabled(group, "img_paste") then
 	map("n", "<leader>p", "<CMD>PasteImage<CR>", { desc = "Paste clipboard image" })
 end
 
+-- Multicursor
+vim.g.VM_default_mappings = false
+vim.g.VM_maps = {
+	["Add Cursor Above"] = "<A-k>",
+	["Add Cursor Down"] = "<A-j>",
+}
+
 -- Dropbar
 if enabled(group, "dropbar") then
 	map("n", "<C-p>", "<CMD>lua require('dropbar.api').picrk()<CR>")

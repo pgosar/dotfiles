@@ -1,6 +1,6 @@
 local enabled = require("core.utils.utils").enabled
 
-local exist, user_config = pcall(require, "user.user_config")
+local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 require("lazy").setup({
 	{
@@ -42,7 +42,6 @@ require("lazy").setup({
 	},
 	{
 		"catppuccin/nvim",
-		lazy = false,
 		cond = enabled(group, "catppuccin"),
 		config = function()
 			require("plugin-configs.catppuccin")
@@ -53,15 +52,13 @@ require("lazy").setup({
 		cmd = "Copilot",
 		cond = enabled(group, "cmp") and enabled(group, "copilot"),
 		event = "InsertEnter",
-		dependencies = {
-			"zbirenbaum/copilot-cmp",
-			config = function()
-				require("copilot_cmp").setup()
-			end,
-		},
 		config = function()
 			require("plugin-configs.copilot")
 		end,
+		dependencies = {
+			"zbirenbaum/copilot-cmp",
+			config = true,
+		},
 	},
 	{
 		"stevearc/dressing.nvim",
@@ -102,9 +99,8 @@ require("lazy").setup({
 		"lukas-reineke/indent-blankline.nvim",
 		cond = enabled(group, "indent_blankline"),
 		event = "VimEnter",
-		config = function()
-			require("ibl").setup()
-		end,
+		main = "ibl",
+		config = true,
 	},
 	{
 		"nvim-lualine/lualine.nvim",
@@ -121,16 +117,14 @@ require("lazy").setup({
 	},
 	{
 		"echasnovski/mini.align",
-		version = false,
+		cond = enabled(group, "align"),
 		event = "VeryLazy",
-		config = function()
-			require("mini.align").setup()
-		end,
+		config = true,
 	},
 	{
 		"folke/neodev.nvim",
 		cond = enabled(group, "neodev"),
-		event = "VeryLazy",
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			require("plugin-configs.neodev")
 		end,
@@ -150,7 +144,7 @@ require("lazy").setup({
 		config = function()
 			require("plugin-configs.neo-tree")
 		end,
-		branch = "v3.x",
+		branch = "*",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 	{
@@ -239,15 +233,11 @@ require("lazy").setup({
 			},
 			{
 				"rcarriga/nvim-dap-ui",
-				config = function()
-					require("dapui").setup()
-				end,
+				config = true,
 			},
 			{
 				"theHamsta/nvim-dap-virtual-text",
-				config = function()
-					require("nvim-dap-virtual-text").setup()
-				end,
+				config = true,
 			},
 			{
 				"nvim-neotest/nvim-nio",
@@ -264,9 +254,7 @@ require("lazy").setup({
 	{
 		"williamboman/mason.nvim",
 		lazy = false,
-		config = function()
-			require("mason").setup()
-		end,
+		config = true,
 	},
 	{
 		"neovim/nvim-lspconfig",
@@ -289,9 +277,7 @@ require("lazy").setup({
 		"kylechui/nvim-surround",
 		cond = enabled(group, "surround"),
 		event = "VimEnter",
-		config = function()
-			require("nvim-surround").setup()
-		end,
+		config = true,
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -311,18 +297,14 @@ require("lazy").setup({
 		"windwp/nvim-ts-autotag",
 		cond = enabled(group, "autotag"),
 		event = { "BufReadPre", "BufNewFile" },
-		config = function()
-			require("nvim-ts-autotag").setup()
-		end,
+		config = true,
 	},
 	{
 		"kevinhwang91/nvim-ufo",
 		cond = enabled(group, "ufo"),
 		event = "VimEnter",
 		dependencies = "kevinhwang91/promise-async",
-		config = function()
-			require("ufo").setup()
-		end,
+		config = true,
 	},
 	{ "nvim-lua/plenary.nvim" },
 	{
@@ -363,6 +345,8 @@ require("lazy").setup({
 			require("plugin-configs.telescope")
 		end,
 	},
+
+	{ "folke/todo-comments.nvim", cond = enabled(group, "todo_comments"), event = "VeryLazy" },
 	{
 		"akinsho/toggleterm.nvim",
 		cond = enabled(group, "toggleterm"),
@@ -388,9 +372,7 @@ require("lazy").setup({
 		"folke/which-key.nvim",
 		cond = enabled(group, "whichkey"),
 		event = "VeryLazy",
-		config = function()
-			require("which-key").setup()
-		end,
+		config = true,
 	},
 	{
 		"folke/zen-mode.nvim",
@@ -400,6 +382,27 @@ require("lazy").setup({
 			require("plugin-configs.zenmode")
 		end,
 	},
+	-- TODO: last vim script plugin for replacement
+	{
+		"mg979/vim-visual-multi",
+		event = "VeryLazy",
+		cond = enabled(group, "multicursor"),
+	},
+	-- {
+	-- 	"brenton-leighton/multiple-cursors.nvim",
+	-- 	version = "*", -- Use the latest tagged version
+	-- 	opts = {}, -- This causes the plugin setup function to be called
+	-- 	pre_hook = function()
+	-- 		require("cmp").setup({ enabled = false })
+	-- 	end,
+	-- 	post_hook = function()
+	-- 		require("cmp").setup({ enabled = true })
+	-- 	end,
+	-- 	keys = {
+	-- 		{ "<C-j>", "<Cmd>MultipleCursorsAddDown<CR>", mode = { "n", "x" }, desc = "Add cursor and move down" },
+	-- 		{ "<C-k>", "<Cmd>MultipleCursorsAddUp<CR>", mode = { "n", "x" }, desc = "Add cursor and move up" },
+	-- 	},
+	-- },
 }, {
 	defaults = { lazy = true },
 	performance = {
