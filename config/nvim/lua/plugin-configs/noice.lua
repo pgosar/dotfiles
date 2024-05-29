@@ -36,7 +36,6 @@ require("noice").setup({
 			},
 		},
 	},
-	notify = { view = "mini" },
 	lsp = {
 		message = {
 			enabled = false,
@@ -52,8 +51,4 @@ require("noice").setup({
 		long_message_to_split = true,
 		lsp_doc_border = true,
 	},
-})
-
-vim.diagnostic.config({
-	update_in_insert = false,
 })

@@ -288,7 +288,7 @@ require("lazy").setup({
 	{
 		"kylechui/nvim-surround",
 		cond = enabled(group, "surround"),
-		cmd = "VimEnter",
+		event = "VimEnter",
 		config = function()
 			require("nvim-surround").setup()
 		end,
