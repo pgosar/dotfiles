@@ -114,6 +114,7 @@ require("lazy").setup({
 		"tadmccorkle/markdown.nvim",
 		ft = "markdown",
 		cond = enabled(group, "markdown"),
+		opts = {},
 	},
 	{
 		"echasnovski/mini.align",
@@ -383,7 +384,7 @@ require("lazy").setup({
 		end,
 	},
 	-- TODO: last vim script plugin for replacement
-  {
+	{
 		"mg979/vim-visual-multi",
 		event = "VeryLazy",
 		cond = enabled(group, "multicursor"),

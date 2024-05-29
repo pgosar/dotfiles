@@ -21,7 +21,7 @@ vim.g.VM_maps = {
 
 -- Dropbar
 if enabled(group, "dropbar") then
-	map("n", "<C-p>", "<CMD>lua require('dropbar.api').picrk()<CR>")
+	map("n", "<C-p>", "<CMD>lua require('dropbar.api').pick()<CR>")
 end
 
 -- Markdown

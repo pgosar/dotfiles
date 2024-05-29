@@ -6,16 +6,6 @@ local group = exist and type(user_config) == "table" and user_config.autocommand
 local plugin = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 local enabled = require("core.utils.utils").enabled
 
--- disables code folding for the start screen
-if enabled(group, "alpha_folding") then
-	cmd({ "FileType" }, {
-		desc = "Disable folding for alpha buffer",
-		group = augroup("alpha", { clear = true }),
-		pattern = "alpha",
-		command = "setlocal nofoldenable",
-	})
-end
-
 -- Removes any trailing whitespace when saving a file
 if enabled(group, "trailing_whitespace") then
 	cmd({ "BufWritePre" }, {

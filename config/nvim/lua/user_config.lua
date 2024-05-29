@@ -141,7 +141,6 @@ M.enable_plugins = {
 }
 
 M.autocommands = {
-	alpha_folding = true,
 	trailing_whitespace = true,
 	remember_file_state = true,
 	session_saved_notification = true,
