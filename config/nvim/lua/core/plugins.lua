@@ -303,10 +303,17 @@ require("lazy").setup({
 		end,
 		dependencies = {
 			{ "nvim-treesitter/nvim-treesitter-textobjects" },
-			{ "windwp/nvim-ts-autotag", cond = enabled(group, "autotag") },
 			{ "HiPhish/rainbow-delimiters.nvim", cond = enabled(group, "rainbow") },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
 		},
+	},
+	{
+		"windwp/nvim-ts-autotag",
+		cond = enabled(group, "autotag"),
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			require("nvim-ts-autotag").setup()
+		end,
 	},
 	{
 		"kevinhwang91/nvim-ufo",

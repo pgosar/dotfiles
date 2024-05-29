@@ -3,7 +3,6 @@ require("nvim-treesitter.configs").setup({
 		enable = true,
 	},
 	incremental_selection = { enable = true },
-	autotag = { enable = true },
 	rainbow = { enable = true, disable = { "html" }, extended_mode = false },
 	-- for when I miss things
 	auto_install = true,
