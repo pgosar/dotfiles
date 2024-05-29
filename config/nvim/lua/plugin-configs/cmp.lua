@@ -3,7 +3,6 @@ local cmp_action = require("lsp-zero").cmp_action()
 local luasnip = require("luasnip")
 require("luasnip.loaders.from_vscode").lazy_load()
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 local has_words_before = require("core.utils.utils").has_words_before
 cmp.setup({
@@ -40,7 +39,11 @@ cmp.setup({
 		}),
 	},
 	mapping = {
-		["<CR>"] = cmp.mapping.confirm({ select = false }),
+		["<CR>"] = cmp.mapping({
+			-- for some reason if I don't do this it complains about ambiguous commands
+			i = cmp.mapping.confirm({ select = false }),
+			c = cmp.mapping.confirm({ select = false }),
+		}),
 		["<Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -51,7 +54,7 @@ cmp.setup({
 			else
 				fallback()
 			end
-		end, { "i", "s" }),
+		end, { "i", "s", "c" }),
 		["<S-Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
@@ -60,7 +63,7 @@ cmp.setup({
 			else
 				fallback()
 			end
-		end, { "i", "s" }),
+		end, { "i", "s", "c" }),
 		["<C-k>"] = cmp.mapping.scroll_docs(-4),
 		["<C-j>"] = cmp.mapping.scroll_docs(4),
 		["<C-c>"] = cmp.mapping.abort(),
@@ -75,4 +78,26 @@ cmp.setup({
 		{ name = "luasnip" },
 		{ name = "path", option = { trailing_slash = true } },
 	},
+})
+
+-- `/` cmdline setup.
+cmp.setup.cmdline("/", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = "buffer" },
+	},
+})
+
+-- `:` cmdline setup.
+cmp.setup.cmdline(":", {
+	sources = cmp.config.sources({
+		{ name = "path" },
+	}, {
+		{
+			name = "cmdline",
+			option = {
+				ignore_cmds = { "Man", "!" },
+			},
+		},
+	}),
 })

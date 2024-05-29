@@ -26,6 +26,7 @@ vim_opts({
 		linebreak = true,  -- Break lines at word boundaries
 		number = true,     -- Show line numbers
 		numberwidth = 6,   -- Width of number column
+    pumheight = 10,    -- Auto-complete menu max height
 		scrolloff = 5,     -- Lines above/below cursor
 		sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions", -- Session options
 		shiftwidth = 2,    -- Spaces per indent
