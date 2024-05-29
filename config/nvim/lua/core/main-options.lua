@@ -43,7 +43,3 @@ vim_opts({
 		updatetime = 100,     -- Faster completion
 	},
 })
-
-local exist, user_config = pcall(require, "user.user_config")
-local opts = exist and type(user_config) == "table" and user_config.options or {}
-vim_opts(opts)

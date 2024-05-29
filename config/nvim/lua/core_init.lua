@@ -33,6 +33,7 @@ if enabled(group, "notify") then
 	vim.notify = require("notify")
 end
 
+-- update function
 vim.api.nvim_create_user_command("CyberUpdate", function()
 	require("core.utils.utils").update_all()
 end, { desc = "Updates plugins, mason packages, treesitter parsers" })
@@ -52,7 +53,10 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 	table.insert(spell_words, word)
 end
 
-vim.cmd.colorscheme(user_config.colorscheme)
+local ok, _ = pcall(vim.cmd.colorscheme, user_config.colorscheme)
+if not ok then
+	vim.cmd.colorscheme("default")
+end
 
 vim.diagnostic.config({
 	update_in_insert = false,

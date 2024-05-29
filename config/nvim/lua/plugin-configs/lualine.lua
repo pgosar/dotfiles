@@ -32,7 +32,6 @@ local config = {
 	options = {
 		component_separators = "",
 		section_separators = "",
-		theme = "catppuccin",
 		always_divide_middle = false,
 	},
 	-- disable defaults
@@ -128,9 +127,9 @@ components.diagnostics = {
 }
 
 components.recording = {
-  require("noice").api.statusline.mode.get,
-  cond = require("noice").api.statusline.mode.has,
-  color = { fg = colors.orange },
+	require("noice").api.statusline.mode.get,
+	cond = require("noice").api.statusline.mode.has,
+	color = { fg = colors.orange },
 }
 
 components.lsp_server_name = {

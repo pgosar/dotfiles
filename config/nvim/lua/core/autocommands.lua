@@ -1,7 +1,7 @@
 local augroup = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
 
-local exist, user_config = pcall(require, "user.user_config")
+local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.autocommands or {}
 local plugin = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 local enabled = require("core.utils.utils").enabled
@@ -13,19 +13,6 @@ if enabled(group, "alpha_folding") then
 		group = augroup("alpha", { clear = true }),
 		pattern = "alpha",
 		command = "setlocal nofoldenable",
-	})
-end
-
--- Fixes some bugs with how treesitter manages folds
-if enabled(group, "treesitter_folds") then
-	cmd({ "BufEnter", "BufAdd", "BufNew", "BufNewFile", "BufWinEnter" }, {
-		desc = "fix tree sitter folds issue",
-		group = augroup("treesitter folds", { clear = true }),
-		pattern = { "*" },
-		callback = function()
-			vim.opt.foldmethod = "expr"
-			vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-		end,
 	})
 end
 
@@ -94,6 +81,7 @@ end
 -- fixes Trouble not closing when last window in tab
 if enabled(group, "trouble") then
 	cmd("BufEnter", {
+		desc = "close trouble when last window in tab",
 		group = vim.api.nvim_create_augroup("TroubleClose", { clear = true }),
 		callback = function()
 			local layout = vim.api.nvim_call_function("winlayout", {})
@@ -108,6 +96,7 @@ if enabled(group, "trouble") then
 	})
 end
 
+-- no spellcheck in terminal buffers
 if enabled(group, "term_spelling") then
 	cmd({ "TermOpen" }, {
 		desc = "disable spellcheck in terminal buffers",
