@@ -12,15 +12,16 @@ require("noice").setup({
 				find = "substitutions",
 			},
 		},
-		{ filter = { find = "fewer lines;" }, opts = { skip = true } },
-		{ filter = { find = "more line;" }, opts = { skip = true } },
-		{ filter = { find = "more lines;" }, opts = { skip = true } },
-		{ filter = { find = "less;" }, opts = { skip = true } },
-		{ filter = { find = "change;" }, opts = { skip = true } },
-		{ filter = { find = "changes;" }, opts = { skip = true } },
+		{ filter = { find = "fewer lines" }, opts = { skip = true } },
+		{ filter = { find = "more line" }, opts = { skip = true } },
+		{ filter = { find = "more lines" }, opts = { skip = true } },
+		{ filter = { find = "less" }, opts = { skip = true } },
+		{ filter = { find = "change" }, opts = { skip = true } },
+		{ filter = { find = "changes" }, opts = { skip = true } },
 		{ filter = { find = "indent" }, opts = { skip = true } },
 		{ filter = { find = "move" }, opts = { skip = true } },
 		{ filter = { find = "No information available" }, opts = { skip = true } },
+		{ filter = { find = "Processing file symbols" }, opts = { skip = true } },
 	},
 	cmdline = { view = "cmdline" },
 	views = {
@@ -35,6 +36,7 @@ require("noice").setup({
 			},
 		},
 	},
+	notify = { view = "mini" },
 	lsp = {
 		message = {
 			enabled = false,
@@ -50,4 +52,8 @@ require("noice").setup({
 		long_message_to_split = true,
 		lsp_doc_border = true,
 	},
+})
+
+vim.diagnostic.config({
+	update_in_insert = false,
 })

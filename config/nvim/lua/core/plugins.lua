@@ -2,7 +2,6 @@ local enabled = require("core.utils.utils").enabled
 
 local exist, user_config = pcall(require, "user.user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
-local plugins = exist and type(user_config) == "table" and user_config.plugins or {}
 require("lazy").setup({
 	{
 		"stevearc/aerial.nvim",
@@ -21,11 +20,47 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"skywind3000/asyncrun.vim",
+		event = "VeryLazy",
+		cond = enabled(group, "asyncrun"),
+	},
+	{
+		"okuuva/auto-save.nvim",
+		event = "VeryLazy",
+		cond = enabled(group, "autosave"),
+		config = function()
+			require("plugin-configs.autosave")
+		end,
+	},
+	{
 		"akinsho/bufferline.nvim",
 		cond = enabled(group, "bufferline"),
 		lazy = false,
 		config = function()
 			require("plugin-configs.bufferline")
+		end,
+	},
+	{
+		"catppuccin/nvim",
+		lazy = false,
+		cond = enabled(group, "catppuccin"),
+		config = function()
+			require("plugin-configs.catppuccin")
+		end,
+	},
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		cond = enabled(group, "cmp") and enabled(group, "copilot"),
+		event = "InsertEnter",
+		dependencies = {
+			"zbirenbaum/copilot-cmp",
+			config = function()
+				require("copilot_cmp").setup()
+			end,
+		},
+		config = function()
+			require("plugin-configs.copilot")
 		end,
 	},
 	{
@@ -35,6 +70,11 @@ require("lazy").setup({
 		config = function()
 			require("plugin-configs.dressing")
 		end,
+	},
+	{
+		"Bekaboo/dropbar.nvim",
+		lazy = false, -- done by default
+		cond = enabled(group, "dropbar"),
 	},
 	{
 		"lewis6991/gitsigns.nvim",
@@ -67,10 +107,25 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"VonHeikemen/lsp-zero.nvim",
-		cond = enabled(group, "lsp_zero"),
-		branch = "v3.x",
-		dependencies = {},
+		"nvim-lualine/lualine.nvim",
+		event = "VeryLazy",
+		cond = enabled(group, "lualine"),
+		config = function()
+			require("plugin-configs.lualine")
+		end,
+	},
+	{
+		"tadmccorkle/markdown.nvim",
+		ft = "markdown",
+		cond = enabled(group, "markdown"),
+	},
+	{
+		"echasnovski/mini.align",
+		version = false,
+		event = "VeryLazy",
+		config = function()
+			require("mini.align").setup()
+		end,
 	},
 	{
 		"folke/neodev.nvim",
@@ -168,6 +223,14 @@ require("lazy").setup({
 		end,
 		dependencies = {
 			{
+				"mfussenegger/nvim-dap-python",
+				ft = "python",
+				cond = enabled(group, "dap_python") and enabled(group, "dap"),
+				config = function()
+					require("plugin-configs.dap-python")
+				end,
+			},
+			{
 				"jay-babu/mason-nvim-dap.nvim",
 				cmd = { "DapInstall", "DapUninstall" },
 				config = function()
@@ -191,6 +254,20 @@ require("lazy").setup({
 			},
 		},
 	},
+	-- plugin order is important for these 3 -------------
+	{
+		"VonHeikemen/lsp-zero.nvim",
+		cond = enabled(group, "lsp_zero"),
+		branch = "v3.x",
+		dependencies = {},
+	},
+	{
+		"williamboman/mason.nvim",
+		lazy = false,
+		config = function()
+			require("mason").setup()
+		end,
+	},
 	{
 		"neovim/nvim-lspconfig",
 		event = { "BufReadPre", "BufNewFile" },
@@ -200,9 +277,9 @@ require("lazy").setup({
 		end,
 		dependencies = {
 			{ "williamboman/mason-lspconfig.nvim" },
-			{ "williamboman/mason.nvim" },
 		},
 	},
+	------------------------------------------------------
 	{
 		"rcarriga/nvim-notify",
 		cond = enabled(group, "notify"),
@@ -226,13 +303,6 @@ require("lazy").setup({
 		end,
 		dependencies = {
 			{ "nvim-treesitter/nvim-treesitter-textobjects" },
-			{
-				"nvim-treesitter/nvim-treesitter-context",
-				cond = enabled(group, "context"),
-				config = function()
-					require("plugin-configs.treesitter-context")
-				end,
-			},
 			{ "windwp/nvim-ts-autotag", cond = enabled(group, "autotag") },
 			{ "HiPhish/rainbow-delimiters.nvim", cond = enabled(group, "rainbow") },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
@@ -247,10 +317,6 @@ require("lazy").setup({
 			require("ufo").setup()
 		end,
 	},
-	{
-		"navarasu/onedark.nvim",
-		cond = enabled(group, "onedark"),
-	},
 	{ "nvim-lua/plenary.nvim" },
 	{
 		"ahmedkhalf/project.nvim",
@@ -258,6 +324,14 @@ require("lazy").setup({
 		event = "VimEnter",
 		config = function()
 			require("project_nvim").setup()
+		end,
+	},
+	{
+		"simrat39/rust-tools.nvim",
+		ft = "rust",
+		cond = enabled(group, "rust_tools"),
+		config = function()
+			require("plugin-configs.rust-tools")
 		end,
 	},
 	{
@@ -312,94 +386,12 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"windwp/windline.nvim",
-		cond = enabled(group, "windline"),
-		event = "VeryLazy",
-		config = function()
-			require("wlsample.evil_line")
-		end,
-	},
-	{
 		"folke/zen-mode.nvim",
 		cond = enabled(group, "zen"),
 		cmd = "ZenMode",
 		config = function()
 			require("plugin-configs.zenmode")
 		end,
-	},
-
-	{
-		"simrat39/rust-tools.nvim",
-		ft = "rust",
-		cond = enabled(group, "rust_tools"),
-		config = function()
-			require("plugin-configs.rust-tools")
-		end,
-	},
-	{
-		"mfussenegger/nvim-dap-python",
-		ft = "python",
-		cond = enabled(group, "dap_python") and enabled(group, "dap"),
-		config = function()
-			require("plugin-configs.dap-python")
-		end,
-	},
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		cond = enabled(group, "cmp") and enabled(group, "copilot"),
-		event = "InsertEnter",
-		dependencies = {
-			"zbirenbaum/copilot-cmp",
-			config = function()
-				require("copilot_cmp").setup()
-			end,
-		},
-		config = function()
-			require("plugin-configs.copilot")
-		end,
-	},
-	{
-		"okuuva/auto-save.nvim",
-		event = "VeryLazy",
-		cond = enabled(group, "autosave"),
-		config = function()
-			require("plugin-configs.autosave")
-		end,
-	},
-	{
-		"skywind3000/asyncrun.vim",
-		event = "VeryLazy",
-		cond = enabled(group, "asyncrun"),
-	},
-	{
-		"tadmccorkle/markdown.nvim",
-		ft = "markdown",
-		cond = enabled(group, "markdown"),
-		config = function()
-			require("plugin-configs.markdown")
-		end,
-	},
-	{
-		"catppuccin/nvim",
-		lazy = false,
-		cond = enabled(group, "catppuccin"),
-		config = function()
-			require("plugin-configs.catppuccin")
-		end,
-	},
-	{
-		"nvim-lualine/lualine.nvim",
-		event = "VeryLazy",
-		cond = enabled(group, "lualine"),
-		config = function()
-			require("plugin-configs.lualine")
-		end,
-	},
-	{
-		"Bekaboo/dropbar.nvim",
-		lazy = false, -- done by default
-		cond = enabled(group, "dropbar"),
 	},
 }, {
 	defaults = { lazy = true },

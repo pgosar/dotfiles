@@ -1,6 +1,6 @@
 local M = {}
 
--- add any null-ls sources you want here
+-- Null-ls sources list
 M.setup_sources = function(b)
 	return {
 		b.formatting.clang_format,
@@ -36,7 +36,7 @@ M.setup_sources = function(b)
 	}
 end
 
--- add mason sources to auto-install
+-- Auto install Mason sources
 M.mason_ensure_installed = {
 	null_ls = {
 		"cbfmt",
@@ -67,6 +67,7 @@ M.mason_ensure_installed = {
 	},
 }
 
+-- setup formatting servers
 M.formatting_servers = {
 	["rust_analyzer"] = { "rust" },
 	["null-ls"] = {
@@ -99,7 +100,6 @@ M.enable_plugins = {
 	autosave = true,
 	bufferline = true,
 	catppuccin = true,
-	context = false,
 	copilot = true,
 	dressing = true,
 	gitsigns = true,
@@ -125,7 +125,6 @@ M.enable_plugins = {
 	surround = true,
 	treesitter = true,
 	ufo = true,
-	onedark = true,
 	project = true,
 	rainbow = true,
 	rust_tools = true,
@@ -135,7 +134,6 @@ M.enable_plugins = {
 	trouble = true,
 	twilight = true,
 	whichkey = true,
-	windline = false,
 	zen = true,
 }
 
@@ -152,9 +150,5 @@ M.autocommands = {
 }
 
 M.colorscheme = "catppuccin"
-
-M.user_conf = function()
-	pcall(require, "lsp-zero")
-end
 
 return M

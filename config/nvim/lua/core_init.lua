@@ -53,3 +53,7 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 end
 
 vim.cmd.colorscheme(user_config.colorscheme)
+
+vim.diagnostic.config({
+	update_in_insert = false,
+})
