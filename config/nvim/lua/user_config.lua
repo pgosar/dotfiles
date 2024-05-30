@@ -53,7 +53,6 @@ M.mason_ensure_installed = {
 		"lua_language_server",
 		"prettierd",
 		"basedpyright",
-		"rust_analyzer",
 		"shfmt",
 		"stylua",
 		"svlangserver",
@@ -68,7 +67,6 @@ M.mason_ensure_installed = {
 
 -- setup formatting servers
 M.formatting_servers = {
-	["rust_analyzer"] = { "rust" },
 	["null-ls"] = {
 		"lua",
 		"javascript",
@@ -129,7 +127,6 @@ M.enable_plugins = {
 	ufo = true,
 	project = true,
 	rainbow = true,
-	rust_tools = true,
 	scope = true,
 	telescope = true,
 	todo_comments = true,

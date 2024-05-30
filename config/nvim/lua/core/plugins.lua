@@ -1,3 +1,6 @@
+-- NOTE: unnecessary right now, but neotest will be a good addition whenever I actually need it
+-- or need something to do
+
 local enabled = require("core.utils.utils").enabled
 
 local exist, user_config = pcall(require, "user_config")
@@ -335,12 +338,9 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"simrat39/rust-tools.nvim",
-		ft = "rust",
-		cond = enabled(group, "rust_tools"),
-		config = function()
-			require("plugin-configs.rust-tools")
-		end,
+		"mrcjkb/rustaceanvim",
+		version = "^4",
+		lazy = false, -- This plugin is already lazy
 	},
 	{
 		"tiagovla/scope.nvim",
