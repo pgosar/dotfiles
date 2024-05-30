@@ -2,9 +2,9 @@
 
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
-    "height": 40,
-    "margin": "0 0 0 0",
-    "modules-left": ["custom/launcher", "hyprland/workspaces", "custom/spotify"],
+    "height": 10,
+    "margin": "-7 0 -7 0",
+    "modules-left": ["hyprland/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/weather"],
     "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
     "cpu", "battery", "bluetooth", "tray"],
@@ -29,12 +29,12 @@
       "on-scroll-down": "playerctl previous"
     },
     "tray": {
-        "icon-size": 16,
+        "icon-size": 12,
         "spacing": 6
     },
     "clock": {
-        "format": "   {:%a %d %b  %H:%M}",
-        "format-alt": "  {:%d/%m/%Y  %H:%M:%S}",
+        "format": "   {:%a %d %b %H:%M}",
+        "format-alt": "  {:%d/%m/%Y %H:%M:%S}",
         "interval": 1
     },
     "custom/weather": {
@@ -56,7 +56,7 @@
         "format": "  {temperatureC}°C"
     },
     "backlight": {
-        "format": "{icon} {percent: >3}%",
+        "format": "{icon}  {percent: >3}%",
         "format-icons": ["", "󰃠"],
         "on-scroll-down": "brightnessctl -c backlight set 5%-",
         "on-scroll-up": "brightnessctl -c backlight set +5%"
@@ -85,7 +85,7 @@
         "scroll-step": 1,
         "format": "{icon} {volume: >3}%",
         "format-bluetooth": "{icon} {volume: >3}%",
-        "format-muted":"󰝟 muted",
+        "format-muted":"󰝟  muted",
         "format-icons": ["󰖀", "󰕾 "],
         "on-click": "pavucontrol",
         "on-scroll-up": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%+",
@@ -97,8 +97,5 @@
       	"tooltip": false,
         "on-click": "~/.config/waybar/scripts/openVirtualKeyboard.sh &",
   },
-     "custom/launcher": {
-    	"format":" ",
-    	"tooltip": false,
   },
 }

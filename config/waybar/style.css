@@ -4,9 +4,9 @@
   color: @lavender;
   border: 0;
   padding: 0 0;
-  font-family: FiraCode;
-  font-size: 12px;
-  font-weight: bold;
+  font-family: JetBrainsMono;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 window#waybar {
@@ -18,7 +18,6 @@ window#waybar {
   color: @base;
   border-radius: 50%;
   margin: 0px 0px;
-  padding: 3px 4px 1.5px 0px;
 }
 
 #workspaces button:hover {
@@ -30,16 +29,11 @@ window#waybar {
   color: @mauve;
 }
 
-#workspaces * {
-  color: whitesmoke;
-}
-
 #workspaces {
   border-style: solid;
   background-color: @base;
   opacity: 1;
-  border-radius: 10px;
-  margin: 6px 0px 6px 6px;
+  margin: 9px 9px 9px 9px;
 }
 
 #workspaces button.focused {
@@ -50,83 +44,49 @@ window#waybar {
 #workspaces button.focused * {
   color: @mauve;
 }
-#mode {
-  color: #ebcb8b;
-}
 
 #clock,
-#custom-swap,
-#custom-cava-internal,
+#workspaces,
 #battery,
 #cpu,
 #memory,
-#idle_inhibitor,
 #temperature,
 #custom-keyboard-layout,
 #bluetooth,
 #backlight,
-#network,
 #pulseaudio,
-#mode,
 #tray,
 #custom-spotify,
-#custom-pacman,
-#custom-launcher,
-#custom-notification,
+#custom-spotify,
 #custom-weather {
-  padding: 3px 5px;
+  padding: 0px 5px;
   border-style: solid;
   background-color: shade(@base, 1);
   opacity: 1;
-  margin: 6px 0;
-}
-/* -----------------------------------------------------------------------------
- * Module styles
- * -------------------------------------------------------------------------- */
-#custom-cava-internal {
-  border-radius: 6px;
-  color: @mauve;
+  margin: 9px 0;
 }
 
 #custom-spotify {
-  color: @white;
-}
-
-#custom-swap {
-  border-radius: 6px;
-  color: @base;
-  margin-left: 10px;
-  background-color: @mauve;
+  color: @sky;
 }
 
 #clock,
-#custom-spotify,
 #custom-weather,
 #bluetooth {
   color: @sky;
-  border-radius: 6px;
-  margin: 6px 8px;
-}
-
-#custom-notification {
-  font-size: 15px;
-  border-radius: 6px;
-  margin: 6px 8px;
 }
 
 #backlight {
   color: @yellow;
-  border-radius: 8px 0 0 8px;
 }
 
 #battery {
-  color: #d8dee9;
-  border-radius: 0 7px 7px 0;
+  color: @white;
   margin-right: 7px;
 }
 
 #battery.charging {
-  color: #81a1c1;
+  color: @white;
 }
 
 @keyframes blink {
@@ -147,27 +107,10 @@ window#waybar {
 #cpu {
   color: @sky;
 }
-#cpu #cpu-icon {
-  color: @sky;
-}
 
 #memory {
   background-color: #d3869b;
   color: @base;
-}
-
-#network.disabled {
-  color: #bf616a;
-}
-
-#network {
-  color: @green;
-  border-radius: 7px;
-  margin-right: 3px;
-}
-
-#network.disconnected {
-  color: #bf616a;
 }
 
 #pulseaudio {
@@ -175,49 +118,23 @@ window#waybar {
 }
 
 #pulseaudio.muted {
-  color: #3b4252;
+  color: @overlay2;
 }
 
 #temperature {
   color: @teal;
-  border-radius: 7px 0 0 7px;
 }
 
 #temperature.critical {
   color: @red;
 }
 
-#idle_inhibitor {
-  background-color: #ebcb8b;
-  color: @base;
-}
-
 #tray {
-  margin: 6px 8px;
-  border-radius: 8px;
-}
-
-#custom-launcher {
-  background-color: @blue;
-  color: @base;
-  border-radius: 8px;
-  padding: 3px 7px;
-  margin-left: 10px;
-}
-
-#window {
-  border-style: hidden;
-  margin-left: 7px;
-  margin-right: 7px;
-  color: #eceff4;
-}
-#mode {
-  margin-bottom: 2px;
+  margin: 9px 8px;
 }
 
 #custom-keyboard-layout {
   color: @peach;
-  font-size: 12px;
-  border-radius: 0 7px 7px 0;
+  font-size: 13px;
   margin-right: 7px;
 }
