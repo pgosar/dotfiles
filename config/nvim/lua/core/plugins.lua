@@ -117,6 +117,14 @@ require("lazy").setup({
 		opts = {},
 	},
 	{
+		"MeanderingProgrammer/markdown.nvim",
+		name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
+		ft = "markdown",
+		config = function()
+			require("render-markdown").setup({})
+		end,
+	},
+	{
 		"echasnovski/mini.align",
 		cond = enabled(group, "align"),
 		event = "VeryLazy",
@@ -145,7 +153,7 @@ require("lazy").setup({
 		config = function()
 			require("plugin-configs.neo-tree")
 		end,
-		branch = "*",
+		branch = "3.x",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 	{
@@ -203,10 +211,12 @@ require("lazy").setup({
 			{ "hrsh7th/cmp-buffer" },
 			{ "hrsh7th/cmp-cmdline" },
 			{ "hrsh7th/cmp-path" },
-			{ "saadparwaiz1/cmp_luasnip" },
 			{ "hrsh7th/cmp-nvim-lua" },
-			{ "L3MON4D3/LuaSnip" },
-			{ "rafamadriz/friendly-snippets" },
+			{
+				"garymjr/nvim-snippets",
+				opts = { friendly_snippets = true },
+				dependencies = { { "rafamadriz/friendly-snippets" } },
+			},
 		},
 	},
 	{ "NvChad/nvim-colorizer.lua", cond = enabled(group, "colorizer"), event = "VimEnter" },

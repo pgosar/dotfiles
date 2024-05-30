@@ -1,7 +1,4 @@
 local cmp = require("cmp")
-local cmp_action = require("lsp-zero").cmp_action()
-local luasnip = require("luasnip")
-require("luasnip.loaders.from_vscode").lazy_load()
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 local has_words_before = require("core.utils.utils").has_words_before
@@ -19,11 +16,6 @@ cmp.setup({
 	completion = {
 		keyword_length = 1,
 		completeopt = "menu,menuone,noinsert,noselect",
-	},
-	snippet = {
-		expand = function(args)
-			luasnip.lsp_expand(args.body)
-		end,
 	},
 	window = {
 		completion = cmp.config.window.bordered(),
@@ -47,8 +39,8 @@ cmp.setup({
 		["<Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
+			elseif vim.snippet.active({ direction = 1 }) then
+				vim.snippet.jump(1)
 			elseif has_words_before() then
 				cmp.complete()
 			else
@@ -58,8 +50,8 @@ cmp.setup({
 		["<S-Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
+			elseif vim.snippet.active({ direction = -1 }) then
+				vim.snippet.jump(-1)
 			else
 				fallback()
 			end
@@ -68,14 +60,12 @@ cmp.setup({
 		["<C-j>"] = cmp.mapping.scroll_docs(4),
 		["<C-c>"] = cmp.mapping.abort(),
 		["<C-n>"] = { i = cmp.mapping.complete() },
-		["<C-f>"] = cmp_action.luasnip_jump_forward(),
-		["<C-b>"] = cmp_action.luasnip_jump_backward(),
 	},
 	sources = {
 		{ name = "copilot" },
 		{ name = "nvim_lsp" },
 		{ name = "nvim_lua" },
-		{ name = "luasnip" },
+		{ name = "snippets" },
 		{ name = "path", option = { trailing_slash = true } },
 	},
 })

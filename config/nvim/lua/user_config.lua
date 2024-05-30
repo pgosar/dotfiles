@@ -4,7 +4,6 @@ local M = {}
 M.setup_sources = function(b)
 	return {
 		b.formatting.clang_format,
-		b.completion.luasnip,
 		b.completion.tags,
 		b.formatting.stylua,
 		b.formatting.cbfmt,
