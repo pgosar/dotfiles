@@ -109,6 +109,7 @@ M.enable_plugins = {
 	lsp_zero = true,
 	lualine = true,
 	neodev = true,
+	neogen = true,
 	neoscroll = true,
 	neotree = true,
 	session_manager = true,

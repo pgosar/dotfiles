@@ -22,6 +22,7 @@ require("noice").setup({
 		{ filter = { find = "move" }, opts = { skip = true } },
 		{ filter = { find = "No information available" }, opts = { skip = true } },
 		{ filter = { find = "Processing file symbols" }, opts = { skip = true } },
+		{ filter = { find = "Diagnosing" }, opts = { skip = true } },
 	},
 	cmdline = { view = "cmdline" },
 	views = {

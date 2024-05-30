@@ -7,17 +7,24 @@ local enabled = require("core.utils.utils").enabled
 vim.g.mapleader = " " -- the leader key is the spacebar
 local M = {}
 
+-- Neogen
+if enabled(group, "neogen") then
+	map("n", "<Leader>fd", "<CMD>Neogen<CR>", { desc = "Generate Docs" })
+end
+
 -- Image Pasting
 if enabled(group, "img_paste") then
 	map("n", "<leader>p", "<CMD>PasteImage<CR>", { desc = "Paste clipboard image" })
 end
 
 -- Multicursor
-vim.g.VM_default_mappings = false
-vim.g.VM_maps = {
-	["Add Cursor Above"] = "<A-k>",
-	["Add Cursor Down"] = "<A-j>",
-}
+if enabled(group, "multicursor") then
+	vim.g.VM_default_mappings = false
+	vim.g.VM_maps = {
+		["Add Cursor Above"] = "<A-k>",
+		["Add Cursor Down"] = "<A-j>",
+	}
+end
 
 -- Dropbar
 if enabled(group, "dropbar") then

@@ -1,6 +1,7 @@
 local M = {}
 
--- sets main options from options (table)
+--- sets vim options based on table
+---@param options table: options to set
 M.vim_opts = function(options)
 	if options ~= nil then
 		for scope, table in pairs(options) do
@@ -11,7 +12,11 @@ M.vim_opts = function(options)
 	end
 end
 
--- sets keybinds
+--- create keybindings
+---@param mode string | table: modes that the keybind is active in
+---@param lhs string: the key presses needed
+---@param rhs string: the action
+---@param opts table: options for the keybind
 M.map = function(mode, lhs, rhs, opts)
 	local options = { noremap = true, silent = true }
 	if opts then
@@ -20,7 +25,7 @@ M.map = function(mode, lhs, rhs, opts)
 	vim.keymap.set(mode, lhs, rhs, options)
 end
 
--- creating new file for alpha nvim buffer
+--- create new file, used for alpha buffer
 M.create_new_file = function()
 	local filename = vim.fn.input("Enter the filename: ")
 	if filename ~= "" then
@@ -28,13 +33,17 @@ M.create_new_file = function()
 	end
 end
 
--- helper for cmp completion
+--- cmp autocompletion helper function
+---@return boolean has_words: whether there are words before the cursor
 M.has_words_before = function()
 	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
--- creates floating terminal for toggleterm
+--- creates new terminals with ToggleTerm
+---@param term Terminal: the toggleterm terminal
+---@param cmd string: the command to run
+---@return function|Terminal: the created terminal
 M.create_floating_terminal = function(term, cmd)
 	local instance = nil
 	if vim.fn.executable(cmd) == 1 then
@@ -64,7 +73,7 @@ M.create_floating_terminal = function(term, cmd)
 	end
 end
 
--- updates all Mason packages
+--- update all mason packages
 M.update_mason = function()
 	local registry = require("mason-registry")
 	registry.refresh()
@@ -77,20 +86,20 @@ M.update_mason = function()
 	end
 end
 
--- updates everything in CyberNvim
+--- updates CyberNvim
 M.update_all = function()
 	vim.notify("Pulling latest changes...")
 	vim.fn.jobstart({ "git", "pull", "--rebase" })
 	require("lazy").sync({ wait = true })
 	vim.notify("Updating Mason packages...")
 	M.update_mason()
-	-- make sure treesitter is loaded so it can update parsers
 	require("nvim-treesitter")
 	vim.cmd("TSUpdate")
 	vim.notify("CyberNvim updated!", "info")
 end
 
--- check if attached lsp supports formatting
+--- checks whether the attached LSP server supports formatting
+---@return boolean is_supported: whether the server supports formatting
 M.supports_formatting = function()
 	local clients = vim.lsp.get_clients()
 	for _, client in ipairs(clients) do
@@ -101,7 +110,10 @@ M.supports_formatting = function()
 	return false
 end
 
--- check if option to disable is active from specified group
+--- whether the input is enabled in its table, for example a plugin in the plugin table
+---@param group table: the table to look in
+---@param opt string: the option to check
+---@return boolean is_enabled: whether the option is enabled
 M.enabled = function(group, opt)
 	return group == nil or group[opt] == nil or group[opt] == true
 end

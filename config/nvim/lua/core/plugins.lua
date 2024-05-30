@@ -139,6 +139,13 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"danymat/neogen",
+		event = "VeryLazy",
+		config = function()
+			require("plugin-configs.neogen")
+		end,
+	},
+	{
 		"karb94/neoscroll.nvim",
 		cond = enabled(group, "neoscroll"),
 		event = "VeryLazy",
@@ -153,7 +160,7 @@ require("lazy").setup({
 		config = function()
 			require("plugin-configs.neo-tree")
 		end,
-		branch = "3.x",
+		branch = "v3.x",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 	{
@@ -395,6 +402,7 @@ require("lazy").setup({
 		end,
 	},
 	-- TODO: last vim script plugin for replacement
+	-- blocked: https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
 	{
 		"mg979/vim-visual-multi",
 		event = "VeryLazy",

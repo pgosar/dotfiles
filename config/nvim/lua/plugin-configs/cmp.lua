@@ -2,14 +2,19 @@ local cmp = require("cmp")
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 local has_words_before = require("core.utils.utils").has_words_before
+local neogen = require("neogen")
 cmp.setup({
 	enabled = function()
 		-- disables in comments
+		-- TODO: neogen references in this file are contingent on the issue resolved (see neogen
+		-- config)
 		local context = require("cmp.config.context")
 		if vim.api.nvim_get_mode().mode == "c" then
 			return true
 		else
-			return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+			return not context.in_treesitter_capture("comment")
+				and not context.in_syntax_group("Comment")
+				and not neogen.jumpable()
 		end
 	end,
 	preselect = "none",
@@ -37,7 +42,9 @@ cmp.setup({
 			c = cmp.mapping.confirm({ select = false }),
 		}),
 		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
+			if neogen.jumpable() then
+				neogen.jump_next()
+			elseif cmp.visible() then
 				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 			elseif vim.snippet.active({ direction = 1 }) then
 				vim.snippet.jump(1)
@@ -48,7 +55,9 @@ cmp.setup({
 			end
 		end, { "i", "s", "c" }),
 		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
+			if neogen.jumpable(true) then
+				neogen.jump_prev()
+			elseif cmp.visible() then
 				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 			elseif vim.snippet.active({ direction = -1 }) then
 				vim.snippet.jump(-1)
