@@ -1,7 +1,6 @@
 require("catppuccin").setup({
 	integrations = {
 		notify = true,
-		aerial = true,
 		alpha = true,
 		lsp_trouble = true,
 	},

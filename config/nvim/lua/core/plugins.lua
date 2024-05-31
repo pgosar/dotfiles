@@ -7,14 +7,6 @@ local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 require("lazy").setup({
 	{
-		"stevearc/aerial.nvim",
-		cond = enabled(group, "aerial"),
-		cmd = "AerialToggle",
-		config = function()
-			require("plugin-configs.aerial")
-		end,
-	},
-	{
 		"goolord/alpha-nvim",
 		cond = enabled(group, "alpha"),
 		lazy = false,
@@ -143,6 +135,7 @@ require("lazy").setup({
 	},
 	{
 		"danymat/neogen",
+		cond = enabled(group, "neogen"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.neogen")
@@ -229,7 +222,11 @@ require("lazy").setup({
 			},
 		},
 	},
-	{ "NvChad/nvim-colorizer.lua", cond = enabled(group, "colorizer"), event = "VimEnter" },
+	{
+		"NvChad/nvim-colorizer.lua",
+		cond = enabled(group, "colorizer"),
+		ft = { "css", "scss", "html", "xml", "svg", "js", "jsx", "ts", "tsx", "php", "vue" },
+	},
 	{
 		"mfussenegger/nvim-dap",
 		cond = enabled(group, "dap"),
@@ -270,6 +267,7 @@ require("lazy").setup({
 	{
 		"VonHeikemen/lsp-zero.nvim",
 		cond = enabled(group, "lsp_zero"),
+		event = { "BufReadPre", "BufNewFile" },
 		branch = "v3.x",
 		dependencies = {},
 	},
@@ -280,7 +278,7 @@ require("lazy").setup({
 	},
 	{
 		"neovim/nvim-lspconfig",
-		event = { "BufReadPre", "BufNewFile" },
+		event = "VimEnter",
 		cmd = { "LspInfo", "LspInstall", "LspStart" },
 		config = function()
 			require("plugin-configs.lsp")
@@ -339,6 +337,7 @@ require("lazy").setup({
 	},
 	{
 		"mrcjkb/rustaceanvim",
+		cond = enabled(group, "rustacean"),
 		version = "^4",
 		lazy = false, -- This plugin is already lazy
 	},
@@ -377,7 +376,8 @@ require("lazy").setup({
 	{
 		"folke/trouble.nvim",
 		cond = enabled(group, "trouble"),
-		cmd = { "TroubleToggle", "Trouble" },
+		cmd = "Trouble",
+		opts = {},
 	},
 	{
 		"folke/twilight.nvim",
@@ -403,26 +403,26 @@ require("lazy").setup({
 	},
 	-- TODO: last vim script plugin for replacement
 	-- blocked: https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
-	{
-		"mg979/vim-visual-multi",
-		event = "VeryLazy",
-		cond = enabled(group, "multicursor"),
-	},
 	-- {
-	-- 	"brenton-leighton/multiple-cursors.nvim",
-	-- 	version = "*", -- Use the latest tagged version
-	-- 	opts = {}, -- This causes the plugin setup function to be called
-	-- 	pre_hook = function()
-	-- 		require("cmp").setup({ enabled = false })
-	-- 	end,
-	-- 	post_hook = function()
-	-- 		require("cmp").setup({ enabled = true })
-	-- 	end,
-	-- 	keys = {
-	-- 		{ "<C-j>", "<Cmd>MultipleCursorsAddDown<CR>", mode = { "n", "x" }, desc = "Add cursor and move down" },
-	-- 		{ "<C-k>", "<Cmd>MultipleCursorsAddUp<CR>", mode = { "n", "x" }, desc = "Add cursor and move up" },
-	-- 	},
+	-- 	"mg979/vim-visual-multi",
+	-- 	event = "VeryLazy",
+	-- 	cond = enabled(group, "multicursor"),
 	-- },
+	{
+		"brenton-leighton/multiple-cursors.nvim",
+		version = "*", -- Use the latest tagged version
+		opts = {}, -- This causes the plugin setup function to be called
+		pre_hook = function()
+			require("cmp").setup({ enabled = false })
+		end,
+		post_hook = function()
+			require("cmp").setup({ enabled = true })
+		end,
+		keys = {
+			{ "<C-j>", "<Cmd>MultipleCursorsAddDown<CR>", mode = { "n", "x" }, desc = "Add cursor and move down" },
+			{ "<C-k>", "<Cmd>MultipleCursorsAddUp<CR>", mode = { "n", "x" }, desc = "Add cursor and move up" },
+		},
+	},
 }, {
 	defaults = { lazy = true },
 	performance = {

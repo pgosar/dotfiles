@@ -49,8 +49,10 @@ end
 
 -- Trouble
 if enabled(group, "trouble") then
-	map("n", "<leader>tf", "<CMD>TroubleToggle document_diagnostics<CR>")
-	map("n", "<leader>tt", "<CMD>TroubleToggle todo<CR>")
+	map("n", "<leader>tf", "<CMD>Trouble toggle diagnostics<CR>")
+	map("n", "<leader>tt", "<CMD>Trouble toggle todo<CR>")
+	map("n", "<leader>ts", "<CMD>Trouble toggle symbols<CR>")
+	map("n", "<leader>tl", "<CMD>Trouble toggle lsp<CR>")
 end
 
 -- UFO
@@ -105,7 +107,6 @@ if enabled(group, "telescope") then
 	map("n", "<leader>fg", "<CMD>Telescope live_grep<CR>")
 	map("n", "<leader>fb", "<CMD>Telescope buffers<CR>")
 	map("n", "<leader>fh", "<CMD>Telescope help_tags<CR>")
-	map("n", "<leader>fa", "<CMD>Telescope aerial<CR>")
 	map("n", "<leader>fp", "<CMD>Telescope projects<CR>")
 end
 
@@ -127,7 +128,6 @@ if enabled(group, "lsp_zero") then
 	map("n", "gD", "<CMD>lua buf.declaration()<CR>")
 	map("n", "gd", "<CMD>lua buf.definition()<CR>")
 	map("n", "gi", "<CMD>lua buf.implementation()<CR>")
-	map("n", "gr", "<CMD>Telescope lsp_references<CR>")
 	map("n", "sh", "<CMD>lua buf.signature_help()<CR>")
 	map("n", "<leader>rn", "<CMD>lua buf.rename()<CR>")
 	map("n", "<leader>ca", "<CMD>lua buf.code_action()<CR>")
