@@ -90,7 +90,6 @@ M.formatting_servers = {
 }
 
 M.enable_plugins = {
-	aerial = true,
 	align = true,
 	alpha = true,
 	asyncrun = true,
@@ -127,6 +126,7 @@ M.enable_plugins = {
 	ufo = true,
 	project = true,
 	rainbow = true,
+	rustacean = true,
 	scope = true,
 	telescope = true,
 	todo_comments = true,
@@ -141,8 +141,6 @@ M.autocommands = {
 	trailing_whitespace = true,
 	remember_file_state = true,
 	session_saved_notification = true,
-	css_colorizer = true,
-	cmp = true,
 	trouble = true,
 	term_spelling = true,
 }

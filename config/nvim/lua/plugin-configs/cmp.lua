@@ -1,10 +1,16 @@
+---@diagnostic disable: undefined-field
 local cmp = require("cmp")
+require("cmp.")
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 local has_words_before = require("core.utils.utils").has_words_before
 local neogen = require("neogen")
 cmp.setup({
 	enabled = function()
+		-- disables in certain filetypes
+		if vim.bo.filetype == "text" or vim.bo.filetype == "gitrebase" or vim.bo.filetype == "gitcommit" then
+			return false
+		end
 		-- disables in comments
 		-- TODO: neogen references in this file are contingent on the issue resolved (see neogen
 		-- config)

@@ -3,7 +3,6 @@ local cmd = vim.api.nvim_create_autocmd
 
 local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.autocommands or {}
-local plugin = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 local enabled = require("core.utils.utils").enabled
 
 -- Removes any trailing whitespace when saving a file
@@ -43,31 +42,6 @@ if enabled(group, "session_saved_notification") then
 	})
 end
 
--- enables coloring hexcodes and color names in css, jsx, etc.
-if enabled(group, "css_colorizer") and enabled(plugin, "colorizer") then
-	cmd({ "Filetype" }, {
-		desc = "activate colorizer",
-		pattern = "css,scss,html,xml,svg,js,jsx,ts,tsx,php,vue",
-		group = augroup("colorizer", { clear = true }),
-		callback = function()
-			require("colorizer").attach_to_buffer(0, {
-				mode = "background",
-				css = true,
-			})
-		end,
-	})
-end
-
--- disables autocomplete in some filetypes
-if enabled(group, "cmp") and enabled(plugin, "cmp") then
-	cmd({ "FileType" }, {
-		desc = "disable cmp in certain filetypes",
-		pattern = "gitcommit,gitrebase,text",
-		group = augroup("cmp_disable", { clear = true }),
-		command = "lua require('cmp').setup.buffer { enabled = false}",
-	})
-end
-
 -- fixes Trouble not closing when last window in tab
 if enabled(group, "trouble") then
 	cmd("BufEnter", {
@@ -77,7 +51,7 @@ if enabled(group, "trouble") then
 			local layout = vim.api.nvim_call_function("winlayout", {})
 			if
 				layout[1] == "leaf"
-				and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "Trouble"
+				and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "trouble"
 				and layout[3] == nil
 			then
 				vim.cmd("confirm quit")
