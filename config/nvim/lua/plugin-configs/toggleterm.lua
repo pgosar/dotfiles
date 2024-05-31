@@ -1,9 +1,9 @@
 require("toggleterm").setup({
 	open_mapping = [[<c-t>]],
-	on_open = function(_term)
+	on_open = function(_)
 		vim.cmd("startinsert!")
 	end,
-	on_close = function(_term)
+	on_close = function(_)
 		vim.cmd("startinsert!")
 	end,
 	size = 25,

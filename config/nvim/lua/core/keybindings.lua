@@ -68,13 +68,7 @@ end
 
 -- NeoTree
 if enabled(group, "neotree") then
-	map("n", "<leader>nt", "<CMD>Neotree reveal left<CR>")
-	map("n", "<leader>nf", "<CMD>Neotree reveal float<CR>")
-end
-
--- Aerial
-if enabled(group, "aerial") then
-	map("n", "<leader>at", "<CMD>AerialToggle<CR>")
+	map("n", "<leader>nt", "<CMD>Neotree float reveal toggle<CR>")
 end
 
 -- Searching and Highlighting
@@ -170,26 +164,12 @@ end
 if enabled(group, "gitsigns") then
 	M.gitsigns = function()
 		local gs = package.loaded.gitsigns
-		-- travel between hunks, backwards and forwards
-		map("n", "]c", function()
-			if vim.wo.diff then
-				return "]c"
-			end
-			vim.schedule(function()
-				gs.next_hunk()
-			end)
-			return "<Ignore>"
-		end, { expr = true, desc = "go to previous git hunk" })
-		map("n", "[c", function()
-			if vim.wo.diff then
-				return "[c"
-			end
-			vim.schedule(function()
-				gs.prev_hunk()
-			end)
-			return "<Ignore>"
-		end, { expr = true, desc = "go to next git hunk" })
-
+		map("n", "]h", function()
+			gs.nav_hunk("next")
+		end, { desc = "next hunk" })
+		map("n", "[h", function()
+			gs.nav_hunk("prev")
+		end, { desc = "prev hunk" })
 		map("n", "<leader>hs", gs.stage_hunk, { desc = "stage hunk" })
 		map("n", "<leader>hr", gs.reset_hunk, { desc = "reset hunk" })
 		map("n", "<leader>hS", gs.stage_buffer, { desc = "stage buffer" })

@@ -15,8 +15,8 @@ end
 --- create keybindings
 ---@param mode string | table: modes that the keybind is active in
 ---@param lhs string: the key presses needed
----@param rhs string: the action
----@param opts table: options for the keybind
+---@param rhs string | function: the action
+---@param opts table?: options for the keybind
 M.map = function(mode, lhs, rhs, opts)
 	local options = { noremap = true, silent = true }
 	if opts then
