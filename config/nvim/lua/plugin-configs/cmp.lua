@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-field
 local cmp = require("cmp")
-require("cmp.")
+require("cmp")
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 local has_words_before = require("core.utils.utils").has_words_before
