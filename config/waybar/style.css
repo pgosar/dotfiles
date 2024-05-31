@@ -57,7 +57,6 @@ window#waybar {
 #pulseaudio,
 #tray,
 #custom-spotify,
-#custom-spotify,
 #custom-weather {
   padding: 0px 5px;
   border-style: solid;
@@ -67,6 +66,7 @@ window#waybar {
 }
 
 #custom-spotify {
+  margin-left: 10px;
   color: @sky;
 }
 
