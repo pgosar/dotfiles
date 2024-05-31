@@ -377,7 +377,9 @@ require("lazy").setup({
 		"folke/trouble.nvim",
 		cond = enabled(group, "trouble"),
 		cmd = "Trouble",
-		opts = {},
+		config = function()
+			require("plugin-configs.trouble")
+		end,
 	},
 	{
 		"folke/twilight.nvim",
