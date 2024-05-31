@@ -86,9 +86,26 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"3rd/image.nvim",
+		dependencies = {
+			{
+				"vhyrro/luarocks.nvim",
+				priority = 1001, -- this plugin needs to run before anything else
+				opts = {
+					rocks = { "magick" },
+				},
+			},
+		},
+		lazy = false,
+		opts = {},
+	},
+	{
 		"HakonHarnes/img-clip.nvim",
 		cond = enabled(group, "img_clip"),
 		event = "BufEnter",
+		config = function()
+			require("plugin-configs.img-clip")
+		end,
 	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
@@ -125,6 +142,7 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = true,
 	},
+	{ "jbyuki/nabla.nvim", ft = { "markdown" } },
 	{
 		"folke/neodev.nvim",
 		cond = enabled(group, "neodev"),
@@ -379,14 +397,6 @@ require("lazy").setup({
 		cmd = "Trouble",
 		config = function()
 			require("plugin-configs.trouble")
-		end,
-	},
-	{
-		"folke/twilight.nvim",
-		cond = enabled(group, "twilight"),
-		cmd = { "Twilight", "TwilightEnable", "TwilightDisable" },
-		config = function()
-			require("plugin-configs.twilight")
 		end,
 	},
 	{
