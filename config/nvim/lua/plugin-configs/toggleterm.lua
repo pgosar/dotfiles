@@ -7,6 +7,7 @@ require("toggleterm").setup({
 		vim.cmd("startinsert!")
 	end,
 	size = 25,
+	shade_terminals = false,
 	direction = "horizontal",
 	float_opts = {
 		border = "curved",

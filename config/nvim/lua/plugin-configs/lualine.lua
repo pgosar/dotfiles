@@ -30,6 +30,7 @@ end
 -- Config
 local config = {
 	options = {
+		theme = "catppuccin",
 		component_separators = "",
 		section_separators = "",
 		always_divide_middle = false,

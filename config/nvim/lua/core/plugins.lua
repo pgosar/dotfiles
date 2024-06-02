@@ -37,6 +37,8 @@ require("lazy").setup({
 	},
 	{
 		"catppuccin/nvim",
+		lazy = false,
+		priority = 1000,
 		cond = enabled(group, "catppuccin"),
 		config = function()
 			require("plugin-configs.catppuccin")
@@ -316,13 +318,13 @@ require("lazy").setup({
 			{ "nvim-treesitter/nvim-treesitter-textobjects" },
 			{ "HiPhish/rainbow-delimiters.nvim", cond = enabled(group, "rainbow") },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
+			{
+				"windwp/nvim-ts-autotag",
+				cond = enabled(group, "autotag"),
+				event = { "BufReadPre", "BufNewFile" },
+				config = true,
+			},
 		},
-	},
-	{
-		"windwp/nvim-ts-autotag",
-		cond = enabled(group, "autotag"),
-		event = { "BufReadPre", "BufNewFile" },
-		config = true,
 	},
 	{
 		"kevinhwang91/nvim-ufo",

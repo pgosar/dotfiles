@@ -10,6 +10,7 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
+
 for _, source in ipairs({
 	"core.main-options",
 	"core.plugins",
@@ -64,4 +65,3 @@ vim.diagnostic.config({
 -- TODO:
 -- mini surround ai and maybe move
 -- on large files disable features like highlighting and some plugins
--- dim inactive not functional
