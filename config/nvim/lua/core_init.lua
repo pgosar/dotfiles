@@ -63,5 +63,4 @@ vim.diagnostic.config({
 })
 
 -- TODO:
--- mini surround ai and maybe move
 -- on large files disable features like highlighting and some plugins

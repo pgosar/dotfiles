@@ -121,10 +121,6 @@ if enabled(group, "telescope") then
 	map("n", "<leader>fp", "<CMD>Telescope projects<CR>")
 end
 
--- Move lines and blocks
-map("x", "<A-j>", ":m '>+1<CR>gv=gv")
-map("x", "<A-k>", ":m '<-2<CR>gv=gv")
-
 -- Notify
 if enabled(group, "notify") then
 	map("n", "<ESC>", "<CMD>lua require('notify').dismiss()<CR>")

@@ -73,7 +73,7 @@ require("lazy").setup({
 	{
 		"lewis6991/gitsigns.nvim",
 		cond = enabled(group, "gitsigns"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.gitsigns")
 		end,
@@ -81,7 +81,7 @@ require("lazy").setup({
 	{
 		"smoka7/hop.nvim",
 		cond = enabled(group, "hop"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.hop")
 		end,
@@ -98,13 +98,13 @@ require("lazy").setup({
 				},
 			},
 		},
-		lazy = false,
+		ft = "markdown",
 		opts = {},
 	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		cond = enabled(group, "indent_blankline"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		main = "ibl",
 		config = true,
 	},
@@ -136,6 +136,14 @@ require("lazy").setup({
 		cond = enabled(group, "align"),
 		event = "VeryLazy",
 		config = true,
+	},
+	{
+		"echasnovski/mini.move",
+		cond = enabled(group, "move"),
+		event = "VeryLazy",
+		config = function()
+			require("mini.move").setup()
+		end,
 	},
 	{
 		"jbyuki/nabla.nvim",
@@ -303,7 +311,7 @@ require("lazy").setup({
 	{
 		"kylechui/nvim-surround",
 		cond = enabled(group, "surround"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = true,
 	},
 	{
@@ -315,7 +323,12 @@ require("lazy").setup({
 			require("plugin-configs.treesitter")
 		end,
 		dependencies = {
-			{ "nvim-treesitter/nvim-treesitter-textobjects" },
+			{
+				"echasnovski/mini.ai",
+				config = function()
+					require("mini.ai").setup()
+				end,
+			},
 			{ "HiPhish/rainbow-delimiters.nvim", cond = enabled(group, "rainbow") },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
 			{
@@ -329,7 +342,7 @@ require("lazy").setup({
 	{
 		"kevinhwang91/nvim-ufo",
 		cond = enabled(group, "ufo"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		dependencies = "kevinhwang91/promise-async",
 		config = true,
 	},
@@ -344,7 +357,7 @@ require("lazy").setup({
 	{ "nvim-lua/plenary.nvim" },
 	{
 		"jedrzejboczar/possession.nvim",
-		cond = enabled(group, "session_manager"),
+		cond = enabled(group, "possession"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.possession")
@@ -353,7 +366,7 @@ require("lazy").setup({
 	{
 		"ahmedkhalf/project.nvim",
 		cond = enabled(group, "project"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = function()
 			require("project_nvim").setup()
 		end,
@@ -367,7 +380,7 @@ require("lazy").setup({
 	{
 		"tiagovla/scope.nvim",
 		cond = enabled(group, "scope"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.scope")
 		end,
