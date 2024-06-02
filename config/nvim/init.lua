@@ -1,1 +1,51 @@
 require("core_init")
+-- minimal reproduce
+-- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+-- if not vim.loop.fs_stat(lazypath) then
+-- 	vim.fn.system({
+-- 		"git",
+-- 		"clone",
+-- 		"--filter=blob:none",
+-- 		"https://github.com/folke/lazy.nvim.git",
+-- 		"--branch=stable", -- latest stable release
+-- 		lazypath,
+-- 	})
+-- end
+-- vim.opt.rtp:prepend(lazypath)
+--
+-- require("lazy").setup({
+-- 	{
+-- 		"catppuccin/nvim",
+-- 		lazy = false,
+-- 		priority = 1000,
+-- 		config = function()
+-- 			require("catppuccin").setup({
+-- 				integrations = {
+-- 					notify = true,
+-- 					alpha = true,
+-- 					lsp_trouble = true,
+-- 					dropbar = {
+-- 						enabled = true,
+-- 						color_mode = true,
+-- 					},
+-- 					hop = true,
+-- 					mason = true,
+-- 					noice = true,
+-- 					which_key = true,
+-- 					neotest = true,
+-- 				},
+-- 				dim_inactive = { enabled = true, percentage = 0.5 },
+-- 				flavour = "mocha",
+-- 				color_overrides = {
+-- 					mocha = {
+-- 						base = "#252525",
+-- 						mantle = "#252525",
+-- 						crust = "#252525",
+-- 					},
+-- 				},
+-- 			})
+-- 		end,
+-- 	},
+-- })
+
+vim.cmd.colorscheme("catppuccin")
