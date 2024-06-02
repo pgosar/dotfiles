@@ -44,9 +44,12 @@ end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 if enabled(group, "treesitter") then
 	local get_option = vim.filetype.get_option
 	vim.filetype.get_option = function(filetype, option)
-		-- TODO: make this a pcall
-		return option == "commentstring" and require("ts_context_commentstring.internal").calculate_commentstring()
-			or get_option(filetype, option)
+		local ok, ts_context_commentstring_internal = pcall(require, "ts_context_commentstring.internal")
+		if ok and option == "commentstring" then
+			return ts_context_commentstring_internal.calculate_commentstring()
+		else
+			return get_option(filetype, option)
+		end
 	end
 end
 
