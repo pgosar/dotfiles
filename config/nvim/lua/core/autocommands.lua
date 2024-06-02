@@ -32,34 +32,6 @@ if enabled(group, "remember_file_state") then
 	})
 end
 
--- gives you a notification upon saving a session
-if enabled(group, "session_saved_notification") then
-	cmd({ "User" }, {
-		desc = "notify session saved",
-		group = augroup("session save", { clear = true }),
-		pattern = "SessionSavePost",
-		command = "lua vim.notify('Session Saved', 'info')",
-	})
-end
-
--- fixes Trouble not closing when last window in tab
-if enabled(group, "trouble") then
-	cmd("BufEnter", {
-		desc = "close trouble when last window in tab",
-		group = vim.api.nvim_create_augroup("TroubleClose", { clear = true }),
-		callback = function()
-			local layout = vim.api.nvim_call_function("winlayout", {})
-			if
-				layout[1] == "leaf"
-				and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "trouble"
-				and layout[3] == nil
-			then
-				vim.cmd("confirm quit")
-			end
-		end,
-	})
-end
-
 -- no spellcheck in terminal buffers
 if enabled(group, "term_spelling") then
 	cmd({ "TermOpen" }, {
@@ -67,5 +39,19 @@ if enabled(group, "term_spelling") then
 		group = augroup("disable_spell", { clear = true }),
 		pattern = "*",
 		command = "setlocal nospell",
+	})
+end
+
+if enabled(group, "session_save") then
+	vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+		callback = function()
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				-- Don't save while there's any 'nofile' buffer open.
+				if vim.api.nvim_get_option_value("buftype", { buf = buf }) == "nofile" then
+					return
+				end
+			end
+			require("session_manager").save_current_session()
+		end,
 	})
 end

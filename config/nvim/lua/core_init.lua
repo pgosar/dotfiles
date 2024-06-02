@@ -63,9 +63,5 @@ vim.diagnostic.config({
 
 -- TODO:
 -- mini surround ai and maybe move
--- setup autosave on session plugin
--- add nabla keybind to K only when inside latex in markdown?
---
-if require("lazy.core.config").plugins["neoscroll.nvim"]._.loaded then
-	vim.notify("Trouble loaded")
-end
+-- on large files disable features like highlighting and some plugins
+-- dim inactive not functional

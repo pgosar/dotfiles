@@ -28,7 +28,7 @@ vim_opts({
 		numberwidth = 6,   -- Width of number column
     pumheight = 10,    -- Auto-complete menu max height
 		scrolloff = 5,     -- Lines above/below cursor
-		sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions", -- Session options
+		sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos,terminal,localoptions", -- Session options
 		shiftwidth = 2,    -- Spaces per indent
 		showbreak = "=>>", -- Wrapped line prefix
 		showmode = false,  -- Hide mode in command line

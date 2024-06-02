@@ -114,7 +114,7 @@ map("c", "<C-n>", "<Down>")
 
 -- Telescope
 if enabled(group, "telescope") then
-	map("n", "<leader>ff", "<CMD>Telescope git_files hidden=true<CR>", { desc = "Telescope Find Files" })
+	map("n", "<leader>ff", "<CMD>Telescope find_files hidden=true<CR>", { desc = "Telescope Find Files" })
 	map("n", "<leader>fg", "<CMD>Telescope live_grep<CR>")
 	map("n", "<leader>fb", "<CMD>Telescope buffers<CR>")
 	map("n", "<leader>fh", "<CMD>Telescope help_tags<CR>")
@@ -139,16 +139,10 @@ if enabled(group, "lsp_zero") then
 	map("n", "gD", "<CMD>lua buf.declaration()<CR>")
 	map("n", "gd", "<CMD>lua buf.definition()<CR>")
 	map("n", "gi", "<CMD>lua buf.implementation()<CR>")
-	map("n", "sh", "<CMD>lua buf.signature_help()<CR>")
+	map("i", "<C-k>", "<CMD>lua buf.signature_help()<CR>")
 	map("n", "<leader>rn", "<CMD>lua buf.rename()<CR>")
 	map("n", "<leader>ca", "<CMD>lua buf.code_action()<CR>")
-	map("n", "<C-k>", "<CMD>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>")
-end
-
--- Session
-if enabled(group, "session_manager") then
-	map("n", "<leader>ss", "<CMD>SessionManager save_current_session<CR>")
-	map("n", "<leader>o", "<CMD>SessionManager load_session<CR>")
+	map("n", "<C-h>", "<CMD>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>")
 end
 
 -- ToggleTerm

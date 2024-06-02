@@ -142,8 +142,7 @@ M.enable_plugins = {
 M.autocommands = {
 	trailing_whitespace = true,
 	remember_file_state = true,
-	session_saved_notification = true,
-	trouble = true,
+	session_save = true,
 	term_spelling = true,
 }
 

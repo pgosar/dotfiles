@@ -173,17 +173,9 @@ require("lazy").setup({
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 	{
-		"Shatur/neovim-session-manager",
-		cond = enabled(group, "session_manager"),
-		event = "VimEnter",
-		config = function()
-			require("plugin-configs.session")
-		end,
-	},
-	{
 		"folke/noice.nvim",
 		cond = enabled(group, "noice"),
-		event = "VimEnter",
+		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.noice")
 		end,
@@ -339,7 +331,23 @@ require("lazy").setup({
 		dependencies = "kevinhwang91/promise-async",
 		config = true,
 	},
+	{
+		"epwalsh/obsidian.nvim",
+		cond = enabled(group, "obsidian"),
+		ft = "markdown",
+		config = function()
+			require("plugin-configs.obsidian")
+		end,
+	},
 	{ "nvim-lua/plenary.nvim" },
+	{
+		"jedrzejboczar/possession.nvim",
+		cond = enabled(group, "session_manager"),
+		event = "VeryLazy",
+		config = function()
+			require("plugin-configs.possession")
+		end,
+	},
 	{
 		"ahmedkhalf/project.nvim",
 		cond = enabled(group, "project"),
@@ -423,14 +431,6 @@ require("lazy").setup({
 		"brenton-leighton/multiple-cursors.nvim",
 		opts = {}, -- This causes the plugin setup function to be called
 		event = "VeryLazy",
-	},
-	{
-		"epwalsh/obsidian.nvim",
-		cond = enabled(group, "obsidian"),
-		ft = "markdown",
-		config = function()
-			require("plugin-configs.obsidian")
-		end,
 	},
 }, {
 	defaults = { lazy = true },

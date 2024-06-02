@@ -4,7 +4,7 @@ require("catppuccin").setup({
 		alpha = true,
 		lsp_trouble = true,
 	},
-	dim_inactive = { enabled = true },
+	dim_inactive = { enabled = true, percentage = 0.5 },
 	flavour = "mocha",
 	color_overrides = {
 		mocha = {
