@@ -118,4 +118,13 @@ M.enabled = function(group, opt)
 	return group == nil or group[opt] == nil or group[opt] == true
 end
 
+--- whether the currently opening file is very big or not
+---@param buf integer: the current buffer to check
+---@return boolean is_big: if the file is above 100KB
+M.large_file = function(buf)
+	local max_filesize = 100 * 1024 -- 100 KB
+	local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+	return ok and stats ~= nil and stats.size > max_filesize
+end
+
 return M

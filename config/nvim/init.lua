@@ -47,5 +47,4 @@ require("core_init")
 -- 		end,
 -- 	},
 -- })
-
-vim.cmd.colorscheme("catppuccin")
+-- vim.cmd.colorscheme("catppuccin")

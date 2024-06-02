@@ -238,9 +238,10 @@ require("lazy").setup({
 		},
 	},
 	{
-		"NvChad/nvim-colorizer.lua",
+		"brenoprata10/nvim-highlight-colors",
 		cond = enabled(group, "colorizer"),
 		ft = { "css", "scss", "html", "xml", "svg", "js", "jsx", "ts", "tsx", "php", "vue" },
+		opts = {},
 	},
 	{
 		"mfussenegger/nvim-dap",

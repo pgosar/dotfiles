@@ -4,7 +4,6 @@ vim.opt.shortmess:append("sIW")
 -- stylua: ignore
 vim_opts({
 	opt = {
-		autochdir = true,                        -- Change working dir to the file's dir
     autowrite = true,                        -- Auto save before commands
     clipboard = "unnamedplus",               -- Use system clipboard
     colorcolumn = "100",                     -- Highlight column 100

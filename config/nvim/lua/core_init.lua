@@ -10,7 +10,7 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-
+local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current_buf())
 for _, source in ipairs({
 	"core.main-options",
 	"core.plugins",
@@ -19,9 +19,11 @@ for _, source in ipairs({
 	"core.utils.notify",
 	"core.autocommands",
 }) do
-	local status_ok, fault = pcall(require, source)
-	if not status_ok then
-		vim.api.nvim_err_writeln("Failed to load " .. source .. "\n\n" .. fault)
+	if not big_file then
+		local status_ok, fault = pcall(require, source)
+		if not status_ok then
+			vim.api.nvim_err_writeln("Failed to load " .. source .. "\n\n" .. fault)
+		end
 	end
 end
 
@@ -30,7 +32,7 @@ local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 
 if enabled(group, "notify") then
-	vim.notify = require("notify")
+	vim.notify = pcall(require, "notify")
 end
 
 -- update function
@@ -42,6 +44,7 @@ end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 if enabled(group, "treesitter") then
 	local get_option = vim.filetype.get_option
 	vim.filetype.get_option = function(filetype, option)
+		-- TODO: make this a pcall
 		return option == "commentstring" and require("ts_context_commentstring.internal").calculate_commentstring()
 			or get_option(filetype, option)
 	end
@@ -62,5 +65,18 @@ vim.diagnostic.config({
 	update_in_insert = false,
 })
 
--- TODO:
--- on large files disable features like highlighting and some plugins
+-- set essential options if file is very big
+if big_file then
+	local vim_opts = require("core.utils.utils").vim_opts
+	vim_opts({
+		opt = {
+			clipboard = "unnamedplus",
+			cursorline = true,
+			cursorlineopt = "number",
+			ignorecase = true,
+			laststatus = 3,
+			number = true,
+			scrolloff = 5,
+		},
+	})
+end
