@@ -7,23 +7,40 @@ local enabled = require("core.utils.utils").enabled
 vim.g.mapleader = " " -- the leader key is the spacebar
 local M = {}
 
+-- Nabla
+if enabled(group, "nabla") then
+	vim.schedule(function()
+		-- vim.bo.filetype isn't available in time :(
+		if vim.bo.filetype == "markdown" then
+			map("n", "K", "<CMD>lua require('nabla').popup()<CR>")
+		end
+	end)
+end
+
 -- Neogen
 if enabled(group, "neogen") then
 	map("n", "<Leader>fd", "<CMD>Neogen<CR>", { desc = "Generate Docs" })
 end
 
--- Image Pasting
-if enabled(group, "img_paste") then
-	map("n", "<leader>p", "<CMD>PasteImage<CR>", { desc = "Paste clipboard image" })
+-- Obsidian
+if enabled(group, "obsidian") then
+	map("n", "<leader>p", "<CMD>ObsidianPasteImg<CR>", { desc = "Paste clipboard image" })
+	map("v", "<leader>ol", "<CMD>ObsidianLink<CR>")
+	map("v", "<leader>oln", "<CMD>ObsidianLinkNew<CR>")
+	map("n", "<leader>on", "<CMD>ObsidianNew<CR>")
+	map("n", "<C-CR>", "<CMD>ObsidianFollowLink<CR>")
 end
 
 -- Multicursor
 if enabled(group, "multicursor") then
-	vim.g.VM_default_mappings = false
-	vim.g.VM_maps = {
-		["Add Cursor Above"] = "<A-k>",
-		["Add Cursor Down"] = "<A-j>",
-	}
+	-- TODO remove if issue gets addressed (see plugins todo)
+	-- vim.g.VM_default_mappings = false
+	-- vim.g.VM_maps = {
+	-- 	["Add Cursor Above"] = "<A-k>",
+	-- 	["Add Cursor Down"] = "<A-j>",
+	-- }
+	map("n", "<C-j>", "<Cmd>MultipleCursorsAddDown<CR>")
+	map("n", "<C-k>", "<Cmd>MultipleCursorsAddUp<CR>")
 end
 
 -- Dropbar

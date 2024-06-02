@@ -78,7 +78,6 @@ require("lazy").setup({
 	},
 	{
 		"smoka7/hop.nvim",
-		version = "*",
 		cond = enabled(group, "hop"),
 		event = "VimEnter",
 		config = function()
@@ -87,6 +86,7 @@ require("lazy").setup({
 	},
 	{
 		"3rd/image.nvim",
+		cond = enabled(group, "image"),
 		dependencies = {
 			{
 				"vhyrro/luarocks.nvim",
@@ -98,14 +98,6 @@ require("lazy").setup({
 		},
 		lazy = false,
 		opts = {},
-	},
-	{
-		"HakonHarnes/img-clip.nvim",
-		cond = enabled(group, "img_clip"),
-		event = "BufEnter",
-		config = function()
-			require("plugin-configs.img-clip")
-		end,
 	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
@@ -130,7 +122,8 @@ require("lazy").setup({
 	},
 	{
 		"MeanderingProgrammer/markdown.nvim",
-		name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
+		cond = enabled(group, "markdown_render"),
+		name = "render-markdown",
 		ft = "markdown",
 		config = function()
 			require("render-markdown").setup({})
@@ -142,14 +135,16 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = true,
 	},
-	{ "jbyuki/nabla.nvim", ft = { "markdown" } },
 	{
-		"folke/neodev.nvim",
-		cond = enabled(group, "neodev"),
-		event = { "BufReadPre", "BufNewFile" },
-		config = function()
-			require("plugin-configs.neodev")
-		end,
+		"jbyuki/nabla.nvim",
+		cond = enabled(group, "nabla"),
+		ft = { "markdown" },
+	},
+	{
+		"folke/lazydev.nvim",
+		cond = enabled(group, "align"),
+		ft = "lua",
+		opts = {},
 	},
 	{
 		"danymat/neogen",
@@ -296,7 +291,7 @@ require("lazy").setup({
 	},
 	{
 		"neovim/nvim-lspconfig",
-		event = "VimEnter",
+		event = { "BufReadPre", "BufNewFile" },
 		cmd = { "LspInfo", "LspInstall", "LspStart" },
 		config = function()
 			require("plugin-configs.lsp")
@@ -321,7 +316,7 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter",
 		cond = enabled(group, "treesitter"),
 		build = ":TSUpdate",
-		event = { "BufReadPost", "BufNewFile" },
+		lazy = false,
 		config = function()
 			require("plugin-configs.treesitter")
 		end,
@@ -381,8 +376,12 @@ require("lazy").setup({
 			require("plugin-configs.telescope")
 		end,
 	},
-
-	{ "folke/todo-comments.nvim", cond = enabled(group, "todo_comments"), event = "VeryLazy", opts = {} },
+	{
+		"folke/todo-comments.nvim",
+		cond = enabled(group, "todo_comments"),
+		event = "VeryLazy",
+		opts = {},
+	},
 	{
 		"akinsho/toggleterm.nvim",
 		cond = enabled(group, "toggleterm"),
@@ -422,18 +421,16 @@ require("lazy").setup({
 	-- },
 	{
 		"brenton-leighton/multiple-cursors.nvim",
-		version = "*", -- Use the latest tagged version
 		opts = {}, -- This causes the plugin setup function to be called
-		pre_hook = function()
-			require("cmp").setup({ enabled = false })
+		event = "VeryLazy",
+	},
+	{
+		"epwalsh/obsidian.nvim",
+		cond = enabled(group, "obsidian"),
+		ft = "markdown",
+		config = function()
+			require("plugin-configs.obsidian")
 		end,
-		post_hook = function()
-			require("cmp").setup({ enabled = true })
-		end,
-		keys = {
-			{ "<C-j>", "<Cmd>MultipleCursorsAddDown<CR>", mode = { "n", "x" }, desc = "Add cursor and move down" },
-			{ "<C-k>", "<Cmd>MultipleCursorsAddUp<CR>", mode = { "n", "x" }, desc = "Add cursor and move up" },
-		},
 	},
 }, {
 	defaults = { lazy = true },

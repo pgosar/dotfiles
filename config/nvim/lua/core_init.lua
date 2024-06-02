@@ -10,7 +10,6 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-
 for _, source in ipairs({
 	"core.main-options",
 	"core.plugins",
@@ -61,3 +60,12 @@ end
 vim.diagnostic.config({
 	update_in_insert = false,
 })
+
+-- TODO:
+-- mini surround ai and maybe move
+-- setup autosave on session plugin
+-- add nabla keybind to K only when inside latex in markdown?
+--
+if require("lazy.core.config").plugins["neoscroll.nvim"]._.loaded then
+	vim.notify("Trouble loaded")
+end
