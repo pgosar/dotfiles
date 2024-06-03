@@ -71,8 +71,6 @@ cmp.setup({
 				fallback()
 			end
 		end, { "i", "s", "c" }),
-		["<C-k>"] = cmp.mapping.scroll_docs(-4),
-		["<C-j>"] = cmp.mapping.scroll_docs(4),
 		["<C-c>"] = cmp.mapping.abort(),
 		["<C-n>"] = { i = cmp.mapping.complete() },
 	},

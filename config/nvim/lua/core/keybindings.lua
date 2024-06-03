@@ -4,7 +4,7 @@ local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 local enabled = require("core.utils.utils").enabled
 
-vim.g.mapleader = " " -- the leader key is the spacebar
+vim.g.mapleader = " " -- the leader key is the space bar
 local M = {}
 
 -- Nabla
@@ -198,7 +198,5 @@ if enabled(group, "gitsigns") then
 end
 
 -- cmp (these are defined in cmp's configuration file)
--- ["<C-j>"] = cmp.mapping.scroll_docs(-4),
--- ["<C-k"] = cmp.mapping.scroll_docs(4),
 -- ["<C-c>"] = cmp.mapping.abort(),
 return M

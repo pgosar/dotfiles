@@ -5,7 +5,7 @@ local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.autocommands or {}
 local enabled = require("core.utils.utils").enabled
 
--- Removes any trailing whitespace when saving a file
+-- Removes any trailing white space when saving a file
 if enabled(group, "trailing_whitespace") then
 	cmd({ "BufWritePre" }, {
 		desc = "remove trailing whitespace on save",
