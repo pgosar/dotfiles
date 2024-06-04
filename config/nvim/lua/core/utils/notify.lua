@@ -71,7 +71,7 @@ local function _rename()
 				str = table.concat(notif, "\n")
 			else
 				str = string.format("made %s", notif[1]:sub(4))
-				local iloc = str:find("in")
+				local iloc = str:find("in") or 1 -- avoid nil
 				str = table.concat({
 					str:sub(1, iloc - 1),
 					string.format("change%s ", (updates > 1 and "s") or ""),

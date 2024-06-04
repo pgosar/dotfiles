@@ -9,6 +9,7 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
+
 vim.opt.rtp:prepend(lazypath)
 local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current_buf())
 for _, source in ipairs({

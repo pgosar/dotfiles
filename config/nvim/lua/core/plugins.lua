@@ -364,6 +364,7 @@ require("lazy").setup({
 			require("plugin-configs.possession")
 		end,
 	},
+
 	{
 		"ahmedkhalf/project.nvim",
 		cond = enabled(group, "project"),
@@ -436,13 +437,7 @@ require("lazy").setup({
 			require("plugin-configs.zenmode")
 		end,
 	},
-	-- TODO: last vim script plugin for replacement
-	-- blocked: https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
-	-- {
-	-- 	"mg979/vim-visual-multi",
-	-- 	event = "VeryLazy",
-	-- 	cond = enabled(group, "multicursor"),
-	-- },
+	-- TODO: blocked - https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
 	{
 		"brenton-leighton/multiple-cursors.nvim",
 		opts = {}, -- This causes the plugin setup function to be called

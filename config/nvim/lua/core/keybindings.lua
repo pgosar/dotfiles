@@ -108,6 +108,13 @@ map("t", "<C-w>j", "<C-\\><C-n><C-w>j")
 map("t", "<C-w>k", "<C-\\><C-n><C-w>k")
 map("t", "<C-w>l", "<C-\\><C-n><C-w>l")
 
+-- Window resizing
+-- +/- keys with shift modifier
+map("n", "-", ":resize +2<CR>")
+map("n", "=", ":resize -2<CR>")
+map("n", "_", ":vertical resize -2<CR>")
+map("n", "+", ":vertical resize +2<CR>")
+
 -- Command mode
 map("c", "<C-p>", "<Up>")
 map("c", "<C-n>", "<Down>")
