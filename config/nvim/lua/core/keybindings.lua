@@ -126,6 +126,9 @@ if enabled(group, "telescope") then
 	map("n", "<leader>fb", "<CMD>Telescope buffers<CR>")
 	map("n", "<leader>fh", "<CMD>Telescope help_tags<CR>")
 	map("n", "<leader>fp", "<CMD>Telescope projects<CR>")
+	map({ "n", "x" }, "<leader>fr", function()
+		require("telescope").extensions.refactoring.refactors()
+	end)
 end
 
 -- Notify
