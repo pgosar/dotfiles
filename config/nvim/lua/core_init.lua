@@ -33,7 +33,7 @@ local exist, user_config = pcall(require, "user_config")
 local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
 
 if enabled(group, "notify") then
-	vim.notify = pcall(require, "notify")
+	_, vim.notify = pcall(require, "notify")
 end
 
 -- update function
@@ -84,5 +84,3 @@ if big_file then
 		},
 	})
 end
-
--- TODO: swap exists notify not found, test with opening core_init twice in separate terms
