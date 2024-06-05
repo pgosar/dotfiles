@@ -130,6 +130,7 @@ M.enable_plugins = {
 	ufo = true,
 	project = true,
 	rainbow = true,
+	refactor = true,
 	rustacean = true,
 	scope = true,
 	telescope = true,

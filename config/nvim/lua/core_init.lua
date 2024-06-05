@@ -84,3 +84,5 @@ if big_file then
 		},
 	})
 end
+
+-- TODO: swap exists notify not found, test with opening core_init twice in separate terms

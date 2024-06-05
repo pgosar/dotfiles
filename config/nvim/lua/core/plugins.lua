@@ -308,6 +308,7 @@ require("lazy").setup({
 		"rcarriga/nvim-notify",
 		cond = enabled(group, "notify"),
 		lazy = false,
+		opts = {},
 	},
 	{
 		"kylechui/nvim-surround",
@@ -371,6 +372,14 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = function()
 			require("project_nvim").setup()
+		end,
+	},
+	{
+		"ThePrimeagen/refactoring.nvim",
+		cond = enabled(group, "refactoring"),
+		event = "VeryLazy",
+		config = function()
+			require("refactoring").setup()
 		end,
 	},
 	{
