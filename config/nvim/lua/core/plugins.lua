@@ -438,14 +438,14 @@ require("lazy").setup({
 			require("plugin-configs.trouble")
 		end,
 	},
-  {
-    "RRethy/vim-illuminate",
-    cond = enabled(group, "illuminate"),
-    event = "VeryLazy",
-    config = function()
-      require("illuminate").configure()
-    end,
-  },
+	{
+		"RRethy/vim-illuminate",
+		cond = enabled(group, "illuminate"),
+		event = "VeryLazy",
+		config = function()
+			require("illuminate").configure()
+		end,
+	},
 	{
 		"folke/which-key.nvim",
 		cond = enabled(group, "whichkey"),

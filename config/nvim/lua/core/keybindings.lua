@@ -7,6 +7,11 @@ local enabled = require("core.utils.utils").enabled
 vim.g.mapleader = " " -- the leader key is the space bar
 local M = {}
 
+-- Bufferline
+if enabled(group, "bufferline") then
+	map("n", "gb", "<CMD>BufferLinePick<CR>", { desc = "pick buffer" })
+end
+
 -- Nabla
 if enabled(group, "nabla") then
 	vim.schedule(function()
@@ -124,7 +129,6 @@ if enabled(group, "telescope") then
 	map("n", "<leader>ff", "<CMD>Telescope find_files hidden=true<CR>", { desc = "Telescope Find Files" })
 	map("n", "<leader>fg", "<CMD>Telescope live_grep<CR>")
 	map("n", "<leader>fb", "<CMD>Telescope buffers<CR>")
-	map("n", "<leader>fh", "<CMD>Telescope help_tags<CR>")
 	map("n", "<leader>fp", "<CMD>Telescope projects<CR>")
 	map({ "n", "x" }, "<leader>fr", function()
 		require("telescope").extensions.refactoring.refactors()
