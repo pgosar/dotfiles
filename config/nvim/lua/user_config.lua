@@ -101,6 +101,7 @@ M.enable_plugins = {
 	dressing = true,
 	gitsigns = true,
 	hop = true,
+	illuminate = true,
 	image = true,
 	indent_blankline = true,
 	lsp_zero = true,

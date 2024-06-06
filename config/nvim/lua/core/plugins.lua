@@ -145,6 +145,12 @@ require("lazy").setup({
 			require("mini.move").setup()
 		end,
 	},
+	-- TODO: blocked - https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
+	{
+		"brenton-leighton/multiple-cursors.nvim",
+		opts = {}, -- This causes the plugin setup function to be called
+		event = "VeryLazy",
+	},
 	{
 		"jbyuki/nabla.nvim",
 		cond = enabled(group, "nabla"),
@@ -432,6 +438,14 @@ require("lazy").setup({
 			require("plugin-configs.trouble")
 		end,
 	},
+  {
+    "RRethy/vim-illuminate",
+    cond = enabled(group, "illuminate"),
+    event = "VeryLazy",
+    config = function()
+      require("illuminate").configure()
+    end,
+  },
 	{
 		"folke/which-key.nvim",
 		cond = enabled(group, "whichkey"),
@@ -445,12 +459,6 @@ require("lazy").setup({
 		config = function()
 			require("plugin-configs.zenmode")
 		end,
-	},
-	-- TODO: blocked - https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
-	{
-		"brenton-leighton/multiple-cursors.nvim",
-		opts = {}, -- This causes the plugin setup function to be called
-		event = "VeryLazy",
 	},
 }, {
 	defaults = { lazy = true },
