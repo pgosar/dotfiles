@@ -1,6 +1,3 @@
--- NOTE: unnecessary right now, but neotest will be a good addition whenever I actually need it
--- or need something to do
-
 local enabled = require("core.utils.utils").enabled
 
 local exist, user_config = pcall(require, "user_config")
@@ -170,6 +167,7 @@ require("lazy").setup({
 			require("plugin-configs.neogen")
 		end,
 	},
+	{ "nvim-neotest/neotest", cond = enabled(group, "neotest"), event = "VeryLazy", opts = {} },
 	{
 		"karb94/neoscroll.nvim",
 		cond = enabled(group, "neoscroll"),
