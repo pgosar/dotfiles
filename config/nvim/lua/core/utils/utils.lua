@@ -127,4 +127,12 @@ M.large_file = function(buf)
 	return ok and stats ~= nil and stats.size > max_filesize
 end
 
+local exist, user_config = pcall(require, "user_config")
+
+--- enabled plugins
+M.plugin_group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
+
+-- enabled autocommands
+M.autocmd_group = exist and type(user_config) == "table" and user_config.autocommands or {}
+
 return M

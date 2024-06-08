@@ -1,11 +1,9 @@
 local enabled = require("core.utils.utils").enabled
-
-local exist, user_config = pcall(require, "user_config")
-local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
+local plugin_group = require("core.utils.utils").plugin_group
 require("lazy").setup({
 	{
 		"goolord/alpha-nvim",
-		cond = enabled(group, "alpha"),
+		cond = enabled(plugin_group, "alpha"),
 		lazy = false,
 		config = function()
 			require("plugin-configs.alpha")
@@ -14,19 +12,19 @@ require("lazy").setup({
 	{
 		"skywind3000/asyncrun.vim",
 		event = "VeryLazy",
-		cond = enabled(group, "asyncrun"),
+		cond = enabled(plugin_group, "asyncrun"),
 	},
 	{
 		"okuuva/auto-save.nvim",
 		event = "VeryLazy",
-		cond = enabled(group, "autosave"),
+		cond = enabled(plugin_group, "autosave"),
 		config = function()
 			require("plugin-configs.autosave")
 		end,
 	},
 	{
 		"akinsho/bufferline.nvim",
-		cond = enabled(group, "bufferline"),
+		cond = enabled(plugin_group, "bufferline"),
 		lazy = false,
 		config = function()
 			require("plugin-configs.bufferline")
@@ -36,7 +34,7 @@ require("lazy").setup({
 		"catppuccin/nvim",
 		lazy = false,
 		priority = 1000,
-		cond = enabled(group, "catppuccin"),
+		cond = enabled(plugin_group, "catppuccin"),
 		config = function()
 			require("plugin-configs.catppuccin")
 		end,
@@ -44,7 +42,7 @@ require("lazy").setup({
 	{
 		"zbirenbaum/copilot.lua",
 		cmd = "Copilot",
-		cond = enabled(group, "cmp") and enabled(group, "copilot"),
+		cond = enabled(plugin_group, "cmp") and enabled(plugin_group, "copilot"),
 		event = "InsertEnter",
 		config = function()
 			require("plugin-configs.copilot")
@@ -56,7 +54,7 @@ require("lazy").setup({
 	},
 	{
 		"stevearc/dressing.nvim",
-		cond = enabled(group, "dressing"),
+		cond = enabled(plugin_group, "dressing"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.dressing")
@@ -65,11 +63,11 @@ require("lazy").setup({
 	{
 		"Bekaboo/dropbar.nvim",
 		lazy = false, -- done by default
-		cond = enabled(group, "dropbar"),
+		cond = enabled(plugin_group, "dropbar"),
 	},
 	{
 		"lewis6991/gitsigns.nvim",
-		cond = enabled(group, "gitsigns"),
+		cond = enabled(plugin_group, "gitsigns"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.gitsigns")
@@ -77,7 +75,7 @@ require("lazy").setup({
 	},
 	{
 		"smoka7/hop.nvim",
-		cond = enabled(group, "hop"),
+		cond = enabled(plugin_group, "hop"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.hop")
@@ -85,7 +83,7 @@ require("lazy").setup({
 	},
 	{
 		"3rd/image.nvim",
-		cond = enabled(group, "image"),
+		cond = enabled(plugin_group, "image"),
 		dependencies = {
 			{
 				"vhyrro/luarocks.nvim",
@@ -100,7 +98,7 @@ require("lazy").setup({
 	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
-		cond = enabled(group, "indent_blankline"),
+		cond = enabled(plugin_group, "indent_blankline"),
 		event = "VeryLazy",
 		main = "ibl",
 		config = true,
@@ -108,7 +106,7 @@ require("lazy").setup({
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
-		cond = enabled(group, "lualine"),
+		cond = enabled(plugin_group, "lualine"),
 		config = function()
 			require("plugin-configs.lualine")
 		end,
@@ -116,12 +114,12 @@ require("lazy").setup({
 	{
 		"tadmccorkle/markdown.nvim",
 		ft = "markdown",
-		cond = enabled(group, "markdown"),
+		cond = enabled(plugin_group, "markdown"),
 		opts = {},
 	},
 	{
 		"MeanderingProgrammer/markdown.nvim",
-		cond = enabled(group, "markdown_render"),
+		cond = enabled(plugin_group, "markdown_render"),
 		name = "render-markdown",
 		ft = "markdown",
 		config = function()
@@ -130,13 +128,13 @@ require("lazy").setup({
 	},
 	{
 		"echasnovski/mini.align",
-		cond = enabled(group, "align"),
+		cond = enabled(plugin_group, "align"),
 		event = "VeryLazy",
 		config = true,
 	},
 	{
 		"echasnovski/mini.move",
-		cond = enabled(group, "move"),
+		cond = enabled(plugin_group, "move"),
 		event = "VeryLazy",
 		config = function()
 			require("mini.move").setup()
@@ -150,27 +148,27 @@ require("lazy").setup({
 	},
 	{
 		"jbyuki/nabla.nvim",
-		cond = enabled(group, "nabla"),
+		cond = enabled(plugin_group, "nabla"),
 		ft = { "markdown" },
 	},
 	{
 		"folke/lazydev.nvim",
-		cond = enabled(group, "align"),
+		cond = enabled(plugin_group, "align"),
 		ft = "lua",
 		opts = {},
 	},
 	{
 		"danymat/neogen",
-		cond = enabled(group, "neogen"),
+		cond = enabled(plugin_group, "neogen"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.neogen")
 		end,
 	},
-	{ "nvim-neotest/neotest", cond = enabled(group, "neotest"), event = "VeryLazy", opts = {} },
+	{ "nvim-neotest/neotest", cond = enabled(plugin_group, "neotest"), event = "VeryLazy", opts = {} },
 	{
 		"karb94/neoscroll.nvim",
-		cond = enabled(group, "neoscroll"),
+		cond = enabled(plugin_group, "neoscroll"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.neoscroll")
@@ -178,7 +176,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
-		cond = enabled(group, "neotree"),
+		cond = enabled(plugin_group, "neotree"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.neo-tree")
@@ -188,7 +186,7 @@ require("lazy").setup({
 	},
 	{
 		"folke/noice.nvim",
-		cond = enabled(group, "noice"),
+		cond = enabled(plugin_group, "noice"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.noice")
@@ -197,7 +195,7 @@ require("lazy").setup({
 	},
 	{
 		"nvimtools/none-ls.nvim",
-		cond = enabled(group, "null_ls"),
+		cond = enabled(plugin_group, "null_ls"),
 		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			require("plugin-configs.null-ls")
@@ -214,7 +212,7 @@ require("lazy").setup({
 	},
 	{
 		"windwp/nvim-autopairs",
-		cond = enabled(group, "autopairs"),
+		cond = enabled(plugin_group, "autopairs"),
 		event = "InsertEnter",
 		config = function()
 			require("plugin-configs.autopairs")
@@ -222,7 +220,7 @@ require("lazy").setup({
 	},
 	{
 		"hrsh7th/nvim-cmp",
-		cond = enabled(group, "cmp"),
+		cond = enabled(plugin_group, "cmp"),
 		event = { "InsertEnter", "CmdlineEnter" },
 		config = function()
 			require("plugin-configs.cmp")
@@ -243,13 +241,13 @@ require("lazy").setup({
 	},
 	{
 		"brenoprata10/nvim-highlight-colors",
-		cond = enabled(group, "colorizer"),
+		cond = enabled(plugin_group, "colorizer"),
 		ft = { "css", "scss", "html", "xml", "svg", "js", "jsx", "ts", "tsx", "php", "vue" },
 		opts = {},
 	},
 	{
 		"mfussenegger/nvim-dap",
-		cond = enabled(group, "dap"),
+		cond = enabled(plugin_group, "dap"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.dap")
@@ -258,7 +256,7 @@ require("lazy").setup({
 			{
 				"mfussenegger/nvim-dap-python",
 				ft = "python",
-				cond = enabled(group, "dap_python") and enabled(group, "dap"),
+				cond = enabled(plugin_group, "dap_python") and enabled(plugin_group, "dap"),
 				config = function()
 					require("plugin-configs.dap-python")
 				end,
@@ -286,7 +284,7 @@ require("lazy").setup({
 	-- plugin order is important for these 3 -------------
 	{
 		"VonHeikemen/lsp-zero.nvim",
-		cond = enabled(group, "lsp_zero"),
+		cond = enabled(plugin_group, "lsp_zero"),
 		event = { "BufReadPre", "BufNewFile" },
 		branch = "v3.x",
 		dependencies = {},
@@ -310,19 +308,19 @@ require("lazy").setup({
 	------------------------------------------------------
 	{
 		"rcarriga/nvim-notify",
-		cond = enabled(group, "notify"),
+		cond = enabled(plugin_group, "notify"),
 		lazy = false,
 		opts = {},
 	},
 	{
 		"kylechui/nvim-surround",
-		cond = enabled(group, "surround"),
+		cond = enabled(plugin_group, "surround"),
 		event = "VeryLazy",
 		config = true,
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
-		cond = enabled(group, "treesitter"),
+		cond = enabled(plugin_group, "treesitter"),
 		build = ":TSUpdate",
 		lazy = false,
 		config = function()
@@ -335,11 +333,11 @@ require("lazy").setup({
 					require("mini.ai").setup()
 				end,
 			},
-			{ "HiPhish/rainbow-delimiters.nvim", cond = enabled(group, "rainbow") },
+			{ "HiPhish/rainbow-delimiters.nvim", cond = enabled(plugin_group, "rainbow") },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
 			{
 				"windwp/nvim-ts-autotag",
-				cond = enabled(group, "autotag"),
+				cond = enabled(plugin_group, "autotag"),
 				event = { "BufReadPre", "BufNewFile" },
 				config = true,
 			},
@@ -347,14 +345,14 @@ require("lazy").setup({
 	},
 	{
 		"kevinhwang91/nvim-ufo",
-		cond = enabled(group, "ufo"),
+		cond = enabled(plugin_group, "ufo"),
 		event = "VeryLazy",
 		dependencies = "kevinhwang91/promise-async",
 		config = true,
 	},
 	{
 		"epwalsh/obsidian.nvim",
-		cond = enabled(group, "obsidian"),
+		cond = enabled(plugin_group, "obsidian"),
 		ft = "markdown",
 		config = function()
 			require("plugin-configs.obsidian")
@@ -363,7 +361,7 @@ require("lazy").setup({
 	{ "nvim-lua/plenary.nvim" },
 	{
 		"jedrzejboczar/possession.nvim",
-		cond = enabled(group, "possession"),
+		cond = enabled(plugin_group, "possession"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.possession")
@@ -372,7 +370,7 @@ require("lazy").setup({
 
 	{
 		"ahmedkhalf/project.nvim",
-		cond = enabled(group, "project"),
+		cond = enabled(plugin_group, "project"),
 		event = "VeryLazy",
 		config = function()
 			require("project_nvim").setup()
@@ -380,7 +378,7 @@ require("lazy").setup({
 	},
 	{
 		"ThePrimeagen/refactoring.nvim",
-		cond = enabled(group, "refactoring"),
+		cond = enabled(plugin_group, "refactoring"),
 		event = "VeryLazy",
 		config = function()
 			require("refactoring").setup()
@@ -388,13 +386,13 @@ require("lazy").setup({
 	},
 	{
 		"mrcjkb/rustaceanvim",
-		cond = enabled(group, "rustacean"),
+		cond = enabled(plugin_group, "rustacean"),
 		version = "^4",
 		lazy = false, -- This plugin is already lazy
 	},
 	{
 		"tiagovla/scope.nvim",
-		cond = enabled(group, "scope"),
+		cond = enabled(plugin_group, "scope"),
 		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.scope")
@@ -402,7 +400,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-telescope/telescope.nvim",
-		cond = enabled(group, "telescope"),
+		cond = enabled(plugin_group, "telescope"),
 		cmd = "Telescope",
 		dependencies = {
 			{
@@ -416,13 +414,13 @@ require("lazy").setup({
 	},
 	{
 		"folke/todo-comments.nvim",
-		cond = enabled(group, "todo_comments"),
+		cond = enabled(plugin_group, "todo_comments"),
 		event = "VeryLazy",
 		opts = {},
 	},
 	{
 		"akinsho/toggleterm.nvim",
-		cond = enabled(group, "toggleterm"),
+		cond = enabled(plugin_group, "toggleterm"),
 		event = "VeryLazy",
 		config = function()
 			_G.term = require("plugin-configs.toggleterm")
@@ -430,7 +428,7 @@ require("lazy").setup({
 	},
 	{
 		"folke/trouble.nvim",
-		cond = enabled(group, "trouble"),
+		cond = enabled(plugin_group, "trouble"),
 		cmd = "Trouble",
 		config = function()
 			require("plugin-configs.trouble")
@@ -438,7 +436,7 @@ require("lazy").setup({
 	},
 	{
 		"RRethy/vim-illuminate",
-		cond = enabled(group, "illuminate"),
+		cond = enabled(plugin_group, "illuminate"),
 		event = "VeryLazy",
 		config = function()
 			require("illuminate").configure()
@@ -446,13 +444,13 @@ require("lazy").setup({
 	},
 	{
 		"folke/which-key.nvim",
-		cond = enabled(group, "whichkey"),
+		cond = enabled(plugin_group, "whichkey"),
 		event = "VeryLazy",
 		config = true,
 	},
 	{
 		"folke/zen-mode.nvim",
-		cond = enabled(group, "zen"),
+		cond = enabled(plugin_group, "zen"),
 		cmd = "ZenMode",
 		config = function()
 			require("plugin-configs.zenmode")

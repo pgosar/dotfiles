@@ -29,10 +29,9 @@ for _, source in ipairs({
 end
 
 local enabled = require("core.utils.utils").enabled
-local exist, user_config = pcall(require, "user_config")
-local group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
+local plugin_group = require("core.utils.utils").plugin_group
 
-if enabled(group, "notify") then
+if enabled(plugin_group, "notify") then
 	_, vim.notify = pcall(require, "notify")
 end
 
@@ -42,7 +41,7 @@ vim.api.nvim_create_user_command("CyberUpdate", function()
 end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 
 -- fix commentstrings to work with native nvim commenting
-if enabled(group, "treesitter") then
+if enabled(plugin_group, "treesitter") then
 	local get_option = vim.filetype.get_option
 	vim.filetype.get_option = function(filetype, option)
 		local ok, ts_context_commentstring_internal = pcall(require, "ts_context_commentstring.internal")
@@ -60,7 +59,7 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 	table.insert(spell_words, word)
 end
 
-local ok, _ = pcall(vim.cmd.colorscheme, user_config.colorscheme)
+local ok, _ = pcall(vim.cmd.colorscheme, require("user_config").colorscheme)
 if not ok then
 	vim.cmd.colorscheme("default")
 end
