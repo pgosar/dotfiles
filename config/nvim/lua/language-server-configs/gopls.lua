@@ -1,4 +1,4 @@
-require("lspconfig").gopls.setup({
+return {
 	settings = {
 		gopls = {
 			hints = {
@@ -12,4 +12,4 @@ require("lspconfig").gopls.setup({
 			},
 		},
 	},
-})
+}

@@ -1,4 +1,4 @@
-require("lspconfig").tsserver.setup({
+return {
 	settings = {
 		typescript = {
 			inlayHints = {
@@ -25,4 +25,4 @@ require("lspconfig").tsserver.setup({
 			},
 		},
 	},
-})
+}

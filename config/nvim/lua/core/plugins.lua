@@ -456,6 +456,7 @@ require("lazy").setup({
 			require("plugin-configs.zenmode")
 		end,
 	},
+	{ "artemave/workspace-diagnostics.nvim", cond = enabled(plugin_group, "workspace_diagnostics"), lazy = false },
 }, {
 	defaults = { lazy = true },
 	performance = {

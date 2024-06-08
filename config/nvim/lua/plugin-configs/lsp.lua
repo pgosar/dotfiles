@@ -1,5 +1,7 @@
-local ok, lsp = pcall(require, "lsp-zero")
-if not ok then return end
+local lsp_ok, lsp = pcall(require, "lsp-zero")
+if not lsp_ok then
+	return
+end
 
 lsp.set_sign_icons({
 	error = "✘",
@@ -31,20 +33,33 @@ lsp.format_on_save({
 })
 
 local lspconfig = require("lspconfig")
-require("mason-lspconfig").setup({
-	ensure_installed = {},
-	handlers = {
-		function(server_name)
-			lspconfig[server_name].setup({})
-		end,
-		gopls = function()
-			require("language-server-configs.gopls")
-		end,
-		tsserver = function()
-			require("language-server-configs.tsserver")
-		end,
-		lua_ls = function()
-			require("language-server-configs.lua_ls")
-		end,
-	},
+require("mason-lspconfig").setup()
+
+local default = {
+	on_attach = function(client, bufnr)
+		require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
+	end,
+}
+
+require("mason-lspconfig").setup_handlers({
+	function(server_name)
+		lspconfig[server_name].setup(default)
+	end,
 })
+
+-- Extend specific language server configurations
+local server_configs = {
+	gopls = "language-server-configs.gopls",
+	tsserver = "language-server-configs.tsserver",
+	lua_ls = "language-server-configs.lua_ls",
+}
+
+for server, config_module in pairs(server_configs) do
+	local ok, specific = pcall(require, config_module)
+	if ok then
+		lspconfig[server].setup(vim.tbl_deep_extend("force", {}, default, specific or {}))
+	else
+		vim.notify("Failed to load config for " .. server .. ": " .. specific)
+		lspconfig[server].setup(default)
+	end
+end

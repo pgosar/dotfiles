@@ -107,6 +107,7 @@ M.enable_plugins = {
 	lazydev = true,
 	neogen = true,
 	neoscroll = true,
+	neotest = true,
 	neotree = true,
 	possession = true,
 	noice = true,
