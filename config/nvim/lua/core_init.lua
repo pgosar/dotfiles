@@ -64,6 +64,7 @@ if not ok then
 	vim.cmd.colorscheme("default")
 end
 
+-- only update LSP diagnostic information when leaving insert mode
 vim.diagnostic.config({
 	update_in_insert = false,
 })

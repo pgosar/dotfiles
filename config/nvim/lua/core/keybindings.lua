@@ -11,13 +11,18 @@ if enabled(plugin_group, "bufferline") then
 end
 
 -- Nabla
+-- for some reason vim.bo.filetype is not available in time
 if enabled(plugin_group, "nabla") then
-	vim.schedule(function()
-		-- vim.bo.filetype isn't available in time :(
-		if vim.bo.filetype == "markdown" then
-			map("n", "K", "<CMD>lua require('nabla').popup()<CR>")
-		end
-	end)
+	vim.api.nvim_create_autocmd("BufEnter", {
+		pattern = "*.md",
+		callback = function()
+			if vim.bo.filetype == "markdown" then
+				map("n", "K", function()
+					require("nabla").popup()
+				end, { buffer = true })
+			end
+		end,
+	})
 end
 
 -- Neogen
@@ -149,7 +154,7 @@ if enabled(plugin_group, "lsp_zero") then
 	map("n", "gi", "<CMD>lua buf.implementation()<CR>")
 	map("i", "<C-k>", "<CMD>lua buf.signature_help()<CR>")
 	map("n", "<leader>rn", "<CMD>lua buf.rename()<CR>")
-	map("n", "<leader>ca", "<CMD>lua buf.code_action()<CR>")
+	map({ "n", "v" }, "<leader>ca", "<CMD>lua buf.code_action()<CR>")
 	map("n", "<C-h>", "<CMD>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>")
 end
 

@@ -4,7 +4,6 @@ local M = {}
 M.setup_sources = function(b)
 	return {
 		b.formatting.clang_format,
-		b.completion.tags,
 		b.formatting.stylua,
 		b.formatting.cbfmt,
 		b.formatting.shfmt,
@@ -27,11 +26,9 @@ M.setup_sources = function(b)
 		b.diagnostics.cmake_lint,
 		b.diagnostics.pylint,
 		b.diagnostics.revive,
-		b.code_actions.gitrebase,
 		b.code_actions.gitsigns,
 		b.code_actions.gomodifytags,
 		b.code_actions.refactoring,
-		b.hover.dictionary,
 	}
 end
 
