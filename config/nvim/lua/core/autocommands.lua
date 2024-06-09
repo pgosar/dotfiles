@@ -40,3 +40,18 @@ if enabled(autocmd_group, "term_spelling") then
 		command = "setlocal nospell",
 	})
 end
+
+if enabled(autocmd_group, "number") then
+	cmd({ "VimEnter", "InsertLeave" }, {
+		desc = "set relativenumber",
+		group = augroup("set_relativenumber", { clear = true }),
+		pattern = "*",
+		command = "set relativenumber",
+	})
+	cmd({ "InsertEnter" }, {
+		desc = "set number",
+		group = augroup("set_number", { clear = true }),
+		pattern = "*",
+		command = "set number norelativenumber",
+	})
+end
