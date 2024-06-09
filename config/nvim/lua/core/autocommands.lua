@@ -1,11 +1,13 @@
 local augroup = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
-
-local autocmd_group = require("core.utils.utils").autocmd_group
-local enabled = require("core.utils.utils").enabled
+local ok, defaults = pcall(require, "defaults")
+if not ok then
+	vim.api.nvim_err_writeln("Failed to load defaults.lua")
+end
+local group = defaults.group
 
 -- Removes any trailing white space when saving a file
-if enabled(autocmd_group, "trailing_whitespace") then
+if group.autocommands.trailing_whitespace then
 	cmd({ "BufWritePre" }, {
 		desc = "remove trailing whitespace on save",
 		group = augroup("remove trailing whitespace", { clear = true }),
@@ -15,7 +17,7 @@ if enabled(autocmd_group, "trailing_whitespace") then
 end
 
 -- remembers file state, such as cursor position and any folds
-if enabled(autocmd_group, "remember_file_state") then
+if group.autocommands.remember_file_state then
 	augroup("remember file state", { clear = true })
 	cmd({ "BufWinLeave" }, {
 		desc = "remember file state",
@@ -32,7 +34,7 @@ if enabled(autocmd_group, "remember_file_state") then
 end
 
 -- no spellcheck in terminal buffers
-if enabled(autocmd_group, "term_spelling") then
+if group.autocommands.term_spelling then
 	cmd({ "TermOpen" }, {
 		desc = "disable spellcheck in terminal buffers",
 		group = augroup("disable_spell", { clear = true }),
@@ -41,11 +43,11 @@ if enabled(autocmd_group, "term_spelling") then
 	})
 end
 
-if enabled(autocmd_group, "number") then
+if group.autocommands.number then
 	cmd({ "VimEnter", "InsertLeave" }, {
 		desc = "set relativenumber",
 		group = augroup("set_relativenumber", { clear = true }),
-		pattern = "*",
+		pattern = "*.*",
 		command = "set relativenumber",
 	})
 	cmd({ "InsertEnter" }, {

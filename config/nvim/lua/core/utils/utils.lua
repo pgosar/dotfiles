@@ -110,14 +110,6 @@ M.supports_formatting = function()
 	return false
 end
 
---- whether the input is enabled in its table, for example a plugin in the plugin table
----@param group table: the table to look in
----@param opt string: the option to check
----@return boolean is_enabled: whether the option is enabled
-M.enabled = function(group, opt)
-	return group == nil or group[opt] == nil or group[opt] == true
-end
-
 --- whether the currently opening file is very big or not
 ---@param buf integer: the current buffer to check
 ---@return boolean is_big: if the file is above 100KB
@@ -126,13 +118,5 @@ M.large_file = function(buf)
 	local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
 	return ok and stats ~= nil and stats.size > max_filesize
 end
-
-local exist, user_config = pcall(require, "user_config")
-
---- enabled plugins
-M.plugin_group = exist and type(user_config) == "table" and user_config.enable_plugins or {}
-
--- enabled autocommands
-M.autocmd_group = exist and type(user_config) == "table" and user_config.autocommands or {}
 
 return M

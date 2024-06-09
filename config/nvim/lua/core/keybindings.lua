@@ -1,10 +1,13 @@
 local map = require("core.utils.utils").map
-local enabled = require("core.utils.utils").enabled
-local plugin_group = require("core.utils.utils").plugin_group
+local ok, defaults = pcall(require, "defaults")
+if not ok then
+	vim.api.nvim_err_writeln("Failed to load defaults.lua")
+end
+local group = defaults.group
 
 local M = {}
 
-if enabled(plugin_group, "venn") then
+if group.plugins.venn then
 	function _G.Toggle_venn()
 		local venn_enabled = vim.inspect(vim.b.venn_enabled)
 		if venn_enabled == "nil" then
@@ -34,13 +37,13 @@ if enabled(plugin_group, "venn") then
 end
 
 -- Bufferline
-if enabled(plugin_group, "bufferline") then
+if group.plugins.bufferline then
 	map("n", "gb", "<CMD>BufferLinePick<CR>", { desc = "pick buffer" })
 end
 
 -- Nabla
 -- for some reason vim.bo.filetype is not available in time
-if enabled(plugin_group, "nabla") then
+if group.plugins.nabla then
 	vim.api.nvim_create_autocmd("BufEnter", {
 		pattern = "*.md",
 		callback = function()
@@ -54,12 +57,12 @@ if enabled(plugin_group, "nabla") then
 end
 
 -- Neogen
-if enabled(plugin_group, "neogen") then
+if group.plugins.neogen then
 	map("n", "<Leader>fd", "<CMD>Neogen<CR>", { desc = "Generate Docs" })
 end
 
 -- Obsidian
-if enabled(plugin_group, "obsidian") then
+if group.plugins.obsidian then
 	map("n", "<leader>p", "<CMD>ObsidianPasteImg<CR>", { desc = "Paste clipboard image" })
 	map("v", "<leader>ol", "<CMD>ObsidianLink<CR>")
 	map("v", "<leader>oln", "<CMD>ObsidianLinkNew<CR>")
@@ -68,7 +71,7 @@ if enabled(plugin_group, "obsidian") then
 end
 
 -- Multicursor
-if enabled(plugin_group, "multicursor") then
+if group.plugins.multicursor then
 	-- TODO remove if issue gets addressed (see plugins todo)
 	-- vim.g.VM_default_mappings = false
 	-- vim.g.VM_maps = {
@@ -80,17 +83,17 @@ if enabled(plugin_group, "multicursor") then
 end
 
 -- Dropbar
-if enabled(plugin_group, "dropbar") then
+if group.plugins.dropbar then
 	map("n", "<C-p>", "<CMD>lua require('dropbar.api').pick()<CR>")
 end
 
 -- Markdown
-if enabled(plugin_group, "markdown") then
+if group.plugins.markdown then
 	map({ "n", "i" }, "<M-CR>", "<Cmd>MDListItemBelow<CR>")
 end
 
 -- DAP
-if enabled(plugin_group, "dap") then
+if group.plugins.dap then
 	_G.dap = require("dap")
 	map("n", "<leader>dc", "<CMD>lua dap.continue()<CR>")
 	map("n", "<leader>dn", "<CMD>lua dap.step_over()<CR>")
@@ -101,7 +104,7 @@ if enabled(plugin_group, "dap") then
 end
 
 -- Trouble
-if enabled(plugin_group, "trouble") then
+if group.plugins.trouble then
 	map("n", "<leader>tf", "<CMD>Trouble toggle diagnostics<CR>")
 	map("n", "<leader>tt", "<CMD>Trouble toggle todo<CR>")
 	map("n", "<leader>ts", "<CMD>Trouble toggle symbols<CR>")
@@ -109,18 +112,18 @@ if enabled(plugin_group, "trouble") then
 end
 
 -- UFO
-if enabled(plugin_group, "ufo") then
+if group.plugins.ufo then
 	map("n", "zR", "<CMD>lua require('ufo').openAllFolds()<CR>")
 	map("n", "zM", "<CMD>lua require('ufo').closeAllFolds()<CR>")
 end
 
 -- ZenMode
-if enabled(plugin_group, "zen") then
+if group.plugins.zen then
 	map("n", "<leader>zm", "<CMD>ZenMode<CR>")
 end
 
 -- NeoTree
-if enabled(plugin_group, "neotree") then
+if group.plugins.neotree then
 	map("n", "<leader>nt", "<CMD>Neotree float reveal toggle<CR>")
 end
 
@@ -156,7 +159,7 @@ map("c", "<C-p>", "<Up>")
 map("c", "<C-n>", "<Down>")
 
 -- Telescope
-if enabled(plugin_group, "telescope") then
+if group.plugins.telescope then
 	map("n", "<leader>ff", "<CMD>Telescope find_files hidden=true<CR>", { desc = "Telescope Find Files" })
 	map("n", "<leader>fg", "<CMD>Telescope live_grep<CR>")
 	map("n", "<leader>fb", "<CMD>Telescope buffers<CR>")
@@ -167,13 +170,13 @@ if enabled(plugin_group, "telescope") then
 end
 
 -- Notify
-if enabled(plugin_group, "notify") then
+if group.plugins.notify then
 	map("n", "<ESC>", "<CMD>lua require('notify').dismiss()<CR>")
 	map("i", "<ESC>", "<CMD>lua require('notify').dismiss()<CR><ESC>")
 end
 
 -- More LSP stuff
-if enabled(plugin_group, "lsp_zero") then
+if group.plugins.lsp_zero then
 	_G.buf = vim.lsp.buf
 	-- lsp agnostic global rename
 	map("n", "rg", ":%s/<C-r><C-w>//g<Left><Left>", { desc = "global substitution" })
@@ -187,7 +190,7 @@ if enabled(plugin_group, "lsp_zero") then
 end
 
 -- ToggleTerm
-if enabled(plugin_group, "toggleterm") then
+if group.plugins.toggleterm then
 	local git_root = "cd $(git rev-parse --show-toplevel 2>/dev/null) && clear"
 	map("t", "<C-\\>", "<C-\\><C-n>")
 	-- opens terminal as a new tab at the git root
@@ -205,7 +208,7 @@ if enabled(plugin_group, "toggleterm") then
 end
 
 -- Hop
-if enabled(plugin_group, "hop") then
+if group.plugins.hop then
 	map("n", "<leader>j", "<CMD>HopWord<CR>")
 end
 
@@ -213,7 +216,7 @@ end
 
 -- making this a function here because all it does is create keybinds for gitsigns but
 -- it needs to be attached to an on_attach function.
-if enabled(plugin_group, "gitsigns") then
+if group.plugins.gitsigns then
 	M.gitsigns = function()
 		local gs = package.loaded.gitsigns
 		map("n", "]h", function()

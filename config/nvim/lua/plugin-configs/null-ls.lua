@@ -1,12 +1,11 @@
 local null_ls = require("null-ls")
 
-local exist, user_config = pcall(require, "user_config")
-local sources = exist
-		and type(user_config) == "table"
-		and user_config.setup_sources
-		and user_config.setup_sources(null_ls.builtins)
-	or {}
+local ok, defaults = pcall(require, "defaults")
+if not ok then
+	vim.api.nvim_err_writeln("Failed to load defaults.lua")
+end
+
 require("mason").setup()
 null_ls.setup({
-	sources = sources,
+	sources = defaults.setup_sources(null_ls.builtins),
 })

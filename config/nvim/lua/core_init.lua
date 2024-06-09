@@ -28,10 +28,13 @@ for _, source in ipairs({
 	end
 end
 
-local enabled = require("core.utils.utils").enabled
-local plugin_group = require("core.utils.utils").plugin_group
+local ok, defaults = pcall(require, "defaults")
+if not ok then
+	vim.api.nvim_err_writeln("Failed to load defaults.lua")
+end
+local group = defaults.group
 
-if enabled(plugin_group, "notify") then
+if group.plugins.notify then
 	_, vim.notify = pcall(require, "notify")
 end
 
@@ -41,7 +44,7 @@ vim.api.nvim_create_user_command("CyberUpdate", function()
 end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 
 -- fix comment strings to work with native nvim commenting
-if enabled(plugin_group, "treesitter") then
+if group.plugins.treesitter then
 	local get_option = vim.filetype.get_option
 	vim.filetype.get_option = function(filetype, option)
 		local ok, ts_context_commentstring_internal = pcall(require, "ts_context_commentstring.internal")
@@ -59,7 +62,7 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 	table.insert(spell_words, word)
 end
 
-local ok, _ = pcall(vim.cmd.colorscheme, require("user_config").colorscheme)
+local ok, _ = pcall(vim.cmd.colorscheme, require("defaults").colorscheme)
 if not ok then
 	vim.cmd.colorscheme("default")
 end
@@ -86,6 +89,5 @@ if big_file then
 end
 
 -- TODO:
--- make a map of enums for the enable plugin/autocmd strings
 -- light mode/ dark mode switcher
 -- massive refactor all plugins into separate files and aggressively lazyload

@@ -22,14 +22,16 @@ lsp.set_server_config({
 	},
 })
 
-local exist, user_config = pcall(require, "user_config")
-local formatting_servers = exist and type(user_config) == "table" and user_config.formatting_servers or {}
+local ok, defaults = pcall(require, "defaults")
+if not ok then
+  vim.api.nvim_err_writeln("Failed to load defaults.lua")
+end
 lsp.format_on_save({
 	format_opts = {
 		async = false,
 		timeout_ms = 10000,
 	},
-	servers = formatting_servers,
+	servers = defaults.formatting_servers,
 })
 
 local lspconfig = require("lspconfig")
