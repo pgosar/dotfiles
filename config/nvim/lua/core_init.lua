@@ -86,7 +86,6 @@ if big_file then
 end
 
 -- TODO:
--- renaming notification appears not to be working
 -- make a map of enums for the enable plugin/autocmd strings
 -- light mode/ dark mode switcher
 -- massive refactor all plugins into separate files and aggressively lazyload
