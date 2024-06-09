@@ -33,7 +33,7 @@ if group.plugins.venn then
 		end
 	end
 
-	-- map("n", "<leader>v", ":lua Toggle_venn()<CR>" "<cmd>lua Toggle_venn()<CR>", desc = "Toggle Venn" },)
+	map("n", "<leader>v", ":lua Toggle_venn()<CR>")
 end
 
 -- Bufferline

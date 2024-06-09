@@ -29,7 +29,7 @@ require("lazy").setup({
 	{
 		"akinsho/bufferline.nvim",
 		cond = group.plugins.bufferline,
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("plugin-configs.bufferline")
 		end,
@@ -38,7 +38,7 @@ require("lazy").setup({
 		"catppuccin/nvim",
 		lazy = false,
 		priority = 1000,
-		cond = group.plugins.catppuccino,
+		cond = group.plugins.catppuccin,
 		config = function()
 			require("plugin-configs.catppuccin")
 		end,
@@ -251,7 +251,7 @@ require("lazy").setup({
 	},
 	{
 		"brenoprata10/nvim-highlight-colors",
-		cond = group.plugins.colorizer,
+		cond = group.plugins.highlight_colors,
 		ft = { "css", "scss", "html", "xml", "svg", "js", "jsx", "ts", "tsx", "php", "vue" },
 		opts = {},
 	},

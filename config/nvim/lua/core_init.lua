@@ -89,5 +89,4 @@ if big_file then
 end
 
 -- TODO:
--- light mode/ dark mode switcher
 -- massive refactor all plugins into separate files and aggressively lazyload
