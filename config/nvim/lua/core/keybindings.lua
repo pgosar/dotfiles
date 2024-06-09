@@ -2,8 +2,36 @@ local map = require("core.utils.utils").map
 local enabled = require("core.utils.utils").enabled
 local plugin_group = require("core.utils.utils").plugin_group
 
-vim.g.mapleader = " " -- the leader key is the space bar
 local M = {}
+
+if enabled(plugin_group, "venn") then
+	function _G.Toggle_venn()
+		local venn_enabled = vim.inspect(vim.b.venn_enabled)
+		if venn_enabled == "nil" then
+			vim.b.venn_enabled = true
+			vim.notify("Venn enabled", "info", { title = "Venn" })
+			vim.cmd([[setlocal ve=all]])
+			-- draw a line on HJKL keystokes
+			map("n", "J", "<C-v>j<CMD>VBox<CR>")
+			map("n", "K", "<C-v>k<CMD>VBox<CR>")
+			map("n", "L", "<C-v>l<CMD>VBox<CR>")
+			map("n", "H", "<C-v>h<CMD>VBox<CR>")
+			-- draw a box by pressing "f" with visual selection
+			map("v", "f", "<CMD>VBox<CR>")
+		else
+			vim.notify("Venn disabled", "info", { title = "Venn" })
+			vim.cmd([[setlocal ve=]])
+			vim.keymap.del("n", "J")
+			vim.keymap.del("n", "K")
+			vim.keymap.del("n", "L")
+			vim.keymap.del("n", "H")
+			vim.keymap.del("v", "f")
+			vim.b.venn_enabled = nil
+		end
+	end
+
+	-- map("n", "<leader>v", ":lua Toggle_venn()<CR>" "<cmd>lua Toggle_venn()<CR>", desc = "Toggle Venn" },)
+end
 
 -- Bufferline
 if enabled(plugin_group, "bufferline") then

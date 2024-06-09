@@ -136,7 +136,9 @@ M.enable_plugins = {
 	todo_comments = true,
 	toggleterm = true,
 	trouble = true,
+	venn = true,
 	whichkey = true,
+	workspace_diagnostics = true,
 	zen = true,
 }
 
@@ -144,6 +146,7 @@ M.autocommands = {
 	trailing_whitespace = true,
 	remember_file_state = true,
 	term_spelling = true,
+	number = true,
 }
 
 M.colorscheme = "catppuccin"

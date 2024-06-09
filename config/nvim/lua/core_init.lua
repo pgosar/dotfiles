@@ -40,7 +40,7 @@ vim.api.nvim_create_user_command("CyberUpdate", function()
 	require("core.utils.utils").update_all()
 end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 
--- fix commentstrings to work with native nvim commenting
+-- fix comment strings to work with native nvim commenting
 if enabled(plugin_group, "treesitter") then
 	local get_option = vim.filetype.get_option
 	vim.filetype.get_option = function(filetype, option)
@@ -84,3 +84,9 @@ if big_file then
 		},
 	})
 end
+
+-- TODO:
+-- renaming notification appears not to be working
+-- make a map of enums for the enable plugin/autocmd strings
+-- light mode/ dark mode switcher
+-- massive refactor all plugins into separate files and aggressively lazyload

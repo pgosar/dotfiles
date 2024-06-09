@@ -42,4 +42,7 @@ vim_opts({
 		undofile = true,      -- Persistent undo
 		updatetime = 100,     -- Faster completion
 	},
+  g = {
+    mapleader = " "
+  }
 })

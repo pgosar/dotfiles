@@ -1,5 +1,6 @@
 local enabled = require("core.utils.utils").enabled
 local plugin_group = require("core.utils.utils").plugin_group
+
 require("lazy").setup({
 	{
 		"goolord/alpha-nvim",
@@ -435,6 +436,11 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"jbyuki/venn.nvim",
+		cond = enabled(plugin_group, "venn"),
+		lazy = false,
+	},
+	{
 		"RRethy/vim-illuminate",
 		cond = enabled(plugin_group, "illuminate"),
 		event = "VeryLazy",
@@ -449,6 +455,11 @@ require("lazy").setup({
 		config = true,
 	},
 	{
+		"artemave/workspace-diagnostics.nvim",
+		cond = enabled(plugin_group, "workspace_diagnostics"),
+		event = "VeryLazy",
+	},
+	{
 		"folke/zen-mode.nvim",
 		cond = enabled(plugin_group, "zen"),
 		cmd = "ZenMode",
@@ -456,7 +467,6 @@ require("lazy").setup({
 			require("plugin-configs.zenmode")
 		end,
 	},
-	{ "artemave/workspace-diagnostics.nvim", cond = enabled(plugin_group, "workspace_diagnostics"), lazy = false },
 }, {
 	defaults = { lazy = true },
 	performance = {
