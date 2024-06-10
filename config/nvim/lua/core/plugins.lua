@@ -476,6 +476,12 @@ require("lazy").setup({
 			require("plugin-configs.zenmode")
 		end,
 	},
+	{
+		"gregorias/nvim-mapper",
+		config = function()
+			require("nvim-mapper").setup({})
+		end,
+	},
 }, {
 	defaults = { lazy = true },
 	performance = {
