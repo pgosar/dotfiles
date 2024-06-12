@@ -41,8 +41,5 @@ vim_opts({
 		textwidth = 100,      -- Max text width
 		undofile = true,      -- Persistent undo
 		updatetime = 100,     -- Faster completion
-	},
-  g = {
-    mapleader = " "
-  }
+	}
 })

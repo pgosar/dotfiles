@@ -1,10 +1,5 @@
 local augroup = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
-local ok, defaults = pcall(require, "defaults")
-if not ok then
-	vim.api.nvim_err_writeln("Failed to load defaults.lua")
-end
-local group = defaults.group
 
 -- Removes any trailing white space when saving a file
 if group.autocommands.trailing_whitespace then

@@ -1,9 +1,4 @@
 local map = require("core.utils.utils").map
-local ok, defaults = pcall(require, "defaults")
-if not ok then
-	vim.api.nvim_err_writeln("Failed to load defaults.lua")
-end
-local group = defaults.group
 
 local M = {}
 
@@ -15,12 +10,13 @@ if group.plugins.venn then
 			vim.notify("Venn enabled", "info", { title = "Venn" })
 			vim.cmd([[setlocal ve=all]])
 			-- draw a line on HJKL keystokes
-			map("n", "J", "<C-v>j<CMD>VBox<CR>", { desc = "draw arrow down" })
-			map("n", "K", "<C-v>k<CMD>VBox<CR>", { desc = "draw arrow up" })
-			map("n", "L", "<C-v>l<CMD>VBox<CR>", { desc = "draw arrow right" })
-			map("n", "H", "<C-v>h<CMD>VBox<CR>", { desc = "draw arrow left" })
+			-- does not work with <CMD>
+			map("n", "J", "<C-v>j:VBox<CR>", { desc = "draw arrow down", buffer = true })
+			map("n", "K", "<C-v>k:VBox<CR>", { desc = "draw arrow up", buffer = true })
+			map("n", "L", "<C-v>l:VBox<CR>", { desc = "draw arrow right", buffer = true })
+			map("n", "H", "<C-v>h:VBox<CR>", { desc = "draw arrow left", buffer = true })
 			-- draw a box by pressing "f" with visual selection
-			map("v", "f", "<CMD>VBox<CR>")
+			map("v", "f", ":VBox<CR>", { desc = "draw box", buffer = true })
 		else
 			vim.notify("Venn disabled", "info", { title = "Venn" })
 			vim.cmd([[setlocal ve=]])
