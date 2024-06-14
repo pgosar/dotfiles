@@ -10,12 +10,14 @@ return {
 			function()
 				require("core.utils.utils").create_floating_terminal("lazygit")
 			end,
+			desc = "open lazygit",
 		},
 		{
 			"<leader>gd",
 			function()
 				require("core.utils.utils").create_floating_terminal("gdu")
 			end,
+			desc = "open gdu",
 		},
 	},
 	opts = {

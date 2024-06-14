@@ -100,6 +100,3 @@ if big_file then
 		},
 	})
 end
-
--- TODO:
--- add descs for all keybinds even those made by plugins?
