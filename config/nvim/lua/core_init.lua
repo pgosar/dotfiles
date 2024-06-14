@@ -12,26 +12,12 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
--- must be set before lazy
-vim.g.mapleader = " "
-
 local ok, defaults = pcall(require, "defaults")
 if not ok then
 	vim.api.nvim_err_writeln("Failed to load defaults.lua")
 end
 _G.group = defaults.group
 local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current_buf())
-
-if not big_file then
-	require("lazy").setup("core/plugins", {
-		defaults = { lazy = true },
-		performance = {
-			rtp = {
-				disabled_plugins = { "tohtml", "gzip", "zipPlugin", "netrwPlugin", "tarPlugin" },
-			},
-		},
-	})
-end
 
 for _, source in ipairs({
 	"core.main-options",
@@ -46,6 +32,17 @@ for _, source in ipairs({
 			vim.api.nvim_err_writeln("Failed to load " .. source .. "\n\n" .. fault)
 		end
 	end
+end
+
+if not big_file then
+	require("lazy").setup("core/plugins", {
+		defaults = { lazy = true },
+		performance = {
+			rtp = {
+				disabled_plugins = { "tohtml", "gzip", "zipPlugin", "netrwPlugin", "tarPlugin" },
+			},
+		},
+	})
 end
 
 if group.plugins.notify then
