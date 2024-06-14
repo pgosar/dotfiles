@@ -1,8 +1,9 @@
 return {
 	"okuuva/auto-save.nvim",
-	event = "VeryLazy",
+	event = { "InsertLeave", "TextChanged" },
 	cond = group.plugins.autosave,
-	config = function()
-		require("plugin-configs.autosave")
-	end,
+	opts = {
+		debounce_delay = 10000, -- 10 second delay
+		execution_message = { enabled = false },
+	},
 }

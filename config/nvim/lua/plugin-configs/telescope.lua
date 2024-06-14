@@ -1,7 +1,0 @@
-local telescope = require("telescope")
-telescope.load_extension("scope")
-telescope.load_extension("notify")
-telescope.load_extension("noice")
-telescope.load_extension("projects")
-telescope.load_extension("possession")
-telescope.load_extension("refactoring")

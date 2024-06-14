@@ -1,5 +1,14 @@
 return {
 	"Bekaboo/dropbar.nvim",
-	lazy = false, -- done by default
+	keys = {
+		{
+			"<C-p>",
+			function()
+				require("dropbar.api").pick()
+			end,
+			{ desc = "pick from dropbar" },
+		},
+	},
+	lazy = false,
 	cond = group.plugins.dropbar,
 }

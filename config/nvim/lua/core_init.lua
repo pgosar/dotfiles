@@ -20,17 +20,19 @@ if not ok then
 	vim.api.nvim_err_writeln("Failed to load defaults.lua")
 end
 _G.group = defaults.group
-
-require("lazy").setup("core/plugins", {
-	defaults = { lazy = true },
-	performance = {
-		rtp = {
-			disabled_plugins = { "tohtml", "gzip", "zipPlugin", "netrwPlugin", "tarPlugin" },
-		},
-	},
-})
-
 local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current_buf())
+
+if not big_file then
+	require("lazy").setup("core/plugins", {
+		defaults = { lazy = true },
+		performance = {
+			rtp = {
+				disabled_plugins = { "tohtml", "gzip", "zipPlugin", "netrwPlugin", "tarPlugin" },
+			},
+		},
+	})
+end
+
 for _, source in ipairs({
 	"core.main-options",
 	"core.keybindings",
@@ -59,8 +61,8 @@ end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 if group.plugins.treesitter then
 	local get_option = vim.filetype.get_option
 	vim.filetype.get_option = function(filetype, option)
-		local ok, ts_context_commentstring_internal = pcall(require, "ts_context_commentstring.internal")
-		if ok and option == "commentstring" then
+		local comment_ok, ts_context_commentstring_internal = pcall(require, "ts_context_commentstring.internal")
+		if comment_ok and option == "commentstring" then
 			return ts_context_commentstring_internal.calculate_commentstring()
 		else
 			return get_option(filetype, option)
@@ -74,8 +76,8 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 	table.insert(spell_words, word)
 end
 
-local ok, _ = pcall(vim.cmd.colorscheme, require("defaults").colorscheme)
-if not ok then
+local color_ok, _ = pcall(vim.cmd.colorscheme, require("defaults").colorscheme)
+if not color_ok then
 	vim.cmd.colorscheme("default")
 end
 
@@ -96,9 +98,11 @@ if big_file then
 			laststatus = 3,
 			number = true,
 			scrolloff = 5,
+			foldlevel = 99,
+			foldlevelstart = 99,
 		},
 	})
 end
 
 -- TODO:
--- massive refactor all plugins into separate files and aggressively lazyload
+-- add descs for all keybinds even those made by plugins?

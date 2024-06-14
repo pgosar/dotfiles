@@ -41,13 +41,12 @@ M.has_words_before = function()
 end
 
 --- creates new terminals with ToggleTerm
----@param term Terminal: the toggleterm terminal
 ---@param cmd string: the command to run
 ---@return function|Terminal: the created terminal
-M.create_floating_terminal = function(term, cmd)
+M.create_floating_terminal = function(cmd)
 	local instance = nil
 	if vim.fn.executable(cmd) == 1 then
-		local terminal = term.Terminal
+		local terminal = require("toggleterm.terminal").Terminal
 		instance = terminal:new({
 			cmd = cmd,
 			dir = "git_dir",
@@ -62,6 +61,7 @@ M.create_floating_terminal = function(term, cmd)
 				vim.cmd("startinsert!")
 			end,
 		})
+		instance:toggle()
 	end
 	-- check if TermExec function exists
 	return function()

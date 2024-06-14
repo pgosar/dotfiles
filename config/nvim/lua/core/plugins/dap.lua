@@ -1,24 +1,81 @@
 return {
 	"mfussenegger/nvim-dap",
 	cond = group.plugins.dap,
-	event = "VeryLazy",
+	keys = {
+		{
+			"<leader>dc",
+			function()
+				require("dap").continue()
+			end,
+			desc = "Debugger Continue",
+		},
+		{
+			"<leader>dn",
+			function()
+				require("dap").step_over()
+			end,
+			desc = "Debugger Step Over",
+		},
+		{
+			"<leader>di",
+			function()
+				require("dap").step_into()
+			end,
+			desc = "Debugger Step Into",
+		},
+		{
+			"<leader>do",
+			function()
+				require("dap").step_out()
+			end,
+			desc = "Debugger Step Out",
+		},
+		{
+			"<leader>db",
+			function()
+				require("dap").toggle_breakpoint()
+			end,
+			desc = "Toggle Breakpoint",
+		},
+		{
+			"<leader>dq",
+			function()
+				require("dap").disconnect({ terminateDebuggee = true })
+			end,
+			desc = "Disconnect Debugger",
+		},
+	},
 	config = function()
-		require("plugin-configs.dap")
+		local dap, dapui = require("dap"), require("dapui")
+		dap.listeners.after.event_initialized["dapui_config"] = function()
+			dapui.open()
+		end
+		dap.listeners.before.event_terminated["dapui_config"] = function()
+			dapui.close()
+		end
+		dap.listeners.before.event_exited["dapui_config"] = function()
+			dapui.close()
+		end
+
+		vim.fn.sign_define("DapBreakpoint", { text = "🔴" })
+		vim.fn.sign_define("DapStopped", { text = "⚡" })
 	end,
 	dependencies = {
 		{
 			"mfussenegger/nvim-dap-python",
-			ft = "python",
 			cond = group.plugins.dap_python,
 			config = function()
-				require("plugin-configs.dap-python")
+				require("dap-python").setup("~/.conda/debugpy/bin/python")
 			end,
 		},
 		{
 			"jay-babu/mason-nvim-dap.nvim",
 			cmd = { "DapInstall", "DapUninstall" },
 			config = function()
-				require("plugin-configs.mason-nvim-dap")
+				---@diagnostic disable-next-line: missing-fields
+				require("mason-nvim-dap").setup({
+					ensure_installed = require("defaults").ensure_installed.dap,
+				})
 			end,
 		},
 		{

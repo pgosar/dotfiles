@@ -1,11 +1,17 @@
 return {
 	"zbirenbaum/copilot.lua",
 	cmd = "Copilot",
-	cond = group.plugins.cmp and group.plugins.copilot,
 	event = "InsertEnter",
-	config = function()
-		require("plugin-configs.copilot")
-	end,
+	cond = group.plugins.cmp and group.plugins.copilot,
+	opts = {
+		suggestion = {
+			auto_trigger = true,
+			enabled = false,
+		},
+		panel = {
+			enabled = false,
+		},
+	},
 	dependencies = {
 		"zbirenbaum/copilot-cmp",
 		config = true,

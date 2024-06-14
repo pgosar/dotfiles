@@ -3,5 +3,5 @@ return {
 	cond = group.plugins.indent_blankline,
 	event = "VeryLazy",
 	main = "ibl",
-	config = true,
+	opts = {},
 }

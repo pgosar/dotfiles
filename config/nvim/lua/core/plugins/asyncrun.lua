@@ -1,5 +1,5 @@
 return {
 	"skywind3000/asyncrun.vim",
-	event = "VeryLazy",
+	cmd = "AsyncRun",
 	cond = group.plugins.asyncrun,
 }
