@@ -1,7 +1,7 @@
 return {
 	"akinsho/bufferline.nvim",
 	cond = group.plugins.bufferline,
-	event = "VeryLazy",
+	event = "VimEnter",
 	keys = {
 		{ "gb", "<CMD>BufferLinePick<CR>", desc = "pick buffer to open" },
 	},

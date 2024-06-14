@@ -1,6 +1,6 @@
 return {
 	"nvimtools/none-ls.nvim",
-	cond = group.plugins.null_ls,
+	cond = group.plugins.none_ls,
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local null_ls = require("null-ls")

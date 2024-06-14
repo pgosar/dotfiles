@@ -6,7 +6,7 @@ vim_opts({
 	opt = {
     autowrite = true,                        -- Auto save before commands
     clipboard = "unnamedplus",               -- Use system clipboard
-    colorcolumn = "100",                     -- Highlight column 100
+    -- colorcolumn = "100",                     -- Highlight column 100
 		conceallevel = 3,                        -- Hide concealed text
 		confirm = true,                          -- Confirm save changes
 		cursorline = true,                       -- Highlight cursor line
@@ -30,6 +30,7 @@ vim_opts({
 		sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos,terminal,localoptions", -- Session options
 		shiftwidth = 2,    -- Spaces per indent
 		showbreak = "=>>", -- Wrapped line prefix
+    breakindent = true,
 		showmode = false,  -- Hide mode in command line
     smartcase = true,  -- Smart case search
     softtabstop = 2,   -- Spaces per <Tab>
