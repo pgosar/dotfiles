@@ -22,9 +22,9 @@ export ZSH="$HOME/.oh-my-zsh"
 export DOTFILES_DIR="$HOME/code/dotfiles"
 export EDITOR='nvim'
 export VISUAL='nvim'
-export QT_SCREEN_SCALE_FACTORS="1;1"
-export LIBGUESTFS_BACKEND=direct
-export QT_SCREEN_SCALE_FACTORS="0.5"
+
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_NO_ENV_HINTS=1
 
 # ---- Terminal Settings -----------------------------------------------------
 
@@ -58,13 +58,11 @@ plugins=(
     zsh-interactive-cd
     zsh-autosuggestions
     zsh-syntax-highlighting
-    poetry
     vi-mode
-    # zsh-vi-mode
 )
 
 # ---- Load Scripts ----------------------------------------------------------
-
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 loadpath=$DOTFILES_DIR/config
 source $ZSH/oh-my-zsh.sh > /dev/null 2>&1                     # load oh-my-zsh
 if [ -f $loadpath/aliasList.sh ]; then                              # load aliases
@@ -81,24 +79,14 @@ fi
 bindkey '^d' autosuggest-accept
 bindkey '^k' edit-command-line
 
-
-# ---- Plugin Settings -------------------------------------------------------
-
-# stops git status from checking untracked files
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-
 # ---- Terminal Commands -----------------------------------------------------
 
 fortune
 source ~/.local/share/LS_COLORS/lscolors.sh
 
-source /home/chilly/.config/broot/launcher/bash/br
 eval "$(register-python-argcomplete pipx)"
-source /usr/share/nvm/init-nvm.sh
-# source /opt/intel/oneapi/setvars.sh
-source /usr/share/doc/pkgfile/command-not-found.zsh
+[ -s "~/.nvm/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "~/.nvm/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
 source <(fzf --zsh)
-export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 autoload -U compinit; compinit
