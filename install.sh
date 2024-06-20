@@ -7,6 +7,11 @@ rm -f ~/.tmux.conf
 rm -rf ~/.config/ranger
 rm -rf ~/.config/kitty
 rm -rf ~/.config/nvim
+rm -rf ~/.config/sketchybar
+rm -rf ~/.config/skhd
+rm -rf ~/.config/svim
+rm -rf ~/.config/yabai
+rm -rf ~/.config/borders
 rm -f ~/.config/starship.toml
 rm -f ~/.config/topgrade.toml
 
@@ -15,6 +20,11 @@ source ./dotfiles_env.sh
 ln -s "$DOTFILES_DIR/config/nvim" ~/.config/nvim
 ln -s "$DOTFILES_DIR/config/ranger" ~/.config/ranger
 ln -s "$DOTFILES_DIR/config/kitty" ~/.config/kitty
+ln -s "$DOTFILES_DIR/config/sketchybar" ~/.config/sketchybar
+ln -s "$DOTFILES_DIR/config/skhd" ~/.config/skhd
+ln -s "$DOTFILES_DIR/config/svim" ~/.config/svim
+ln -s "$DOTFILES_DIR/config/yabai" ~/.config/yabai
+ln -s "$DOTFILES_DIR/config/borders" ~/.config/borders
 ln -s "$DOTFILES_DIR/config/zshrc" ~/.zshrc
 ln -s "$DOTFILES_DIR/config/zprofile" ~/.zprofile
 ln -s "$DOTFILES_DIR/config/gitconfig" ~/.gitconfig

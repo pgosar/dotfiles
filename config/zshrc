@@ -85,8 +85,13 @@ fortune
 source ~/.local/share/LS_COLORS/lscolors.sh
 
 eval "$(register-python-argcomplete pipx)"
-[ -s "~/.nvm/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "~/.nvm/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+
 [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
 source <(fzf --zsh)
 autoload -U compinit; compinit
+export NODE_PATH=$NODE_PATH:`npm root -g`
+export MAGICK_HOME=/opt/local
