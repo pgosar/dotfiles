@@ -10,7 +10,8 @@ alias \
 	cd="cd -P" \
 	v="nvim" \
 	ps="procs" \
-	:q="exit"
+	:q="exit" \
+	rsync="rsync -avh --progress"
 
 # git stuff
 alias \
