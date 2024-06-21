@@ -5,10 +5,10 @@ shift + alt - k : yabai -m window --warp north
 shift + alt - l : yabai -m window --warp east
 
 # switch focus between windows
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+cmd + alt - h : yabai -m window --focus west
+cmd + alt - j : yabai -m window --focus south
+cmd + alt - k : yabai -m window --focus north
+cmd + alt - l : yabai -m window --focus east
 
 # move  window to different space and also move there
 shift + alt - 1 : yabai -m window --space 1; yabai -m space --focus 1
@@ -31,3 +31,7 @@ alt - 6 : yabai -m space --focus 6
 alt - 7 : yabai -m space --focus 7
 alt - 8 : yabai -m space --focus 8
 alt - 9 : yabai -m space --focus 9
+
+# open applications
+cmd + shift - k : open -n -a "kitty"
+cmd + shift - b : open -n -a "arc"

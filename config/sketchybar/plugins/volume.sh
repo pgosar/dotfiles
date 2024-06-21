@@ -5,8 +5,8 @@ case ${INFO} in
     ICON=""
     ICON_PADDING_RIGHT=21
     ;;
-[0-9])
-    ICON=""
+[1-2][0-9]|30)
+    ICON=""
     ICON_PADDING_RIGHT=12
     ;;
 *)
@@ -15,4 +15,4 @@ case ${INFO} in
     ;;
 esac
 
-sketchybar --set $NAME icon=$ICON icon.padding_right=$ICON_PADDING_RIGHT label="$INFO%"
+sketchybar --set $NAME icon=$ICON icon.padding_right=5 label="$INFO%"

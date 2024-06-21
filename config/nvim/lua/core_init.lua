@@ -100,3 +100,5 @@ if big_file then
 		},
 	})
 end
+
+-- TODO: dont show could not find autoformatter message when not appropriate

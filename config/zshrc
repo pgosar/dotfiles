@@ -81,7 +81,6 @@ bindkey '^k' edit-command-line
 
 # ---- Terminal Commands -----------------------------------------------------
 
-fortune
 source ~/.local/share/LS_COLORS/lscolors.sh
 
 eval "$(register-python-argcomplete pipx)"

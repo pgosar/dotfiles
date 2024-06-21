@@ -17,9 +17,6 @@ sketchybar --bar \
     notch_width=188 \
     display=main
 
-# Alternatiive background colors
-# label.color=0xffffffff
-# background.color=0x9924273a
 sketchybar --default \
     background.color=0x66494d64 \
     background.corner_radius=5 \
@@ -43,15 +40,7 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT \
     label.drawing=off \
     label.padding_left=3 \
     script="$PLUGIN_DIR/spotify.sh" \
-    --subscribe spotify spotify_change mouse.clicked
-
-sketchybar --add item current_space left \
-    --set current_space \
-    background.color=0xfff5a97f \
-    icon.color=0xff24273a \
-    label.drawing=off \
-    script="$PLUGIN_SHARED_DIR/current_space.sh" \
-    --subscribe current_space space_change mouse.clicked
+    --subscribe spotify spotify_change mouse.clicked system_woke
 
 sketchybar --add item front_app left \
     --set front_app \
@@ -81,16 +70,23 @@ sketchybar --add item front_app left \
     label.font="$FONT_FACE:Bold:12.0" \
     label.drawing=yes
 
-sketchybar --add item weather.moon q \
-    --set weather.moon \
-    background.color=0x667dc4e4 \
-    background.padding_right=-1 \
-    icon.color=0xff181926 \
-    icon.font="$FONT_FACE:Bold:22.0" \
-    icon.padding_left=4 \
-    icon.padding_right=3 \
-    label.drawing=off \
-    --subscribe weather.moon mouse.clicked
+spaces=()
+for i in {1..9}
+do
+    spaces+=(--add space space$i left \
+      --set space$i associated_display=1 associated_space=$i icon=$i \
+      --set space$i label.drawing=off \
+      --set space$i background.drawing=on \
+      --set space$i background.color=0x44ffffff \
+      --set space$i background.corner_radius=5 \
+      --set space$i background.height=20 \
+      --set space$i background.width=20)
+done
+sketchybar -m \
+  --add item dummy left \
+  --set dummy drawing=off script="$PLUGIN_SHARED_DIR/space.sh" \
+  --subscribe dummy space_change \
+  "${spaces[@]}"
 
 sketchybar --add item weather q \
     --set weather \
@@ -114,6 +110,20 @@ sketchybar --add item clock right \
     update_freq=10 \
     script="$PLUGIN_SHARED_DIR/clock.sh"
 
+sketchybar --add item cpu right \
+  --set cpu \
+  icon= \
+  icon.color=0xff8aadf4 \
+  update_freq=10 \
+  script="$PLUGIN_SHARED_DIR/cpu.sh"
+
+sketchybar --add item temp right \
+  --set temp \
+  icon= \
+  icon.color=0xff8aadf4 \
+  update_freq=10 \
+  script="$PLUGIN_SHARED_DIR/temp.sh"
+
 sketchybar --add item battery right \
     --set battery \
     update_freq=20 \
@@ -124,10 +134,7 @@ sketchybar --add item volume right \
     icon.color=0xff8aadf4 \
     label.drawing=true \
     script="$PLUGIN_SHARED_DIR/volume.sh" \
-    --subscribe volume volume_change
-
-# osascript -e 'quit app "Rectangle"'
-# open -a Rectangle
+    --subscribe volume volume_change system_woke
 
 ##### Finalizing Setup #####
 sketchybar --update
