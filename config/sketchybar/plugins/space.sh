@@ -7,7 +7,7 @@ do
   then
     color="0xff8aadf4"  # Active space color (blue)
   else
-    color="0x44ffffff"  # Inactive space color (translucent white)
+    color="0xff000000"  # Inactive space color (translucent white)
   fi
 
   if [ "$window" = "null" ]

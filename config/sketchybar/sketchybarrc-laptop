@@ -9,7 +9,7 @@ SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
 sketchybar --bar \
     height=32 \
-    color=0x00000000 \
+    color=0xFF000000 \
     margin=0 \
     sticky=on \
     padding_left=23 \
@@ -18,7 +18,7 @@ sketchybar --bar \
     display=main
 
 sketchybar --default \
-    background.color=0x66494d64 \
+    background.color=0x00222222 \
     background.corner_radius=5 \
     background.padding_right=5 \
     background.height=26 \
@@ -77,7 +77,7 @@ do
       --set space$i associated_display=1 associated_space=$i icon=$i \
       --set space$i label.drawing=off \
       --set space$i background.drawing=on \
-      --set space$i background.color=0x44ffffff \
+      --set space$i background.color=0xff000000 \
       --set space$i background.corner_radius=5 \
       --set space$i background.height=20 \
       --set space$i background.width=20)
@@ -87,6 +87,7 @@ sketchybar -m \
   --set dummy drawing=off script="$PLUGIN_SHARED_DIR/space.sh" \
   --subscribe dummy space_change \
   "${spaces[@]}"
+
 
 sketchybar --add item weather q \
     --set weather \
