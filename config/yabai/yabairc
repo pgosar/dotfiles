@@ -9,7 +9,7 @@ yabai -m signal --add event=window_created action='
  yabai -m window $yabai_window_id --toggle float --layer above --grid 4:4:1:1:2:2
 '
 
-yabai -m rule --add app="^(Calculator|Spotify|System Preferences|System Settings|zoom.us|Steam|Alfred|Settings|Spotlight)$" manage=off
+yabai -m rule --add app="^(App Store|Calculator|Spotify|System Preferences|System Settings|zoom.us|Steam|Alfred|Settings|Spotlight)$" manage=off
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 
