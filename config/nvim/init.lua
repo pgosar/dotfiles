@@ -1,4 +1,5 @@
 require("core_init")
+
 -- minimal reproduce
 -- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 -- if not vim.loop.fs_stat(lazypath) then

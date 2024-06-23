@@ -6,7 +6,13 @@ M.setup_sources = function(b)
 		b.formatting.clang_format,
 		b.formatting.stylua,
 		b.formatting.cbfmt,
-		b.formatting.shfmt,
+		b.formatting.shfmt.with({
+			filetypes = {
+				"sh",
+				"bash",
+				"zsh",
+			},
+		}),
 		b.formatting.gofumpt,
 		b.formatting.black,
 		b.formatting.cmake_format,
@@ -56,7 +62,6 @@ M.ensure_installed = {
 		"gomod",
 		"gosum",
 		"html",
-		"hyprlang",
 		"java",
 		"javascript",
 		"jsdoc",
@@ -85,6 +90,7 @@ M.ensure_installed = {
 		"yaml",
 	},
 	null_ls = {
+		"bash-language-server",
 		"cbfmt",
 		"clangd",
 		"codelldb",

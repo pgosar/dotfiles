@@ -55,6 +55,7 @@ return {
 			gopls = "language-server-configs.gopls",
 			tsserver = "language-server-configs.tsserver",
 			lua_ls = "language-server-configs.lua_ls",
+			bashls = "language-server-configs.bashls",
 		}
 
 		for server, config_module in pairs(server_configs) do

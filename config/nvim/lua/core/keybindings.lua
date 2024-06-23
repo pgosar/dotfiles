@@ -2,11 +2,6 @@ local map = require("core.utils.utils").map
 
 map("n", "<leader>l", "<CMD>Lazy<CR>", { desc = "open Lazy UI" })
 
--- ZenMode
-if group.plugins.zen then
-	map("n", "<leader>zm", "<CMD>ZenMode<CR>", { desc = "toggle zen mode" })
-end
-
 -- Searching and Highlighting
 map("n", "m", "<CMD>noh<CR>", { desc = "clear search highlight" })
 
