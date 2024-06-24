@@ -29,11 +29,11 @@ export HOMEBREW_NO_ENV_HINTS=1
 # ---- Terminal Settings -----------------------------------------------------
 
 DISABLE_MAGIC_FUNCTIONS="true"
-COMPLETION_WAITING_DOTS="true"               # show command is auto completing
-ZSH_COLORIZE_STYLE="colorful"                                # set color style
-HISTSIZE=10000                                                   # big history
+COMPLETION_WAITING_DOTS="true" # show command is auto completing
+ZSH_COLORIZE_STYLE="colorful"  # set color style
+HISTSIZE=10000                 # big history
 SAVEHIST=10000
-autoload -U edit-command-line                            # edit command in vim
+autoload -U edit-command-line # edit command in vim
 fpath+=~/.zfunc
 autoload -U bashcompinit
 bashcompinit
@@ -41,38 +41,37 @@ zle -N edit-command-line
 # disable ctrl-s and q
 [[ -n ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
 set -o ignoreeof
-unalias -a                                             # remove preset aliases
-
+unalias -a # remove preset aliases
 
 # ---- Plugins ---------------------------------------------------------------
 
 plugins=(
-    git
-    pip
-    copyfile
-    command-not-found
-    colored-man-pages
-    history-substring-search
-    last-working-dir
-    safe-paste
-    zsh-interactive-cd
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    vi-mode
+	git
+	pip
+	copyfile
+	command-not-found
+	colored-man-pages
+	history-substring-search
+	last-working-dir
+	safe-paste
+	zsh-interactive-cd
+	zsh-autosuggestions
+	zsh-syntax-highlighting
+	vi-mode
+	conda-zsh-completion
 )
 
 # ---- Load Scripts ----------------------------------------------------------
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 loadpath=$DOTFILES_DIR/config
-source $ZSH/oh-my-zsh.sh > /dev/null 2>&1                     # load oh-my-zsh
-if [ -f $loadpath/aliasList.sh ]; then                              # load aliases
-    source $loadpath/aliasList.sh
+source $ZSH/oh-my-zsh.sh >/dev/null 2>&1 # load oh-my-zsh
+if [ -f $loadpath/aliasList.sh ]; then   # load aliases
+	source $loadpath/aliasList.sh
 fi
-if [ -f $loadpath/commands.sh ]; then                          # load commands
-    source $loadpath/commands.sh
+if [ -f $loadpath/commands.sh ]; then # load commands
+	source $loadpath/commands.sh
 fi
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh                              # load fzf
-
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh # load fzf
 
 # ---- Keybindings -----------------------------------------------------------
 
@@ -91,6 +90,7 @@ export NVM_DIR="$HOME/.nvm"
 
 source ~/miniconda3/etc/profile.d/conda.sh
 source <(fzf --zsh)
-autoload -U compinit; compinit
-export NODE_PATH=$NODE_PATH:`npm root -g`
+autoload -U compinit
+compinit
+export NODE_PATH=$NODE_PATH:$(npm root -g)
 export MAGICK_HOME=/opt/local
