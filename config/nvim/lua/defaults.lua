@@ -120,7 +120,9 @@ M.ensure_installed = {
 
 -- setup formatting servers
 M.formatting_servers = {
+	["rust-analyzer"] = { "rust" },
 	["null-ls"] = {
+		"rust",
 		"lua",
 		"javascript",
 		"javascriptreact",
@@ -169,7 +171,7 @@ M.group = {
 		lsp_zero = true,
 		lualine = true,
 		markdown = true,
-		markdown_render = true,
+		markview = true,
 		move = true,
 		multicursor = true,
 		nabla = true,
