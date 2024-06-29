@@ -4,7 +4,7 @@
 alias \
 	ls="eza -F --color=auto --group-directories-first" \
 	sl="eza -F --color=auto --group-directories-first" \
-	lsa="eza -a" \
+	lsa="eza -F --color=auto --group-directories-first -a" \
 	grep="grep --color=auto" \
 	py="bpython" \
 	cd="cd -P" \
