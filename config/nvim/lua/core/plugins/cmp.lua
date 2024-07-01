@@ -39,12 +39,21 @@ return {
 			},
 			formatting = {
 				fields = { "abbr", "kind", "menu" },
-				format = require("lspkind").cmp_format({
-					maxwidth = 50,
-					ellipsis_char = "...",
-					mode = "symbol_text",
-					symbol_map = { Copilot = "" },
-				}),
+				format = function(entry, item)
+					local color = require("nvim-highlight-colors").format(entry, { kind = item.kind })
+					item = require("lspkind").cmp_format({
+						maxwidth = 50,
+						ellipsis_char = "...",
+						mode = "symbol_text",
+						symbol_map = { Copilot = "" },
+						show_labelDetails = true,
+					})(entry, item)
+					if color.abbr_hl_group then
+						item.kind_hl_group = color.abbr_hl_group
+						item.kind = color.abbr
+					end
+					return item
+				end,
 			},
 			mapping = {
 				["<CR>"] = cmp.mapping({
