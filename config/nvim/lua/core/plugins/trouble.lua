@@ -9,6 +9,12 @@ return {
 	},
 	cmd = "Trouble",
 	opts = {
+		preview = {
+			type = "split",
+			relative = "win",
+			position = "right",
+			size = 0.3,
+		},
 		focus = true,
 	},
 }
