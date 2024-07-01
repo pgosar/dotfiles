@@ -7,6 +7,30 @@ return {
 	},
 	opts = {
 		close_if_last_window = true,
+		default_component_configs = {
+			icon = {
+				folder_closed = icons.neotree.folder_closed,
+				folder_open = icons.neotree.folder_open,
+				folder_empty = icons.neotree.folder_empty,
+			},
+			modified = {
+				symbol = icons.git.modified,
+			},
+			git_status = {
+				symbols = {
+					added = icons.git.added,
+					modified = icons.git.modified,
+					deleted = icons.git.removed,
+					renamed = icons.git.renamed,
+					-- Status type
+					untracked = icons.git.untracked,
+					ignored = icons.git.ignored,
+					unstaged = icons.git.unstaged,
+					staged = icons.git.staged,
+					conflict = icons.git.conflict,
+				},
+			},
+		},
 		window = {
 			mappings = {
 				["C"] = "close_all_subnodes",
@@ -32,5 +56,5 @@ return {
 		end
 	end,
 	branch = "v3.x",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = { "nvim-tree/nvim-web-devicons", "3rd/image.nvim" },
 }

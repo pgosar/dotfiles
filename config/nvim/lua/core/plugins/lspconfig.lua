@@ -3,12 +3,11 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local _, lsp = pcall(require, "lsp-zero")
-
 		lsp.set_sign_icons({
-			error = "✘",
-			warn = "▲",
-			hint = "⚑",
-			info = "»",
+			error = icons.lsp.error,
+			warn = icons.lsp.warn,
+			hint = icons.lsp.hint,
+			info = icons.lsp.info,
 		})
 
 		lsp.set_server_config({
@@ -59,8 +58,8 @@ return {
 		}
 
 		for server, config_module in pairs(server_configs) do
-			local ok, specific = pcall(require, config_module)
-			if ok then
+			local spec_ok, specific = pcall(require, config_module)
+			if spec_ok then
 				lspconfig[server].setup(vim.tbl_deep_extend("force", {}, default, specific or {}))
 			else
 				vim.notify("Failed to load config for " .. server .. ": " .. specific)

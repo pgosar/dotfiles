@@ -124,7 +124,7 @@ return {
 		components.diagnostics = {
 			"diagnostics",
 			sources = { "nvim_diagnostic" },
-			symbols = { error = " ", warn = " ", info = " " },
+			symbols = { error = icons.lsp.error, warn = icons.lsp.warn, info = icons.lsp.info },
 			diagnostics_color = {
 				color_error = { fg = colors.red },
 				color_warn = { fg = colors.yellow },
@@ -167,13 +167,13 @@ return {
 
 		components.branch = {
 			"branch",
-			icon = "",
+			icon = icons.git.branch,
 			color = { fg = colors.violet, gui = "bold" },
 		}
 
 		components.diff = {
 			"diff",
-			symbols = { added = " ", modified = "󰝤 ", removed = " " },
+			symbols = { added = icons.git.added, modified = icons.git.modified, removed = icons.git.removed },
 			diff_color = {
 				added = { fg = colors.green },
 				modified = { fg = colors.orange },

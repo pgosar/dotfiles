@@ -211,6 +211,45 @@ M.group = {
 	},
 }
 
+_G.icons = {
+	cmp = {
+		copilot = "",
+	},
+	neotree = {
+		folder_closed = " ",
+		folder_open = " ",
+		folder_empty = "󰜌 ",
+	},
+	dap = {
+		breakpoint = " ",
+		stopped = "󰁕 ",
+	},
+	diagnostics = {
+		error = " ",
+		warn = " ",
+		hint = "󰌵",
+		info = " ",
+	},
+	git = {
+		branch = "",
+		added = " ",
+		modified = " ",
+		removed = " ",
+		renamed = " ",
+		untracked = "",
+		ignored = " ",
+		unstaged = "󰄱 ",
+		staged = " ",
+		conflict = "",
+	},
+	lsp = {
+		error = "✘",
+		warn = "▲",
+		hint = "⚑",
+		info = "»",
+	},
+}
+
 M.colorscheme = "catppuccin"
 
 return M

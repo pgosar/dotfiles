@@ -45,7 +45,7 @@ return {
 						maxwidth = 50,
 						ellipsis_char = "...",
 						mode = "symbol_text",
-						symbol_map = { Copilot = "" },
+						symbol_map = { Copilot = icons.cmp.copilot },
 						show_labelDetails = true,
 					})(entry, item)
 					if color.abbr_hl_group then

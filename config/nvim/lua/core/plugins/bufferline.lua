@@ -12,7 +12,7 @@ return {
 				diagnostics = "nvim_lsp",
 				separator_style = "slant",
 				diagnostics_indicator = function(count, level)
-					local icon = level:match("error") and " " or " "
+					local icon = level:match("error") and icons.diagnostics.error or icons.diagnostics.warn
 					return " " .. icon .. count
 				end,
 			},
