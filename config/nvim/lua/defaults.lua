@@ -94,7 +94,7 @@ M.ensure_installed = {
 		"cbfmt",
 		"clangd",
 		"codelldb",
-		"css_lsp",
+		"css-lsp",
 		"debugpy",
 		"delve",
 		"gofumpt",
@@ -212,6 +212,14 @@ M.group = {
 }
 
 _G.icons = {
+	alpha = {
+		new_file = "",
+		find = "",
+		recent = "",
+		last_session = "",
+		open_session = "",
+		open_project = "",
+	},
 	cmp = {
 		copilot = "",
 	},
