@@ -1,6 +1,6 @@
 [misc]
 # Don't ask for confirmations
-#assume_yes = true
+assume_yes = true
 
 # Disable specific steps - same options as the command line flag
 #disable = ["system", "emacs"]
@@ -49,7 +49,7 @@ cleanup = true
 #skip_notify = true
 
 # Whether to self update (this is ignored if the binary has been built without self update support, available also via setting the environment variable TOPGRADE_NO_SELF_UPGRADE)
-#no_self_update = true
+no_self_update = false
 
 [git]
 max_concurrency = 10
@@ -77,8 +77,8 @@ repos = [
 #"Custom command using interactive shell (unix)" = "-i vim_upgrade"
 
 [brew]
-#greedy_cask = true
-#autoremove = true
+greedy_cask = true
+autoremove = true
 
 [linux]
 # Arch Package Manager to use. Allowed values: autodetect, aura, garuda_update, pacman, pamac, paru, pikaur, trizen, yay.
@@ -124,7 +124,3 @@ self_rename = true
 [firmware]
 # Offer to update firmware; if false just check for and display available updates
 #upgrade = true
-
-[distrobox]
-#use_root = false
-#containers = ["archlinux-latest"]
