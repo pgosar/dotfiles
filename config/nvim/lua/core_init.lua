@@ -109,4 +109,3 @@ vim.fn.sign_define("DapBreakpoint", { text = icons.dap.breakpoint })
 vim.fn.sign_define("DapStopped", { text = icons.dap.stopped })
 
 -- TODO: dont show could not find autoformatter message when not appropriate
--- TODO: possession doesn't autosave and dapui problem when loading?

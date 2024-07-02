@@ -11,6 +11,9 @@ return {
 		"PossessionDelete",
 	},
 	opts = {
+		plugins = {
+			dapui = false,
+		},
 		autosave = {
 			current = true,
 			tmp = true,
