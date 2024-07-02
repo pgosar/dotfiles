@@ -108,7 +108,13 @@ return {
 		}
 
 		components.filename = {
-			"filename",
+			function()
+				return require("nvim-web-devicons").get_icon(
+					vim.fn.expand("%:t"),
+					vim.fn.expand("%:e"),
+					{ default = true }
+				) .. " " .. vim.fn.expand("%:t")
+			end,
 			cond = buffer_not_empty,
 			color = { fg = colors.magenta, gui = "bolditalic" },
 			padding = { left = 0, right = 1 },
@@ -124,7 +130,7 @@ return {
 		components.diagnostics = {
 			"diagnostics",
 			sources = { "nvim_diagnostic" },
-			symbols = { error = icons.lsp.error, warn = icons.lsp.warn, info = icons.lsp.info },
+			symbols = { error = icons.diagnostics.error, warn = icons.diagnostics.warn, info = icons.diagnostics.info },
 			diagnostics_color = {
 				color_error = { fg = colors.red },
 				color_warn = { fg = colors.yellow },

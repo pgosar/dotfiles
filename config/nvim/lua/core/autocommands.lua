@@ -38,6 +38,7 @@ if group.autocommands.term_spelling then
 	})
 end
 
+-- set relative number in normal mode
 if group.autocommands.number then
 	cmd({ "VimEnter", "InsertLeave" }, {
 		desc = "set relativenumber",
