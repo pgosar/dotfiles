@@ -232,12 +232,12 @@ _G.icons = {
 		test = "󰙨 ",
 	},
 	alpha = {
-		new_file = "",
-		find = "",
-		recent = "",
-		last_session = "",
-		open_session = "",
-		open_project = "",
+		new_file = " ",
+		find = " ",
+		recent = " ",
+		last_session = " ",
+		open_session = " ",
+		open_project = " ",
 	},
 	cmp = {
 		copilot = "",

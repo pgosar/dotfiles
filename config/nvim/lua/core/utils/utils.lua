@@ -54,12 +54,6 @@ M.create_floating_terminal = function(cmd)
 			float_opts = {
 				border = "double",
 			},
-			on_open = function()
-				vim.cmd("startinsert!")
-			end,
-			on_close = function()
-				vim.cmd("startinsert!")
-			end,
 		})
 		instance:toggle()
 	end
