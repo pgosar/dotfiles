@@ -122,7 +122,6 @@ M.ensure_installed = {
 M.formatting_servers = {
 	["rust-analyzer"] = { "rust" },
 	["null-ls"] = {
-		"rust",
 		"lua",
 		"javascript",
 		"javascriptreact",

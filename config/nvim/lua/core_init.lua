@@ -101,11 +101,12 @@ if big_file then
 	})
 end
 
-vim.fn.sign_define("DiagnosticSignError", { text = icons.diagnostics.error, texthl = "DiagnosticSignError" })
-vim.fn.sign_define("DiagnosticSignWarn", { text = icons.diagnostics.warn, texthl = "DiagnosticSignWarn" })
-vim.fn.sign_define("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "DiagnosticSignInfo" })
-vim.fn.sign_define("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
-vim.fn.sign_define("DapBreakpoint", { text = icons.dap.breakpoint })
-vim.fn.sign_define("DapStopped", { text = icons.dap.stopped })
+local sign = vim.fn.sign_define
+sign("DiagnosticSignError", { text = icons.diagnostics.error, texthl = "DiagnosticSignError" })
+sign("DiagnosticSignWarn", { text = icons.diagnostics.warn, texthl = "DiagnosticSignWarn" })
+sign("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "DiagnosticSignInfo" })
+sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
+sign("DapBreakpoint", { text = icons.dap.breakpoint })
+sign("DapStopped", { text = icons.dap.stopped })
 
 -- TODO: dont show could not find autoformatter message when not appropriate
