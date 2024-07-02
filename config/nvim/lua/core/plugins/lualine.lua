@@ -5,19 +5,17 @@ return {
 	config = function()
 		local lualine = require("lualine")
 
-    -- stylua: ignore
 		local colors = {
-			bg =       "#202328",
-			fg =       "#BBC2CF",
-			yellow =   "#ECBE7B",
-			cyan =     "#008080",
+			fg = "#BBC2CF",
+			yellow = "#ECBE7B",
+			cyan = "#008080",
 			darkblue = "#081633",
-			green =    "#98BE65",
-			orange =   "#FF9E64",
-			violet =   "#A9A1E1",
-			magenta =  "#C678DD",
-			blue =     "#51AFEF",
-			red =      "#EC5F67",
+			green = "#98BE65",
+			orange = "#FF9E64",
+			violet = "#A9A1E1",
+			magenta = "#C678DD",
+			blue = "#51AFEF",
+			red = "#EC5F67",
 		}
 
 		local buffer_not_empty = function()
@@ -44,16 +42,12 @@ return {
 			sections = {
 				lualine_a = {},
 				lualine_b = {},
+        lualine_c = {},
 				lualine_y = {},
 				lualine_z = {},
-				lualine_c = {},
 				lualine_x = {},
 			},
 			inactive_sections = {
-				lualine_a = {},
-				lualine_b = {},
-				lualine_y = {},
-				lualine_z = {},
 				lualine_c = {},
 				lualine_x = {},
 			},
@@ -155,7 +149,7 @@ return {
 				for _, client in ipairs(clients) do
 					local filetypes = client.config.filetypes
 					if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
-						return client.name
+						return icons.lualine.lsp .. " " .. client.name
 					end
 				end
 				return msg

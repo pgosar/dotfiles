@@ -221,6 +221,9 @@ M.colors = {
 M.colorscheme = "catppuccin"
 
 _G.icons = {
+	lualine = {
+		lsp = " ",
+	},
 	comments = {
 		fix = " ",
 		todo = " ",
