@@ -14,19 +14,11 @@ return {
 		},
 	},
 	opts = {
-		open_mapping = [[<c-t>]],
-		on_open = function(_)
-			vim.cmd("startinsert!")
-		end,
-		on_close = function(_)
-			vim.cmd("startinsert!")
-		end,
 		size = 25,
 		shade_terminals = false,
 		direction = "horizontal",
 		float_opts = {
 			border = "curved",
-			winblend = 6,
 		},
 	},
 }

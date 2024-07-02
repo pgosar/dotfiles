@@ -211,7 +211,26 @@ M.group = {
 	},
 }
 
+M.colors = {
+	mocha_override = {
+		base = "#252525",
+		mantle = "#262626",
+		crust = "#252525",
+	},
+}
+
+M.colorscheme = "catppuccin"
+
 _G.icons = {
+	comments = {
+		fix = " ",
+		todo = " ",
+		hack = " ",
+		warn = " ",
+		perf = "󱑂 ",
+		note = " ",
+		test = "󰙨 ",
+	},
 	alpha = {
 		new_file = "",
 		find = "",
@@ -223,11 +242,6 @@ _G.icons = {
 	cmp = {
 		copilot = "",
 	},
-	neotree = {
-		folder_closed = " ",
-		folder_open = " ",
-		folder_empty = "󰜌 ",
-	},
 	dap = {
 		breakpoint = " ",
 		stopped = "󰁕 ",
@@ -237,6 +251,8 @@ _G.icons = {
 		warn = " ",
 		hint = "󰌵",
 		info = " ",
+		debug = " ",
+		trace = "✎",
 	},
 	git = {
 		branch = "",
@@ -257,7 +273,5 @@ _G.icons = {
 		info = "»",
 	},
 }
-
-M.colorscheme = "catppuccin"
 
 return M

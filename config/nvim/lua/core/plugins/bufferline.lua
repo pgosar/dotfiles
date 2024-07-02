@@ -10,7 +10,7 @@ return {
 			options = {
 				highlights = require("catppuccin.groups.integrations.bufferline").get(),
 				diagnostics = "nvim_lsp",
-				separator_style = "slant",
+				separator_style = "slope",
 				diagnostics_indicator = function(count, level)
 					local icon = level:match("error") and icons.diagnostics.error or icons.diagnostics.warn
 					return " " .. icon .. count

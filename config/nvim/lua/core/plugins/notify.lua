@@ -23,5 +23,13 @@ return {
 			desc = "Dismiss notifications",
 		},
 	},
-	opts = {},
+	opts = {
+		icons = {
+			ERROR = icons.diagnostics.error,
+			WARN = icons.diagnostics.warn,
+			INFO = icons.diagnostics.info,
+			DEBUG = icons.diagnostics.debug,
+			TRACE = icons.diagnostics.trace,
+		},
+	},
 }

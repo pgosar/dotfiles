@@ -8,11 +8,6 @@ return {
 	opts = {
 		close_if_last_window = true,
 		default_component_configs = {
-			icon = {
-				folder_closed = icons.neotree.folder_closed,
-				folder_open = icons.neotree.folder_open,
-				folder_empty = icons.neotree.folder_empty,
-			},
 			modified = {
 				symbol = icons.git.modified,
 			},

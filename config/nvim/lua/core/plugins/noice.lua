@@ -25,7 +25,6 @@ return {
 				{ filter = { find = "changes;" }, opts = { skip = true } },
 				{ filter = { find = "indent" }, opts = { skip = true } },
 				{ filter = { find = "move" }, opts = { skip = true } },
-				{ filter = { find = "No information available" }, opts = { skip = true } },
 				{ filter = { find = "Processing file symbols" }, opts = { skip = true } },
 				{ filter = { find = "Diagnosing" }, opts = { skip = true } },
 			},

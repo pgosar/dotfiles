@@ -6,9 +6,11 @@ return {
 			pattern = "*.md",
 			callback = function()
 				if vim.bo.filetype == "markdown" then
-					require("core.utils.utils").map("n", "K", function()
-						require("nabla").popup()
-					end, { buffer = true, desc = "toggle nabla latex viewer popup" })
+					require("nabla").enable_virt({
+						autogen = true,
+						silent = true,
+					})
+					require("nabla").enable_virt()
 				end
 			end,
 		})

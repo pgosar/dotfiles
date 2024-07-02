@@ -31,7 +31,6 @@ return {
 		}
 		local fortune = require("alpha.fortune")
 		dashboard.section.footer.val = fortune()
-		dashboard.opts.position = "center"
 
 		require("alpha").setup(dashboard.opts)
 	end,

@@ -6,7 +6,6 @@ return {
 		{ "gD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
 		{ "gd", vim.lsp.buf.definition, desc = "Go to Definition" },
 		{ "gi", vim.lsp.buf.implementation, desc = "Go to Implementation" },
-		{ "K", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help" },
 		{ "<leader>rn", vim.lsp.buf.rename, desc = "Rename Symbol" },
 		{ "<leader>ca", vim.lsp.buf.code_action, mode = { "n", "v" }, desc = "Code Action" },
 		{
