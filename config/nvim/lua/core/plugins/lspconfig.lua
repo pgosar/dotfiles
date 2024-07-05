@@ -40,6 +40,10 @@ return {
 		local default = {
 			on_attach = function(client, bufnr)
 				require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
+				-- HACK: For some reason the above method call causes lualine's diff view to break,
+				-- and it only works again after re-entering the buffer which the below simulates
+				vim.cmd([[doautocmd BufLeave]])
+				vim.cmd([[doautocmd BufEnter]])
 			end,
 		}
 
