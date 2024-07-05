@@ -2,14 +2,18 @@ return {
 	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
-		local _, lsp = pcall(require, "lsp-zero")
+		local lsp_ok, lsp = pcall(require, "lsp-zero")
+		local ok, defaults = pcall(require, "defaults")
+		if not ok then
+			vim.api.nvim_err_writeln("Failed to load defaults.lua")
+		end
+    if lsp_ok then
 		lsp.set_sign_icons({
 			error = icons.lsp.error,
 			warn = icons.lsp.warn,
 			hint = icons.lsp.hint,
 			info = icons.lsp.info,
 		})
-
 		lsp.set_server_config({
 			capabilities = {
 				textDocument = {
@@ -21,11 +25,6 @@ return {
 				offsetEncoding = { "utf-16" },
 			},
 		})
-
-		local ok, defaults = pcall(require, "defaults")
-		if not ok then
-			vim.api.nvim_err_writeln("Failed to load defaults.lua")
-		end
 		lsp.format_on_save({
 			format_opts = {
 				async = false,
@@ -33,17 +32,21 @@ return {
 			},
 			servers = defaults.formatting_servers,
 		})
+  end
 
 		local lspconfig = require("lspconfig")
 		require("mason-lspconfig").setup()
 
 		local default = {
 			on_attach = function(client, bufnr)
-				require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
-				-- HACK: For some reason the above method call causes lualine's diff view to break,
-				-- and it only works again after re-entering the buffer which the below simulates
-				vim.cmd([[doautocmd BufLeave]])
-				vim.cmd([[doautocmd BufEnter]])
+				local wd_ok, wd = pcall(require, "workspace-diagnostics")
+				if wd_ok then
+					wd.populate_workspace_diagnostics(client, bufnr)
+					-- HACK: For some reason the above method call causes lualine's diff view to break,
+					-- and it only works again after re-entering the buffer which the below simulates
+					vim.cmd([[doautocmd BufLeave]])
+					vim.cmd([[doautocmd BufEnter]])
+				end
 			end,
 		}
 
