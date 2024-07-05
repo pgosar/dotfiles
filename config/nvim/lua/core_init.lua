@@ -88,6 +88,8 @@ if big_file then
 	local vim_opts = require("core.utils.utils").vim_opts
 	vim_opts({
 		opt = {
+			autowrite = true,
+			undofile = true,
 			clipboard = "unnamedplus",
 			cursorline = true,
 			cursorlineopt = "number",
@@ -97,6 +99,7 @@ if big_file then
 			scrolloff = 5,
 			foldlevel = 99,
 			foldlevelstart = 99,
+			softtabstop = 2,
 		},
 	})
 end
@@ -108,5 +111,3 @@ sign("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "Diagnostic
 sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
 sign("DapBreakpoint", { text = icons.dap.breakpoint })
 sign("DapStopped", { text = icons.dap.stopped })
-
--- TODO: dont show could not find autoformatter message when not appropriate

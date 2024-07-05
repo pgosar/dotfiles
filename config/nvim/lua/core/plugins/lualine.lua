@@ -33,7 +33,7 @@ return {
 		-- Config
 		local config = {
 			options = {
-				theme = "catppuccin",
+				theme = "auto",
 				component_separators = "",
 				section_separators = "",
 				always_divide_middle = false,
@@ -42,7 +42,7 @@ return {
 			sections = {
 				lualine_a = {},
 				lualine_b = {},
-        lualine_c = {},
+				lualine_c = {},
 				lualine_y = {},
 				lualine_z = {},
 				lualine_x = {},
