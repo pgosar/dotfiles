@@ -11,13 +11,12 @@ return {
 		"PossessionDelete",
 	},
 	opts = {
-		plugins = {
-			dapui = false,
-		},
+		plugins = { delete_hidden_buffers = false, delete_buffers = true, dapui = false },
 		autosave = {
 			current = true,
+			cwd = true,
 			tmp = true,
-			tmp_name = "tmp",
+			tmp_name = "last",
 			on_load = true,
 			on_quit = true,
 		},
