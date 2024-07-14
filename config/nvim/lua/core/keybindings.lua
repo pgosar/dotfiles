@@ -31,5 +31,4 @@ map("n", "_", ":vertical resize -2<CR>", { desc = "resize window left" })
 map("n", "+", ":vertical resize +2<CR>", { desc = "resize window right" })
 
 -- cut without yanking, since v/V with x is also cut
-map("n", "d", '"_d', { desc = "cut without yanking" })
-map("v", "d", '"_d', { desc = "cut without yanking" })
+map({ "n", "v" }, "d", '"_d', { desc = "cut without yanking" })
