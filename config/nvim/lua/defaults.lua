@@ -186,6 +186,7 @@ M.group = {
 		project = true,
 		refactor = true,
 		rustacean = true,
+		scrollbar = true,
 		scope = true,
 		surround = true,
 		telescope = true,
@@ -216,6 +217,7 @@ M.colors = {
 		mantle = "#262626",
 		crust = "#252525",
 	},
+	scrollbar = "#2f334d",
 }
 
 M.colorscheme = "catppuccin"

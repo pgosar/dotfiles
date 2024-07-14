@@ -3,10 +3,7 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local lsp_ok, lsp = pcall(require, "lsp-zero")
-		local ok, defaults = pcall(require, "defaults")
-		if not ok then
-			vim.api.nvim_err_writeln("Failed to load defaults.lua")
-		end
+		local _, defaults = pcall(require, "defaults")
 		if lsp_ok then
 			lsp.set_sign_icons({
 				error = icons.lsp.error,

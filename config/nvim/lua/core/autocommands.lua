@@ -17,13 +17,13 @@ if group.autocommands.remember_file_state then
 	cmd({ "BufWinLeave" }, {
 		desc = "remember file state",
 		group = "remember file state",
-		pattern = { "*" },
+		pattern = { "*.*" },
 		command = "mkview",
 	})
 	cmd({ "BufWinEnter" }, {
 		desc = "remember file state",
 		group = "remember file state",
-		pattern = { "*" },
+		pattern = { "*.*" },
 		command = "silent! loadview",
 	})
 end
