@@ -6,7 +6,6 @@ vim_opts({
 	opt = {
     autowrite = true,                        -- Auto save before commands
     clipboard = "unnamedplus",               -- Use system clipboard
-    -- colorcolumn = "100",                     -- Highlight column 100
 		conceallevel = 3,                        -- Hide concealed text
 		confirm = true,                          -- Confirm save changes
 		cursorline = true,                       -- Highlight cursor line
