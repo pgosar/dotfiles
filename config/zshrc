@@ -83,7 +83,7 @@ bindkey '^k' edit-command-line
 source ~/.local/share/LS_COLORS/lscolors.sh
 
 eval "$(register-python-argcomplete pipx)"
-
+fpath=(~/.zfunc "${fpath[@]}")
 export NVM_DIR="$HOME/.nvm"
 [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
 [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
@@ -94,11 +94,3 @@ autoload -U compinit
 compinit
 export NODE_PATH=$NODE_PATH:$(npm root -g)
 export MAGICK_HOME=/opt/local
-
-# pnpm
-export PNPM_HOME="/Users/chilly/Library/pnpm"
-case ":$PATH:" in
-*":$PNPM_HOME:"*) ;;
-*) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end

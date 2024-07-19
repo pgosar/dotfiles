@@ -23,4 +23,5 @@ alt - 9 : yabai -m window --space 9
 
 # open applications
 cmd + shift - k : open -n -a "kitty"
-cmd + shift - b : open -n -a "arc"
+
+cmd + alt - f : yabai -m window --toggle float
