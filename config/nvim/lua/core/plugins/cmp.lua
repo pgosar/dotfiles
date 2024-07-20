@@ -75,7 +75,7 @@ return {
 					end
 				end, { "i", "s", "c" }),
 				["<S-Tab>"] = cmp.mapping(function(fallback)
-					if neogen.jumpable(true) then
+					if neogen.jumpable(-1) then
 						neogen.jump_prev()
 					elseif cmp.visible() then
 						cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
@@ -93,6 +93,7 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "nvim_lua" },
 				{ name = "snippets" },
+				{ name = "buffer" },
 				{ name = "path", option = { trailing_slash = true } },
 			},
 		})
