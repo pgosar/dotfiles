@@ -27,6 +27,8 @@ return {
 				{ filter = { find = "move" }, opts = { skip = true } },
 				{ filter = { find = "Processing file symbols" }, opts = { skip = true } },
 				{ filter = { find = "Diagnosing" }, opts = { skip = true } },
+				-- TODO: actually fix rust-analyzer error
+				{ filter = { find = "left == right" }, opts = { skip = true } },
 			},
 			cmdline = { view = "cmdline" },
 			views = {

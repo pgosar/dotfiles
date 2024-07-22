@@ -26,14 +26,12 @@ alias \
 # verbosity and prompting
 alias \
 	mkdir="mkdir -pv" \
-	rm="rip" \
+	rm="rip -i" \
 	cp="cp -iv" \
 	mv="mv -iv"
 
 # packages
 alias \
-	yt="youtube-dl --add-metadata -ic" \
-	fd="~/.cargo/bin/fd" \
 	mlp="mlp --no-browser" \
 	icat="kitty +kitten icat" \
 	hg="kitty +kitten hyperlinked_grep" \
