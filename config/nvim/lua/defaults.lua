@@ -208,6 +208,7 @@ M.group = {
 		remember_file_state = true,
 		term_spelling = true,
 		number = true,
+		comment = true,
 	},
 }
 

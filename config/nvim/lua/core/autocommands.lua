@@ -53,3 +53,12 @@ if group.autocommands.number then
 		command = "set number norelativenumber",
 	})
 end
+
+if group.autocommands.comment then
+	cmd({ "Filetype" }, {
+		desc = "disable autocomment next line on enter",
+		group = augroup("disable_autocomment_next_line", { clear = true }),
+		pattern = "*",
+		command = "setlocal formatoptions-=r",
+	})
+end
