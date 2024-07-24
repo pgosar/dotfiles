@@ -54,6 +54,7 @@ if group.autocommands.number then
 	})
 end
 
+-- disable creating new comment on next line on enter
 if group.autocommands.comment then
 	cmd({ "Filetype" }, {
 		desc = "disable autocomment next line on enter",
