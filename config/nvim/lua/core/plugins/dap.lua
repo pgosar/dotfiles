@@ -86,5 +86,9 @@ return {
 		{
 			"nvim-neotest/nvim-nio",
 		},
+		{
+			"julianolf/nvim-dap-lldb",
+			opts = { codelldb_path = "/Users/chilly/.local/share/nvim/mason/bin/codelldb" },
+		},
 	},
 }

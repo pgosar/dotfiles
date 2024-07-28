@@ -27,8 +27,9 @@ return {
 				{ filter = { find = "move" }, opts = { skip = true } },
 				{ filter = { find = "Processing file symbols" }, opts = { skip = true } },
 				{ filter = { find = "Diagnosing" }, opts = { skip = true } },
-				-- TODO: actually fix rust-analyzer error
+				-- NOTE: these rust-analyzer errors appear to be an upstream neovim bug
 				{ filter = { find = "left == right" }, opts = { skip = true } },
+				{ filter = { find = "-32603" }, opts = { skip = true } },
 			},
 			cmdline = { view = "cmdline" },
 			views = {

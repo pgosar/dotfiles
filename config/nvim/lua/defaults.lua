@@ -90,10 +90,10 @@ M.ensure_installed = {
 		"yaml",
 	},
 	null_ls = {
+		"rust_analyzer",
 		"bash-language-server",
 		"cbfmt",
 		"clangd",
-		"codelldb",
 		"css-lsp",
 		"debugpy",
 		"delve",
@@ -115,12 +115,13 @@ M.ensure_installed = {
 	},
 	dap = {
 		"python",
+		"codelldb",
 	},
 }
 
 -- setup formatting servers
 M.formatting_servers = {
-	["rust-analyzer"] = { "rust" },
+	["rust_analyzer"] = { "rust" },
 	["null-ls"] = {
 		"lua",
 		"javascript",
@@ -185,7 +186,6 @@ M.group = {
 		possession = true,
 		project = true,
 		refactor = true,
-		rustacean = true,
 		scrollbar = true,
 		scope = true,
 		surround = true,
