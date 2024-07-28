@@ -93,8 +93,23 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "nvim_lua" },
 				{ name = "snippets" },
-				{ name = "buffer" },
 				{ name = "path", option = { trailing_slash = true } },
+			},
+			sorting = {
+				priority_weight = 2,
+				comparators = {
+					require("copilot_cmp.comparators").prioritize,
+					require("core.utils.cmp_comparator").lspkind_comparator({
+						kind_priority = require("defaults").lspkind_priority,
+					}),
+					require("core.utils.cmp_comparator").label_comparator,
+					cmp.config.compare.locality,
+					cmp.config.compare.recently_used,
+					cmp.config.compare.score,
+					cmp.config.compare.offset,
+					cmp.config.compare.order,
+					require("cmp-under-comparator").under,
+				},
 			},
 		})
 
@@ -123,10 +138,29 @@ return {
 	dependencies = {
 		{ "onsails/lspkind.nvim" },
 		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-cmdline" },
 		{ "hrsh7th/cmp-path" },
 		{ "hrsh7th/cmp-nvim-lua" },
+		{ "lukas-reineke/cmp-under-comparator" },
+		{
+			"zbirenbaum/copilot.lua",
+			cmd = "Copilot",
+			event = "InsertEnter",
+			cond = group.plugins.copilot,
+			opts = {
+				suggestion = {
+					auto_trigger = true,
+					enabled = false,
+				},
+				panel = {
+					enabled = false,
+				},
+			},
+			dependencies = {
+				"zbirenbaum/copilot-cmp",
+				config = true,
+			},
+		},
 		{
 			"garymjr/nvim-snippets",
 			opts = { friendly_snippets = true },
