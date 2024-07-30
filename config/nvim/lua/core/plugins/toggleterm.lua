@@ -2,6 +2,12 @@ return {
 	"akinsho/toggleterm.nvim",
 	cond = group.plugins.toggleterm,
 	keys = {
+		{
+			"<leader><C-\\>",
+			"<CMD>ToggleTerm go_back=0 direction=float<CR>",
+			mode = "n",
+			desc = "Toggle floating terminal",
+		},
 		{ "<C-\\>", "<C-\\><C-n>", mode = "t", desc = "Toggle terminal when in terminal" },
 		{ "<C-\\>", "<CMD>ToggleTerm go_back=0<CR>", mode = "n", desc = "Toggle terminal" },
 		{ "<leader>tk", "<CMD>TermExec go_back=0 direction=float cmd='tokei'<CR>", mode = "n", desc = "Open tokei" },
