@@ -7,10 +7,12 @@ return {
 	},
 	config = function()
 		require("bufferline").setup({
+			highlights = {
+				fill = { bg = require("defaults").colors.mocha_override.mantle },
+			},
 			options = {
-				highlights = require("catppuccin.groups.integrations.bufferline").get(),
 				diagnostics = "nvim_lsp",
-				separator_style = "slope",
+				separator_style = "thin",
 				diagnostics_indicator = function(count, level)
 					local icon = level:match("error") and icons.diagnostics.error or icons.diagnostics.warn
 					return " " .. icon .. count

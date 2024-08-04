@@ -215,7 +215,7 @@ M.group = {
 M.colors = {
 	mocha_override = {
 		base = "#252525",
-		mantle = "#262626",
+		mantle = "#272727",
 		crust = "#252525",
 	},
 	scrollbar = "#2f334d",
