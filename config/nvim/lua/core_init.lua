@@ -111,5 +111,3 @@ sign("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "Diagnostic
 sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
 sign("DapBreakpoint", { text = icons.dap.breakpoint })
 sign("DapStopped", { text = icons.dap.stopped })
-
-vim.cmd([[let g:rust_recommended_style = 0]])

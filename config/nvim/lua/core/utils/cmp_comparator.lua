@@ -1,5 +1,8 @@
 local M = {}
 
+--- Comparator function for sorting LSP completion items based on their kind.
+---@param conf table: Configuration table containing kind priorities.
+---@return function: A function that compares two completion entries.
 M.lspkind_comparator = function(conf)
 	local lsp_types = require("cmp.types").lsp
 	return function(entry1, entry2)
@@ -28,6 +31,10 @@ M.lspkind_comparator = function(conf)
 	end
 end
 
+--- Comparator function for sorting completion items alphabetically by their label.
+---@param entry1 table: the first cmp completion item
+---@param entry2 table: the second cmp completion item
+---@return boolean: -1, 0, 1 based on the output of the comparison
 M.label_comparator = function(entry1, entry2)
 	return entry1.completion_item.label < entry2.completion_item.label
 end
