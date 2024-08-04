@@ -111,3 +111,20 @@ sign("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "Diagnostic
 sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
 sign("DapBreakpoint", { text = icons.dap.breakpoint })
 sign("DapStopped", { text = icons.dap.stopped })
+
+-- synchronize terminal background with neovim
+vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, {
+	callback = function()
+		local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+		if not normal.bg then
+			return
+		end
+		io.write(string.format("\027]11;#%06x\027\\", normal.bg))
+	end,
+})
+
+vim.api.nvim_create_autocmd("UILeave", {
+	callback = function()
+		io.write("\027]111\027\\")
+	end,
+})

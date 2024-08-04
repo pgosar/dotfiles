@@ -2,9 +2,9 @@ return {
 	"lewis6991/gitsigns.nvim",
 	cond = group.plugins.gitsigns,
 	event = "VeryLazy",
-	on_attach = function()
+	init = function()
 		local map = require("core.utils.utils").map
-		local gs = package.loaded.gitsigns
+		local gs = require("gitsigns")
 		map("n", "]h", function()
 			gs.nav_hunk("next")
 		end, { desc = "go to next hunk" })
