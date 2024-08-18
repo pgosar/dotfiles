@@ -10,7 +10,6 @@ return {
 						autogen = true,
 						silent = true,
 					})
-					require("nabla").enable_virt()
 				end
 			end,
 		})
