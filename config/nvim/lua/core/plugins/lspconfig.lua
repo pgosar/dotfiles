@@ -49,6 +49,9 @@ return {
 
 		require("mason-lspconfig").setup_handlers({
 			function(server_name)
+				if server_name == "tsserver" then
+					server_name = "ts_ls"
+				end
 				lspconfig[server_name].setup(default)
 			end,
 		})
@@ -56,7 +59,7 @@ return {
 		-- Extend specific language server configurations
 		local server_configs = {
 			gopls = "language-server-configs.gopls",
-			tsserver = "language-server-configs.tsserver",
+			ts_ls = "language-server-configs.tsserver",
 			lua_ls = "language-server-configs.lua_ls",
 			bashls = "language-server-configs.bashls",
 		}
