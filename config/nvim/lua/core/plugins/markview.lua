@@ -1,7 +1,7 @@
 return {
 	"OXY2DEV/markview.nvim",
 	cond = group.plugins.markview,
-	ft = "markdown",
+	lazy = false,
 	keys = {
 		{
 			"<leader>mm",
@@ -20,5 +20,7 @@ return {
 				vim.wo[win].concealcursor = "nc"
 			end,
 		},
+		filetypes = { "markdown", "quarto", "rmd", "tex" },
+		html = { tags = { default = { conceal = true } } },
 	},
 }

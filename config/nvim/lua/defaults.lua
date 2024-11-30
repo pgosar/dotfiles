@@ -174,7 +174,6 @@ M.group = {
 		markview = true,
 		move = true,
 		multicursor = true,
-		nabla = true,
 		neogen = true,
 		neoscroll = true,
 		neotest = true,
