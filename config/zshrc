@@ -94,3 +94,5 @@ autoload -U compinit
 compinit
 export NODE_PATH=$NODE_PATH:$(npm root -g)
 export MAGICK_HOME=/opt/local
+
+ulimit -Sn unlimited && ulimit -Sl unlimited

@@ -208,6 +208,7 @@ M.group = {
 		term_spelling = true,
 		number = true,
 		comment = true,
+		syncbackground = true,
 	},
 }
 
