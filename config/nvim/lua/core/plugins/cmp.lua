@@ -11,6 +11,9 @@ return {
 		local has_words_before = require("core.utils.utils").has_words_before
 		local neogen = require("neogen")
 		cmp.setup({
+			performance = {
+				fetching_timeout = 1,
+			},
 			enabled = function()
 				-- disables in certain filetypes
 				if vim.bo.filetype == "text" or vim.bo.filetype == "gitrebase" or vim.bo.filetype == "gitcommit" then
