@@ -11,7 +11,7 @@ map("n", "m", "<CMD>noh<CR>", { desc = "clear search highlight" })
 map(
 	"i",
 	"<C-d>",
-	"<CMD>set shortmess+=S<CR><left><c-o>/[\"';)>}\\]]<cr><c-o><CMD>noh<CR><CMD>set shortmess-=S<CR><right>",
+	"<CMD>set shortmess+=S<CR><left><c-o>/[\"';)>{}\\]]<cr><c-o><CMD>noh<CR><CMD>set shortmess-=S<CR><right>",
 	{ desc = "move past separator" }
 )
 map("i", "<C-b>", "<C-o>0", { desc = "move to beginning of line" })
