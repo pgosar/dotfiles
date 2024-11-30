@@ -63,3 +63,28 @@ if group.autocommands.comment then
 		command = "setlocal formatoptions-=r",
 	})
 end
+
+-- synchronize terminal background with neovim
+if group.autocommands.syncbackground then
+	cmd({ "UIEnter", "ColorScheme" }, {
+		desc = "sync terminal background with neovim",
+		group = augroup("sync_background", { clear = true }),
+		pattern = "*",
+		callback = function()
+			local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+			if not normal.bg then
+				return
+			end
+			io.write(string.format("\027]11;#%06x\027\\", normal.bg))
+		end,
+	})
+
+	cmd("UILeave", {
+		desc = "reset background",
+		group = augroup("reset_background", { clear = true }),
+		pattern = "*",
+		callback = function()
+			io.write("\027]111\027\\")
+		end,
+	})
+end
