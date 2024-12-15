@@ -2,10 +2,9 @@ return {
 	"hrsh7th/nvim-cmp",
 	cond = group.plugins.cmp,
 	event = { "InsertEnter", "CmdlineEnter" },
-	config = function()
+	opts = function()
 		---@diagnostic disable: undefined-field
 		local cmp = require("cmp")
-		require("cmp")
 		local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 		cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 		local has_words_before = require("core.utils.utils").has_words_before
@@ -20,15 +19,11 @@ return {
 					return false
 				end
 				-- disables in comments
-				-- TODO: neogen references in this file are contingent on the issue resolved (see neogen
-				-- config)
 				local context = require("cmp.config.context")
 				if vim.api.nvim_get_mode().mode == "c" then
 					return true
 				else
-					return not context.in_treesitter_capture("comment")
-						and not context.in_syntax_group("Comment")
-						and not neogen.jumpable()
+					return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
 				end
 			end,
 			preselect = "none",
