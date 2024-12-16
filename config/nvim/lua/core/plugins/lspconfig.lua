@@ -22,6 +22,8 @@ return {
 
 		local lspconfig = require("lspconfig")
 		require("mason-lspconfig").setup()
+
+		-- set up default configuration for all servers
 		local capabilities = require("blink.cmp").get_lsp_capabilities()
 		capabilities.textDocument.foldingRange = {
 			dynamicRegistration = false,
@@ -56,7 +58,7 @@ return {
 			ts_ls = "language-server-configs.tsserver",
 			lua_ls = "language-server-configs.lua_ls",
 			bashls = "language-server-configs.bashls",
-			["rust_analyzer"] = "language-server-configs.rust-analyzer",
+			rust_analyzer = "language-server-configs.rust-analyzer",
 			clangd = "language-server-configs.clangd",
 		}
 
