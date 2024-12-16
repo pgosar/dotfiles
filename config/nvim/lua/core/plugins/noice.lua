@@ -30,6 +30,7 @@ return {
 				-- NOTE: these rust-analyzer errors appear to be an upstream neovim bug
 				{ filter = { find = "left == right" }, opts = { skip = true } },
 				{ filter = { find = "-32603" }, opts = { skip = true } },
+				{ filter = { find = "-32802" }, opts = { skip = true } },
 			},
 			cmdline = { view = "cmdline" },
 			views = {
