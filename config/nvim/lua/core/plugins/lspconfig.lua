@@ -14,6 +14,7 @@ return {
 			lsp.set_server_config({
 				capabilities = {
 					textDocument = {
+						completion = { completionItem = { snippetSupport = true } },
 						foldingRange = {
 							dynamicRegistration = false,
 							lineFoldingOnly = true,

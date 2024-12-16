@@ -44,7 +44,7 @@ return {
 					},
 				},
 			},
-			signature = { enabled = true },
+			signature = { enabled = true, window = { border = "rounded" } },
 			keymap = {
 				preset = "enter",
 				["C-c"] = { "hide", "fallback" },
