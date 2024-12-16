@@ -156,7 +156,6 @@ M.group = {
 		bufferline = true,
 		catppuccin = true,
 		blink = true,
-		copilot = true,
 		dap = true,
 		dap_python = true,
 		dressing = true,
@@ -243,9 +242,6 @@ _G.icons = {
 		last_session = " ",
 		open_session = " ",
 		open_project = " ",
-	},
-	cmp = {
-		copilot = "",
 	},
 	dap = {
 		breakpoint = " ",
