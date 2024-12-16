@@ -11,18 +11,6 @@ return {
 				hint = icons.lsp.hint,
 				info = icons.lsp.info,
 			})
-			lsp.set_server_config({
-				capabilities = {
-					textDocument = {
-						completion = { completionItem = { snippetSupport = true } },
-						foldingRange = {
-							dynamicRegistration = false,
-							lineFoldingOnly = true,
-						},
-					},
-					offsetEncoding = { "utf-16" },
-				},
-			})
 			lsp.format_on_save({
 				format_opts = {
 					async = false,
@@ -34,8 +22,13 @@ return {
 
 		local lspconfig = require("lspconfig")
 		require("mason-lspconfig").setup()
-
+		local capabilities = require("blink.cmp").get_lsp_capabilities()
+		capabilities.textDocument.foldingRange = {
+			dynamicRegistration = false,
+			lineFoldingOnly = true,
+		}
 		local default = {
+			capabilities = capabilities,
 			on_attach = function(client, bufnr)
 				local wd_ok, wd = pcall(require, "workspace-diagnostics")
 				if wd_ok then
@@ -63,6 +56,8 @@ return {
 			ts_ls = "language-server-configs.tsserver",
 			lua_ls = "language-server-configs.lua_ls",
 			bashls = "language-server-configs.bashls",
+			["rust_analyzer"] = "language-server-configs.rust-analyzer",
+			clangd = "language-server-configs.clangd",
 		}
 
 		for server, config_module in pairs(server_configs) do
