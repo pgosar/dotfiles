@@ -15,6 +15,7 @@ return {
 				},
 				gitsigns = true,
 				hop = true,
+				blink_cmp = true,
 				illuminate = { enabled = true },
 				lsp_trouble = true,
 				mason = true,

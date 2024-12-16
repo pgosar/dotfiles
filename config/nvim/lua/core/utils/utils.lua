@@ -33,13 +33,6 @@ M.create_new_file = function()
 	end
 end
 
---- cmp autocompletion helper function
----@return boolean has_words: whether there are words before the cursor
-M.has_words_before = function()
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
 --- creates new terminals with ToggleTerm
 ---@param cmd string: the command to run
 ---@return function|Terminal: the created terminal
