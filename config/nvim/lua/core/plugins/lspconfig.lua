@@ -24,11 +24,12 @@ return {
 		require("mason-lspconfig").setup()
 
 		-- set up default configuration for all servers
-		local capabilities = require("blink.cmp").get_lsp_capabilities()
-		capabilities.textDocument.foldingRange = {
-			dynamicRegistration = false,
-			lineFoldingOnly = true,
-		}
+local capabilities = (pcall(require, "blink.cmp") and require("blink.cmp").get_lsp_capabilities()) or {}
+capabilities.textDocument = capabilities.textDocument or {}
+capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true,
+}
 		local default = {
 			capabilities = capabilities,
 			on_attach = function(client, bufnr)

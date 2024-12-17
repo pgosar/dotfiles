@@ -5,7 +5,7 @@ return {
 	version = "v0.*",
 	dependencies = { { "rafamadriz/friendly-snippets" } },
 	opts = function()
-		local neogen = require("neogen")
+		local neogen_ok, neogen = pcall(require, "neogen")
 		local blink = require("blink.cmp")
 		blink.setup({
 			enabled = function()
@@ -50,7 +50,7 @@ return {
 				["C-c"] = { "hide", "fallback" },
 				["<Tab>"] = {
 					function()
-						if neogen.jumpable() then
+						if neogen_ok and neogen.jumpable() then
 							neogen.jump_next()
 						end
 					end,
@@ -60,7 +60,7 @@ return {
 				},
 				["<S-Tab>"] = {
 					function()
-						if neogen.jumpable(1) then
+						if neogen_ok and neogen.jumpable(1) then
 							neogen.jump_prev()
 						end
 					end,
