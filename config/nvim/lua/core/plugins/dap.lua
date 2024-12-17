@@ -1,49 +1,14 @@
 return {
 	"mfussenegger/nvim-dap",
 	cond = group.plugins.dap,
+  -- stylua: ignore
 	keys = {
-		{
-			"<leader>dc",
-			function()
-				require("dap").continue()
-			end,
-			desc = "Debugger Continue",
-		},
-		{
-			"<leader>dn",
-			function()
-				require("dap").step_over()
-			end,
-			desc = "Debugger Step Over",
-		},
-		{
-			"<leader>di",
-			function()
-				require("dap").step_into()
-			end,
-			desc = "Debugger Step Into",
-		},
-		{
-			"<leader>do",
-			function()
-				require("dap").step_out()
-			end,
-			desc = "Debugger Step Out",
-		},
-		{
-			"<leader>db",
-			function()
-				require("dap").toggle_breakpoint()
-			end,
-			desc = "Toggle Breakpoint",
-		},
-		{
-			"<leader>dq",
-			function()
-				require("dap").disconnect({ terminateDebuggee = true })
-			end,
-			desc = "Disconnect Debugger",
-		},
+		{ "<leader>dc", function() require("dap").continue() end, desc = "Debugger Continue", },
+		{ "<leader>dn", function() require("dap").step_over() end, desc = "Debugger Step Over", },
+		{ "<leader>di", function() require("dap").step_into() end, desc = "Debugger Step Into", },
+		{ "<leader>do", function() require("dap").step_out() end, desc = "Debugger Step Out", },
+		{ "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint", },
+		{ "<leader>dq", function() require("dap").disconnect({ terminateDebuggee = true }) end, desc = "Disconnect Debugger", },
 	},
 	config = function()
 		local dap, dapui = require("dap"), require("dapui")
