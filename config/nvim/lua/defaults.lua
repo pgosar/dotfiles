@@ -119,6 +119,10 @@ M.ensure_installed = {
 	},
 }
 
+M.settings = {
+	bigfile_enable = true,
+}
+
 -- setup formatting servers
 M.formatting_servers = {
 	["rust_analyzer"] = { "rust" },

@@ -103,7 +103,7 @@ end
 M.large_file = function(buf)
 	local max_filesize = 100 * 1024 -- 100 KB
 	local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-	return ok and stats ~= nil and stats.size > max_filesize
+	return require("defaults").settings.bigfile_enable and ok and stats ~= nil and stats.size > max_filesize
 end
 
 return M
