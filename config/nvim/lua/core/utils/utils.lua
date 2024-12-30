@@ -106,4 +106,22 @@ M.large_file = function(buf)
 	return require("defaults").settings.bigfile_enable and ok and stats ~= nil and stats.size > max_filesize
 end
 
+--- Set the current working directory to the root of the project
+M.set_root = function()
+	-- Get directory path to start search from
+	local path = vim.api.nvim_buf_get_name(0)
+	if path == "" then
+		return
+	end
+	path = vim.fs.dirname(path)
+
+	local root_file = vim.fs.find({ ".git", ".gitignore" }, { path = path, upward = true })[1]
+	if root_file == nil then
+		return
+	end
+	local root = vim.fs.dirname(root_file)
+	-- Set current directory
+	vim.fn.chdir(root)
+end
+
 return M

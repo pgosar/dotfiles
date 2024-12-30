@@ -88,3 +88,10 @@ if group.autocommands.syncbackground then
 		end,
 	})
 end
+
+if group.autocommands.autoroot then
+	cmd("BufEnter", {
+		group = augroup("auto_root", { clear = true }),
+		callback = require("core.utils.utils").set_root,
+	})
+end
