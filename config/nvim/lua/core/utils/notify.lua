@@ -18,7 +18,7 @@ local function _rename()
 				return
 			end
 			vim.lsp.handlers["textDocument/rename"](err, result, ctx, config)
-			local notif, entries = {}, {}
+			local notif, entries, modified_buffers = {}, {}, {}
 			local files, updates = 0, 0
 
 			if result.documentChanges then
@@ -46,6 +46,7 @@ local function _rename()
 				for uri, edits in pairs(result.changes) do
 					files = files + 1
 					local bufnr = vim.uri_to_bufnr(uri)
+					table.insert(modified_buffers, bufnr)
 					for _, edit in ipairs(edits) do
 						local start_line = edit.range.start.line + 1
 						local line = vim.api.nvim_buf_get_lines(bufnr, start_line - 1, start_line, false)[1]
@@ -59,6 +60,14 @@ local function _rename()
 					updates = updates + vim.tbl_count(edits)
 					local short_uri = string.sub(vim.uri_to_fname(uri), #vim.loop.cwd() + 2)
 					table.insert(notif, string.format("\t- %d in %s", vim.tbl_count(edits), short_uri))
+				end
+			end
+			for _, bufnr in ipairs(modified_buffers) do
+				if vim.api.nvim_buf_is_valid(bufnr) then
+					vim.api.nvim_buf_call(bufnr, function()
+						vim.cmd("silent! write")
+						vim.cmd("silent! bdelete")
+					end)
 				end
 			end
 			local str = ""
