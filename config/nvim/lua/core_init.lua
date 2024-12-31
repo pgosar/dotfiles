@@ -111,5 +111,4 @@ sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "Diagnostic
 sign("DapBreakpoint", { text = icons.dap.breakpoint })
 sign("DapStopped", { text = icons.dap.stopped })
 
--- TODO: check up on lazy = false for markview
 -- TODO: dropbar breaks when opening session?

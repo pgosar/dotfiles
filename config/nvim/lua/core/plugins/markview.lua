@@ -1,7 +1,7 @@
 return {
 	"OXY2DEV/markview.nvim",
 	cond = group.plugins.markview,
-	lazy = false,
+	ft = "markdown",
 	keys = {
 		{ "<leader>mm", "<CMD>Markview toggle<CR>", desc = "Toggle markdown viewer" },
 	},
