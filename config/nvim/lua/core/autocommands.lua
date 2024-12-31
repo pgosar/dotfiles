@@ -1,11 +1,11 @@
-local augroup = vim.api.nvim_create_augroup
+local augroup = require("core.utils.utils").augroup
 local cmd = vim.api.nvim_create_autocmd
 
 -- Removes any trailing white space when saving a file
 if group.autocommands.trailing_whitespace then
 	cmd({ "BufWritePre" }, {
 		desc = "remove trailing whitespace on save",
-		group = augroup("remove trailing whitespace", { clear = true }),
+		group = augroup("remove trailing whitespace"),
 		pattern = { "*" },
 		command = [[%s/\s\+$//e]],
 	})
@@ -13,7 +13,7 @@ end
 
 -- remembers file state, such as cursor position and any folds
 if group.autocommands.remember_file_state then
-	augroup("remember file state", { clear = true })
+	augroup("remember file state")
 	cmd({ "BufWinLeave" }, {
 		desc = "remember file state",
 		group = "remember file state",
@@ -32,7 +32,7 @@ end
 if group.autocommands.term_spelling then
 	cmd({ "TermOpen" }, {
 		desc = "disable spellcheck in terminal buffers",
-		group = augroup("disable_spell", { clear = true }),
+		group = augroup("disable_spell"),
 		pattern = "*",
 		command = "setlocal nospell",
 	})
@@ -42,13 +42,13 @@ end
 if group.autocommands.number then
 	cmd({ "VimEnter", "InsertLeave" }, {
 		desc = "set relativenumber",
-		group = augroup("set_relativenumber", { clear = true }),
+		group = augroup("set_relativenumber"),
 		pattern = "*",
 		command = "set relativenumber",
 	})
 	cmd({ "InsertEnter" }, {
 		desc = "set number",
-		group = augroup("set_number", { clear = true }),
+		group = augroup("set_number"),
 		pattern = "*",
 		command = "set number norelativenumber",
 	})
@@ -58,7 +58,7 @@ end
 if group.autocommands.comment then
 	cmd({ "Filetype" }, {
 		desc = "disable autocomment next line on enter",
-		group = augroup("disable_autocomment_next_line", { clear = true }),
+		group = augroup("disable_autocomment_next_line"),
 		pattern = "*",
 		command = "setlocal formatoptions-=r",
 	})
@@ -68,7 +68,7 @@ end
 if group.autocommands.syncbackground then
 	cmd({ "UIEnter", "ColorScheme" }, {
 		desc = "sync terminal background with neovim",
-		group = augroup("sync_background", { clear = true }),
+		group = augroup("sync_background"),
 		pattern = "*",
 		callback = function()
 			local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
@@ -81,7 +81,7 @@ if group.autocommands.syncbackground then
 
 	cmd("UILeave", {
 		desc = "reset background",
-		group = augroup("reset_background", { clear = true }),
+		group = augroup("reset_background"),
 		pattern = "*",
 		callback = function()
 			io.write("\027]111\027\\")
@@ -92,7 +92,7 @@ end
 -- Sets cwd to git root
 if group.autocommands.autoroot then
 	cmd("BufEnter", {
-		group = augroup("auto_root", { clear = true }),
+		group = augroup("auto_root"),
 		callback = require("core.utils.utils").set_root,
 	})
 end

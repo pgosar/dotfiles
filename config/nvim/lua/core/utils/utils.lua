@@ -25,6 +25,17 @@ M.map = function(mode, lhs, rhs, opts)
 	vim.keymap.set(mode, lhs, rhs, options)
 end
 
+--- Creates an augroup
+---@param name string: the name of the augroup
+---@param opts table?: options for the augroup
+M.augroup = function(name, opts)
+	local options = { clear = true }
+	if opts then
+		options = vim.tbl_extend("force", options, opts)
+	end
+	vim.api.nvim_create_augroup(name, options)
+end
+
 --- create new file, used for alpha buffer
 M.create_new_file = function()
 	local filename = vim.fn.input("Enter the filename: ")
