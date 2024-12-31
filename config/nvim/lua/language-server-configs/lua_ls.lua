@@ -5,9 +5,7 @@ return {
 			hint = { enable = true },
 			format = {
 				enable = true,
-				defaultConfig = {
-					indent_style = "tab",
-				},
+				defaultConfig = { indent_style = "tab" },
 			},
 		},
 	},
