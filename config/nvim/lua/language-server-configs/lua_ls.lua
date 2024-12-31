@@ -1,12 +1,8 @@
 return {
 	settings = {
 		Lua = {
-			diagnostics = {
-				disable = { "missing-fields" },
-			},
-			hint = {
-				enable = true,
-			},
+			diagnostics = { disable = { "missing-fields" } },
+			hint = { enable = true },
 		},
 	},
 }
