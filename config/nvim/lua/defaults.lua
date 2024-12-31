@@ -24,6 +24,9 @@ M.setup_sources = function(b)
 				"typescriptreact",
 				"html",
 				"css",
+				"json",
+				"yaml",
+				"yml",
 			},
 		}),
 		b.formatting.verible_verilog_format,
@@ -150,7 +153,7 @@ M.formatting_servers = {
 
 -- default value is true for all
 M.group = {
-	plugins = {
+	plugin = {
 		ai = true,
 		align = true,
 		alpha = true,
@@ -185,13 +188,13 @@ M.group = {
 		none_ls = true,
 		notify = true,
 		obsidian = true,
-		possession = true,
+		persistence = true,
 		project = true,
 		refactor = true,
 		scrollbar = true,
 		scope = true,
 		surround = true,
-		telescope = true,
+		fzf = true,
 		todo_comments = true,
 		toggleterm = true,
 		autopairs = true,
@@ -212,6 +215,7 @@ M.group = {
 		number = true,
 		comment = true,
 		syncbackground = true,
+		autoroot = true,
 	},
 }
 
