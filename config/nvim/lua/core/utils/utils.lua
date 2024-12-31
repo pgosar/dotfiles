@@ -124,4 +124,22 @@ M.set_root = function()
 	vim.fn.chdir(root)
 end
 
+--- Truncates messages to the last complete line that fits within the max length
+---@param message string: the message to truncate
+---@param max_length integer: the maximum length of the message
+M.truncate_message = function(message, max_length)
+	if #message <= max_length then
+		return message
+	end
+
+	-- Find the last newline before the max length
+	local break_point = message:sub(1, max_length):match(".*()\n")
+	if break_point then
+		return message:sub(1, break_point) .. "..."
+	else
+		-- If no newline exists within the limit, truncate normally
+		return message:sub(1, max_length - 3) .. "..."
+	end
+end
+
 return M

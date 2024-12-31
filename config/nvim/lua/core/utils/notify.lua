@@ -62,14 +62,7 @@ local function _rename()
 					table.insert(notif, string.format("\t- %d in %s", vim.tbl_count(edits), short_uri))
 				end
 			end
-			for _, bufnr in ipairs(modified_buffers) do
-				if vim.api.nvim_buf_is_valid(bufnr) then
-					vim.api.nvim_buf_call(bufnr, function()
-						vim.cmd("silent! write")
-						vim.cmd("silent! bdelete")
-					end)
-				end
-			end
+
 			local str = ""
 			if files > 1 then
 				table.insert(
@@ -87,10 +80,43 @@ local function _rename()
 					str:sub(iloc),
 				}, "")
 			end
+
+			-- maximum message length
+			local max_length = 500
+			str = require("core.utils.utils").truncate_message(str, max_length)
+
 			vim.notify(str, "info", {
 				title = string.format("[LSP] rename: %s -> %s", param.old, param.newName),
 				timeout = 2500,
 			})
+
+			for _, bufnr in ipairs(modified_buffers) do
+				if vim.api.nvim_buf_is_valid(bufnr) and bufnr ~= vim.api.nvim_get_current_buf() then
+					vim.bo[bufnr].buflisted = false
+				end
+			end
+
+			-- Schedule the buffer cleanup and handle LSP cleanup
+			vim.schedule(function()
+				for _, bufnr in ipairs(modified_buffers) do
+					if vim.api.nvim_buf_is_valid(bufnr) and bufnr ~= vim.api.nvim_get_current_buf() then
+						-- Cancel any pending LSP operations for this buffer
+						local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+						for _, client in ipairs(clients) do
+							vim.lsp.buf_detach_client(bufnr, client.id)
+						end
+
+						local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+						local filename = vim.api.nvim_buf_get_name(bufnr)
+						local file = io.open(filename, "w")
+						if file then
+							file:write(table.concat(lines, "\n"))
+							file:close()
+						end
+						vim.api.nvim_buf_delete(bufnr, { force = true })
+					end
+				end
+			end)
 		end)
 	end)
 end
