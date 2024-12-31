@@ -24,8 +24,13 @@ map("t", "<C-w>k", "<C-\\><C-n><C-w>k", { desc = "move to top window from termin
 map("t", "<C-w>l", "<C-\\><C-n><C-w>l", { desc = "move to right window from terminal" })
 
 -- Switching buffers
-vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "switch to next buffer" })
-vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { desc = "switch to prev buffer" })
+map("n", "<leader>bn", "<CMD>bnext<CR>", { desc = "switch to next buffer" })
+map("n", "<leader>bp", "<CMD>bprevious<CR>", { desc = "switch to prev buffer" })
+
+-- Switching tabs
+map("n", "<leader>to", "<CMD>tabnew<CR>", { desc = "create new tab" })
+map("n", "<leader>tn", "<CMD>tabnext<CR>", { desc = "switch to next tab" })
+map("n", "<leader>tp", "<CMD>tabprevious<CR>", { desc = "switch to prev tab" })
 
 -- Window resizing
 -- +/- keys with shift modifier
