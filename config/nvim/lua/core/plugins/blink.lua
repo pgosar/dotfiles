@@ -15,14 +15,20 @@ return {
 			end,
 			completion = {
 				trigger = { prefetch_on_insert = true },
-				list = { selection = "manual", max_items = 20 },
+				list = {
+					selection = "manual",
+					max_items = 20,
+				},
 				accept = { auto_brackets = { enabled = true } },
 				menu = {
 					border = "rounded",
 					scrolloff = 0,
 					draw = {
-						treesitter = true,
-						columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind", gap = 1 } },
+						treesitter = { "lsp" },
+						columns = {
+							{ "label", "label_description", gap = 1 },
+							{ "kind_icon", "kind", gap = 1 },
+						},
 					},
 				},
 				documentation = {
@@ -44,7 +50,10 @@ return {
 					},
 				},
 			},
-			signature = { enabled = true, window = { border = "rounded" } },
+			signature = {
+				enabled = true,
+				window = { border = "rounded" },
+			},
 			keymap = {
 				preset = "enter",
 				["C-c"] = { "hide", "fallback" },

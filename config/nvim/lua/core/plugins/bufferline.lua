@@ -7,9 +7,7 @@ return {
 	},
 	config = function()
 		require("bufferline").setup({
-			highlights = {
-				fill = { bg = require("defaults").colors.mocha_override.mantle },
-			},
+			highlights = { fill = { bg = require("defaults").colors.mocha_override.mantle } },
 			options = {
 				diagnostics = "nvim_lsp",
 				separator_style = "thin",

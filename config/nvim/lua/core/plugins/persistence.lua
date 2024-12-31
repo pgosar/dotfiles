@@ -1,6 +1,6 @@
 return {
 	"folke/persistence.nvim",
-	cond = group.plugin.persistence,
+	cond = group.plugins.persistence,
 	event = "BufReadPre",
   -- stylua: ignore
 	keys = {

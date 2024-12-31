@@ -4,7 +4,5 @@ return {
 	keys = {
 		{ "<leader>fd", "<CMD>Neogen<CR>", desc = "generate doc comments" },
 	},
-	opts = {
-		placeholders_hl = nil,
-	},
+	opts = { placeholders_hl = nil },
 }

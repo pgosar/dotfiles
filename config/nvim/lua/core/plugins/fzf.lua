@@ -1,7 +1,7 @@
 return {
 	"ibhagwan/fzf-lua",
 	cmd = "FzfLua",
-	cond = group.plugin.fzf,
+	cond = group.plugins.fzf,
 	keys = {
 		{ "<leader>ff", "<CMD>FzfLua files<CR>", desc = "Find files" },
 		{ "<leader>fg", "<CMD>FzfLua live_grep<CR>", "Grep for text" },

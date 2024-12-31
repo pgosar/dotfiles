@@ -8,19 +8,15 @@ return {
 		{ "<leader>di", function() require("dap").step_into() end, desc = "Debugger Step Into", },
 		{ "<leader>do", function() require("dap").step_out() end, desc = "Debugger Step Out", },
 		{ "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint", },
-		{ "<leader>dq", function() require("dap").disconnect({ terminateDebuggee = true }) end, desc = "Disconnect Debugger", },
+		{ "<leader>dq", function() require("dap").disconnect({ terminateDebuggee = true }) end,
+    desc = "Disconnect Debugger", },
 	},
+  -- stylua: ignore
 	config = function()
 		local dap, dapui = require("dap"), require("dapui")
-		dap.listeners.after.event_initialized["dapui_config"] = function()
-			dapui.open()
-		end
-		dap.listeners.before.event_terminated["dapui_config"] = function()
-			dapui.close()
-		end
-		dap.listeners.before.event_exited["dapui_config"] = function()
-			dapui.close()
-		end
+		dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+		dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+		dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
 	end,
 	dependencies = {
 		{
@@ -40,17 +36,9 @@ return {
 				})
 			end,
 		},
-		{
-			"rcarriga/nvim-dap-ui",
-			config = true,
-		},
-		{
-			"theHamsta/nvim-dap-virtual-text",
-			config = true,
-		},
-		{
-			"nvim-neotest/nvim-nio",
-		},
+		{ "rcarriga/nvim-dap-ui", config = true },
+		{ "theHamsta/nvim-dap-virtual-text", config = true },
+		{ "nvim-neotest/nvim-nio" },
 		{
 			"julianolf/nvim-dap-lldb",
 			opts = { codelldb_path = "/Users/chilly/.local/share/nvim/mason/bin/codelldb" },

@@ -3,7 +3,7 @@ return {
 	name = "catppuccin",
 	lazy = false,
 	priority = 1000,
-	cond = group.plugin.catppuccin,
+	cond = group.plugins.catppuccin,
 	config = function()
 		local colors = require("defaults").colors.mocha_override
 		require("catppuccin").setup({

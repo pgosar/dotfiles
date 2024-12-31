@@ -3,12 +3,7 @@ return {
 	cond = group.plugins.markview,
 	lazy = false,
 	keys = {
-		{
-			"<leader>mm",
-			"<CMD>Markview toggle<CR>",
-			mode = "n",
-			desc = "Toggle markdown viewer",
-		},
+		{ "<leader>mm", "<CMD>Markview toggle<CR>", desc = "Toggle markdown viewer" },
 	},
 	opts = {
 		modes = { "n", "i", "no", "c" },

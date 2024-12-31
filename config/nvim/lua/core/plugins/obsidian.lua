@@ -42,9 +42,7 @@ return {
 				overrides = {
 					notes_subdir = vim.NIL,
 					new_notes_location = "current_dir",
-					templates = {
-						subdir = vim.NIL,
-					},
+					templates = { subdir = vim.NIL },
 					disable_frontmatter = true,
 				},
 			},
