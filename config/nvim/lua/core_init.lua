@@ -22,7 +22,6 @@ local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current
 for _, source in ipairs({
 	"core.main-options",
 	"core.keybindings",
-	"core.utils.utils",
 	"core.utils.notify",
 	"core.autocommands",
 }) do
@@ -112,4 +111,5 @@ sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "Diagnostic
 sign("DapBreakpoint", { text = icons.dap.breakpoint })
 sign("DapStopped", { text = icons.dap.stopped })
 
--- check up on lazy = false for markview
+-- TODO: check up on lazy = false for markview
+-- TODO: dropbar breaks when opening session?

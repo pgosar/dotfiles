@@ -153,7 +153,7 @@ M.formatting_servers = {
 
 -- default value is true for all
 M.group = {
-	plugin = {
+	plugins = {
 		ai = true,
 		align = true,
 		alpha = true,
