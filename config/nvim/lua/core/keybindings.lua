@@ -23,6 +23,10 @@ map("t", "<C-w>j", "<C-\\><C-n><C-w>j", { desc = "move to bottom window from ter
 map("t", "<C-w>k", "<C-\\><C-n><C-w>k", { desc = "move to top window from terminal" })
 map("t", "<C-w>l", "<C-\\><C-n><C-w>l", { desc = "move to right window from terminal" })
 
+-- Switching buffers
+vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "switch to next buffer" })
+vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { desc = "switch to prev buffer" })
+
 -- Window resizing
 -- +/- keys with shift modifier
 map("n", "-", ":resize +2<CR>", { desc = "resize window down" })
