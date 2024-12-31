@@ -24,12 +24,12 @@ return {
 		require("mason-lspconfig").setup()
 
 		-- set up default configuration for all servers
-local capabilities = (pcall(require, "blink.cmp") and require("blink.cmp").get_lsp_capabilities()) or {}
-capabilities.textDocument = capabilities.textDocument or {}
-capabilities.textDocument.foldingRange = {
-    dynamicRegistration = false,
-    lineFoldingOnly = true,
-}
+		local capabilities = (pcall(require, "blink.cmp") and require("blink.cmp").get_lsp_capabilities()) or {}
+		capabilities.textDocument = capabilities.textDocument or {}
+		capabilities.textDocument.foldingRange = {
+			dynamicRegistration = false,
+			lineFoldingOnly = true,
+		}
 		local default = {
 			capabilities = capabilities,
 			on_attach = function(client, bufnr)
@@ -61,6 +61,7 @@ capabilities.textDocument.foldingRange = {
 			bashls = "language-server-configs.bashls",
 			rust_analyzer = "language-server-configs.rust-analyzer",
 			clangd = "language-server-configs.clangd",
+			basedpyright = "language-server-configs.basedpyright",
 		}
 
 		for server, config_module in pairs(server_configs) do
