@@ -216,6 +216,7 @@ M.group = {
 		comment = true,
 		syncbackground = true,
 		autoroot = true,
+		autoformatonautosave = true,
 	},
 }
 

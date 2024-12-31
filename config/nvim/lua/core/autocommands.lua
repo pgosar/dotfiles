@@ -96,3 +96,15 @@ if group.autocommands.autoroot then
 		callback = require("core.utils.utils").set_root,
 	})
 end
+
+-- Auto formats on auto save
+if group.autocommands.autoformatonautosave and group.plugins.autosave then
+	cmd("User", {
+		pattern = "AutoSaveWritePost",
+		group = augroup("auto_format"),
+		callback = function()
+			vim.lsp.buf.format()
+			vim.cmd("write!")
+		end,
+	})
+end
