@@ -3,7 +3,7 @@ return {
 	name = "catppuccin",
 	lazy = false,
 	priority = 1000,
-	cond = group.plugins.catppuccin,
+	cond = group.plugin.catppuccin,
 	config = function()
 		local colors = require("defaults").colors.mocha_override
 		require("catppuccin").setup({
@@ -23,10 +23,13 @@ return {
 				noice = true,
 				notify = true,
 				rainbow_delimiters = true,
-				telescope = { enabled = true },
+				fzf = true,
 				which_key = true,
 			},
-			dim_inactive = { enabled = true, percentage = 0.4 },
+			dim_inactive = {
+				enabled = true,
+				percentage = 0.1,
+			},
 			flavour = "mocha",
 			color_overrides = {
 				mocha = {
