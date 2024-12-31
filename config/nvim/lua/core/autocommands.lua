@@ -89,6 +89,7 @@ if group.autocommands.syncbackground then
 	})
 end
 
+-- Sets cwd to git root
 if group.autocommands.autoroot then
 	cmd("BufEnter", {
 		group = augroup("auto_root", { clear = true }),
