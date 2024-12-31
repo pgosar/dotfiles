@@ -11,7 +11,7 @@ if group.autocommands.trailing_whitespace then
 	})
 end
 
--- remembers file state, such as cursor position and any folds
+-- Remembers file state, such as cursor position and any folds
 if group.autocommands.remember_file_state then
 	augroup("remember file state")
 	cmd({ "BufWinLeave" }, {
@@ -28,7 +28,7 @@ if group.autocommands.remember_file_state then
 	})
 end
 
--- no spellcheck in terminal buffers
+-- No spellcheck in terminal buffers
 if group.autocommands.term_spelling then
 	cmd({ "TermOpen" }, {
 		desc = "disable spellcheck in terminal buffers",
@@ -38,7 +38,7 @@ if group.autocommands.term_spelling then
 	})
 end
 
--- set relative number in normal mode
+-- Set relative number in normal mode
 if group.autocommands.number then
 	cmd({ "VimEnter", "InsertLeave" }, {
 		desc = "set relativenumber",
@@ -54,7 +54,7 @@ if group.autocommands.number then
 	})
 end
 
--- disable creating new comment on next line on enter
+-- Disable creating new comment on next line on enter
 if group.autocommands.comment then
 	cmd({ "Filetype" }, {
 		desc = "disable autocomment next line on enter",
@@ -64,7 +64,7 @@ if group.autocommands.comment then
 	})
 end
 
--- synchronize terminal background with neovim
+-- Synchronize terminal background with neovim
 if group.autocommands.syncbackground then
 	cmd({ "UIEnter", "ColorScheme" }, {
 		desc = "sync terminal background with neovim",

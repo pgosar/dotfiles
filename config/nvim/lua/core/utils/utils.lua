@@ -1,6 +1,6 @@
 local M = {}
 
---- sets vim options based on table
+--- Sets vim options based on table
 ---@param options table: options to set
 M.vim_opts = function(options)
 	if options ~= nil then
@@ -12,7 +12,7 @@ M.vim_opts = function(options)
 	end
 end
 
---- create keybindings
+--- Create keybindings
 ---@param mode string | table: modes that the keybind is active in
 ---@param lhs string: the key presses needed
 ---@param rhs string | function: the action
@@ -36,7 +36,7 @@ M.augroup = function(name, opts)
 	vim.api.nvim_create_augroup(name, options)
 end
 
---- create new file, used for alpha buffer
+--- Create new file, used for alpha buffer
 M.create_new_file = function()
 	local filename = vim.fn.input("Enter the filename: ")
 	if filename ~= "" then
@@ -44,7 +44,7 @@ M.create_new_file = function()
 	end
 end
 
---- creates new terminals with ToggleTerm
+--- Creates new terminals with ToggleTerm
 ---@param cmd string: the command to run
 ---@return function|Terminal: the created terminal
 M.create_floating_terminal = function(cmd)
@@ -71,7 +71,7 @@ M.create_floating_terminal = function(cmd)
 	end
 end
 
---- update all mason packages
+--- Update all mason packages
 M.update_mason = function()
 	local registry = require("mason-registry")
 	registry.refresh()
@@ -84,7 +84,7 @@ M.update_mason = function()
 	end
 end
 
---- updates CyberNvim
+--- Updates CyberNvim
 M.update_all = function()
 	vim.notify("Pulling latest changes...")
 	vim.fn.jobstart({ "git", "pull", "--rebase" })
@@ -96,7 +96,7 @@ M.update_all = function()
 	vim.notify("CyberNvim updated!", "info")
 end
 
---- checks whether the attached LSP server supports formatting
+--- Checks whether the attached LSP server supports formatting
 ---@return boolean is_supported: whether the server supports formatting
 M.supports_formatting = function()
 	local clients = vim.lsp.get_clients()
@@ -108,7 +108,7 @@ M.supports_formatting = function()
 	return false
 end
 
---- whether the currently opening file is very big or not
+--- Whether the currently opening file is very big or not
 ---@param buf integer: the current buffer to check
 ---@return boolean is_big: if the file is above 100KB
 M.large_file = function(buf)
