@@ -8,6 +8,7 @@ return {
 			require("nvim-treesitter.configs").setup({
 				highlight = { enable = true },
 				incremental_selection = { enable = true },
+				endwise = { enable = true },
 				auto_install = true,
 				ensure_installed = require("defaults").ensure_installed.treesitter,
 			})
@@ -15,6 +16,7 @@ return {
 		dependencies = {
 			{ "HiPhish/rainbow-delimiters.nvim", cond = group.plugins.rainbow },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
+			{ "RRethy/nvim-treesitter-endwise" },
 		},
 	},
 }
