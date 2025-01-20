@@ -16,7 +16,7 @@ return {
 			completion = {
 				trigger = { prefetch_on_insert = true },
 				list = {
-					selection = "manual",
+					selection = { preselect = false, auto_insert = false },
 					max_items = 20,
 				},
 				accept = { auto_brackets = { enabled = true } },
