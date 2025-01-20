@@ -41,7 +41,7 @@ M.setup_sources = function(b)
 	}
 end
 
--- Auto install Mason sources
+-- Auto install sources
 M.ensure_installed = {
 	treesitter = {
 		"asm",
@@ -115,6 +115,7 @@ M.ensure_installed = {
 		"typescript_language_server",
 		"verible",
 		"wgsl_analyzer",
+		"mdformat",
 	},
 	dap = {
 		"python",
