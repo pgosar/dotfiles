@@ -116,6 +116,7 @@ M.ensure_installed = {
 		"verible",
 		"wgsl_analyzer",
 		"mdformat",
+		"zls",
 	},
 	dap = {
 		"python",
@@ -130,6 +131,7 @@ M.settings = {
 -- setup formatting servers
 M.formatting_servers = {
 	["rust_analyzer"] = { "rust" },
+	["zls"] = { "zig" },
 	["null-ls"] = {
 		"lua",
 		"javascript",
