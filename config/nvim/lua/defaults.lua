@@ -124,9 +124,7 @@ M.ensure_installed = {
 	},
 }
 
-M.settings = {
-	bigfile_enable = true,
-}
+M.settings = { bigfile_enable = true }
 
 -- setup formatting servers
 M.formatting_servers = {
