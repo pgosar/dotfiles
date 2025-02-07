@@ -7,5 +7,5 @@ return {
 		{ "zM", function() require("ufo").closeAllFolds() end, desc = "Close all UFO folds", },
 	},
 	dependencies = { "kevinhwang91/promise-async" },
-	config = true,
+	opts = {},
 }

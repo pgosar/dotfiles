@@ -12,5 +12,5 @@ return {
 		"vue",
 		"markdown",
 	},
-	config = true,
+	opts = {},
 }

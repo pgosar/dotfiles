@@ -36,8 +36,8 @@ return {
 				})
 			end,
 		},
-		{ "rcarriga/nvim-dap-ui", config = true },
-		{ "theHamsta/nvim-dap-virtual-text", config = true },
+		{ "rcarriga/nvim-dap-ui", opts = {} },
+		{ "theHamsta/nvim-dap-virtual-text", opts = {} },
 		{ "nvim-neotest/nvim-nio" },
 		{
 			"julianolf/nvim-dap-lldb",
