@@ -1,6 +1,6 @@
 return {
-  "akinsho/toggleterm.nvim",
-  cond = group.plugins.toggleterm,
+	"akinsho/toggleterm.nvim",
+	cond = group.plugins.toggleterm,
   -- stylua: ignore
   keys = {
     {
@@ -17,15 +17,16 @@ return {
       desc = "open lazygit",
     },
   },
-  opts = {
-    size = 25,
-    shade_terminals = false,
-    highlights = {
-      Normal = {
-        guibg = require("defaults").colors.terminal,
-      },
-    },
-    direction = "horizontal",
-    float_opts = { border = "curved" },
-  },
+	opts = {
+		size = 25,
+		shade_terminals = false,
+		start_in_insert = true,
+		highlights = {
+			Normal = {
+				guibg = require("defaults").colors.terminal,
+			},
+		},
+		direction = "horizontal",
+		float_opts = { border = "curved" },
+	},
 }
