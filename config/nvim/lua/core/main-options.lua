@@ -43,6 +43,5 @@ vim_opts({
 	},
 	g = {
 		mapleader = " ",
-		rust_recommended_style = false,
 	},
 })
