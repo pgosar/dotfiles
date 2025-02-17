@@ -228,6 +228,7 @@ M.colors = {
 		crust = "#252525",
 	},
 	scrollbar = "#2f334d",
+	terminal = "#222222",
 }
 
 M.colorscheme = "catppuccin"
