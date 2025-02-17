@@ -103,8 +103,10 @@ if group.autocommands.autoformatonautosave and group.plugins.autosave then
 		pattern = "AutoSaveWritePost",
 		group = augroup("auto_format"),
 		callback = function()
-			vim.lsp.buf.format()
-			vim.cmd("write!")
+			if vim.fn.filereadable(vim.fn.expand("%:p")) == 1 then
+				vim.lsp.buf.format()
+				vim.cmd("write!")
+			end
 		end,
 	})
 end
