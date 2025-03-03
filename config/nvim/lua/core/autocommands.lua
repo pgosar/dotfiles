@@ -98,7 +98,7 @@ if group.autocommands.autoroot then
 end
 
 -- Auto formats on auto save
-if group.autocommands.autoformatonautosave and group.plugins.autosave then
+if group.autocommands.auto_format_on_autosave and group.plugins.autosave then
 	cmd("User", {
 		pattern = "AutoSaveWritePost",
 		group = augroup("auto_format"),
@@ -108,5 +108,15 @@ if group.autocommands.autoformatonautosave and group.plugins.autosave then
 				vim.cmd("write!")
 			end
 		end,
+	})
+end
+
+-- No line numbers in terminal buffers
+if group.autocommands.term_line_numbers then
+	cmd({ "FileType" }, {
+		desc = "disable line numbers for terminal filetype",
+		group = augroup("disable_term_line_numbers_ft"),
+		pattern = "terminal",
+		command = "setlocal nonumber norelativenumber",
 	})
 end

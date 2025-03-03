@@ -217,7 +217,8 @@ M.group = {
 		comment = true,
 		syncbackground = true,
 		autoroot = true,
-		autoformatonautosave = true,
+		auto_format_on_autosave = true,
+		term_line_numbers = true,
 	},
 }
 
