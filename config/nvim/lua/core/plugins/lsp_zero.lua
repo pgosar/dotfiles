@@ -16,5 +16,5 @@ return {
 			desc = "Toggle Inlay Hints",
 		},
 	},
-	branch = "v3.x",
+	branch = "v4.x",
 }
