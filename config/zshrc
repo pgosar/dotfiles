@@ -96,3 +96,6 @@ export NODE_PATH=$NODE_PATH:$(npm root -g)
 export MAGICK_HOME=/opt/local
 
 ulimit -Sn unlimited && ulimit -Sl unlimited
+
+# allow use of gnu tools
+export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
