@@ -1,6 +1,6 @@
 -- overrides vim.lsp.buf.rename() so that it provides notifications for the completed rename
 local function _rename()
-	local param = vim.lsp.util.make_position_params()
+	local param = vim.lsp.util.make_position_params(0, "utf-8")
 	param.old = vim.fn.expand("<cword>")
 	vim.ui.input({ prompt = "rename to> ", default = param.old }, function(input)
 		if input == nil then
