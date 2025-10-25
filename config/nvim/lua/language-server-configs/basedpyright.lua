@@ -1,3 +1,11 @@
 return {
-	settings = { basedpyright = { typeCheckingMode = "basic" } },
+	settings = {
+		basedpyright = {
+			analysis = {
+				autoFormatStrings = true,
+				autoSearchPaths = true,
+				useLibraryCodeForTypes = true,
+			},
+		},
+	},
 }
