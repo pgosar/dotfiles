@@ -175,7 +175,6 @@ M.group = {
 		image = true,
 		indent_blankline = true,
 		lazydev = true,
-		lsp_zero = true,
 		lualine = true,
 		markdown = true,
 		markview = true,
