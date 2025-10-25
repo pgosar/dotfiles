@@ -1,0 +1,2 @@
+- make borders for documentation window
+- upgrade to 0.11
