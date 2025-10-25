@@ -1,11 +1,11 @@
 return {
-	"kevinhwang91/nvim-ufo",
-	cond = group.plugins.ufo,
+  "kevinhwang91/nvim-ufo",
+  cond = group.plugins.ufo,
   -- stylua: ignore
-	keys = {
-		{ "zR", function() require("ufo").openAllFolds() end, desc = "Open all UFO folds", },
-		{ "zM", function() require("ufo").closeAllFolds() end, desc = "Close all UFO folds", },
-	},
-	dependencies = { "kevinhwang91/promise-async" },
-	opts = {},
+  keys = {
+    { "zR", function() require("ufo").openAllFolds() end,  desc = "Open all UFO folds", },
+    { "zM", function() require("ufo").closeAllFolds() end, desc = "Close all UFO folds", },
+  },
+  dependencies = { "kevinhwang91/promise-async" },
+  opts = {},
 }
