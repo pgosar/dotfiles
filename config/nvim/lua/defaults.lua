@@ -218,6 +218,7 @@ M.group = {
 		autoroot = true,
 		auto_format_on_autosave = true,
 		term_line_numbers = true,
+		autoformat = true,
 	},
 }
 

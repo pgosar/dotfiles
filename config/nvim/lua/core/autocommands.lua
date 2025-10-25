@@ -120,3 +120,28 @@ if group.autocommands.term_line_numbers then
 		command = "setlocal nonumber norelativenumber",
 	})
 end
+
+-- Format on save using native LSP formatting
+if group.autocommands.autoformat then
+	cmd("BufWritePre", {
+		group = augroup("LspFormatting", { clear = true }),
+		callback = function(args)
+			local bufnr = args.buf
+			local clients = vim.lsp.get_clients({ bufnr = bufnr })
+
+			for _, client in ipairs(clients) do
+				if client.supports_method(client, "textDocument/formatting") then
+					vim.lsp.buf.format({
+						bufnr = bufnr,
+						async = false,
+						timeout_ms = 10000,
+						filter = function(c)
+							return c.name == client.name
+						end,
+					})
+					break
+				end
+			end
+		end,
+	})
+end
