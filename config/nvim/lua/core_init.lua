@@ -53,19 +53,6 @@ vim.api.nvim_create_user_command("CyberUpdate", function()
   require("core.utils.utils").update_all()
 end, { desc = "Updates plugins, mason packages, treesitter parsers" })
 
--- fix comment strings to work with native nvim commenting
-if group.plugins.treesitter then
-  local get_option = vim.filetype.get_option
-  vim.filetype.get_option = function(filetype, option)
-    local comment_ok, ts_context_commentstring_internal = pcall(require, "ts_context_commentstring.internal")
-    if comment_ok and option == "commentstring" then
-      return ts_context_commentstring_internal.calculate_commentstring()
-    else
-      return get_option(filetype, option)
-    end
-  end
-end
-
 -- setup spellcheck
 local spell_words = {}
 for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
