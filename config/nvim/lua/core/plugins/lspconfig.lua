@@ -3,20 +3,8 @@ return {
   event = { "BufReadPre", "BufNewFile" },
 
   keys = {
-    { "gD",         vim.lsp.buf.declaration,    desc = "Go to Declaration" },
-    { "gd",         vim.lsp.buf.definition,     desc = "Go to Definition" },
-    { "gi",         vim.lsp.buf.implementation, desc = "Go to Implementation" },
-    { "<leader>rn", vim.lsp.buf.rename,         desc = "Rename Symbol" },
-    {
-      "<leader>ca",
-      function()
-        vim.lsp.buf.code_action({
-          timeout_ms = 5000,
-        })
-      end,
-      mode = { "n", "v" },
-      desc = "Code Action",
-    },
+    { "grD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
+    { "grd", vim.lsp.buf.definition,  desc = "Go to Definition" },
     {
       "<C-h>",
       function()
