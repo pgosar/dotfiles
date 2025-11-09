@@ -11,7 +11,7 @@ return {
 			enabled = function()
 				-- disable in certain filetypes
 				return not vim.tbl_contains({ "text", "gitcommit", "gitrebase" }, vim.bo.filetype)
-					and vim.bo.buftype ~= "prompt"
+						and vim.bo.buftype ~= "prompt"
 			end,
 			completion = {
 				trigger = { prefetch_on_insert = true },
@@ -26,8 +26,8 @@ return {
 					draw = {
 						treesitter = { "lsp" },
 						columns = {
-							{ "label", "label_description", gap = 1 },
-							{ "kind_icon", "kind", gap = 1 },
+							{ "label",     "label_description", gap = 1 },
+							{ "kind_icon", "kind",              gap = 1 },
 						},
 					},
 				},

@@ -9,7 +9,6 @@ vim_opts({
 		confirm = true, -- Confirm save changes
 		cursorline = true, -- Highlight cursor line
 		cursorlineopt = "number", -- Highlight cursor line number
-		expandtab = true, -- Use spaces instead of tabs
 		foldenable = true, -- Enable folding
 		foldexpr = "nvim_treesitter#foldexpr()", -- Treesitter folding
 		foldlevel = 99, -- Set fold level
@@ -27,15 +26,15 @@ vim_opts({
 		scrolloff = 5, -- Lines above/below cursor
 		sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos,terminal,localoptions", -- Session options
 		shiftwidth = 2, -- Spaces per indent
+		softtabstop = 2, -- Spaces per <Tab>
+		tabstop = 2, -- Spaces per tab
 		showbreak = "=>>", -- Wrapped line prefix
 		breakindent = true,
 		showmode = false, -- Hide mode in command line
 		smartcase = true, -- Smart case search
-		softtabstop = 2, -- Spaces per <Tab>
 		spell = true, -- Enable spell check
 		spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add", -- Custom spell file
 		spelllang = "en_us", -- Spell check language
-		tabstop = 2, -- Spaces per tab
 		termguicolors = true, -- 24-bit RGB colors
 		textwidth = 100, -- Max text width
 		undofile = true, -- Persistent undo

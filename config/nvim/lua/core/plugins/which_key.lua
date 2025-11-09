@@ -1,6 +1,6 @@
 return {
-  "folke/which-key.nvim",
-  cond = group.plugins.whichkey,
-  event = "VeryLazy",
-  opts = {},
+	"folke/which-key.nvim",
+	cond = group.plugins.whichkey,
+	event = "VeryLazy",
+	opts = {},
 }
