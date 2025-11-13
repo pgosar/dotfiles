@@ -72,9 +72,7 @@ if group.autocommands.syncbackground then
 		pattern = "*",
 		callback = function()
 			local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
-			if not normal.bg then
-				return
-			end
+			if not normal.bg then return end
 			io.write(string.format("\027]11;#%06x\027\\", normal.bg))
 		end,
 	})
@@ -83,9 +81,7 @@ if group.autocommands.syncbackground then
 		desc = "reset background",
 		group = augroup("reset_background"),
 		pattern = "*",
-		callback = function()
-			io.write("\027]111\027\\")
-		end,
+		callback = function() io.write("\027]111\027\\") end,
 	})
 end
 
@@ -126,22 +122,11 @@ if group.autocommands.autoformat then
 	cmd("BufWritePre", {
 		group = augroup("LspFormatting", { clear = true }),
 		callback = function(args)
-			local bufnr = args.buf
-			local clients = vim.lsp.get_clients({ bufnr = bufnr })
-
-			for _, client in ipairs(clients) do
-				if client.supports_method(client, "textDocument/formatting") then
-					vim.lsp.buf.format({
-						bufnr = bufnr,
-						async = false,
-						timeout_ms = 10000,
-						filter = function(c)
-							return c.name == client.name
-						end,
-					})
-					break
-				end
-			end
+			vim.lsp.buf.format({
+				bufnr = args.buf,
+				async = false,
+				timeout_ms = 10000,
+			})
 		end,
 	})
 end
