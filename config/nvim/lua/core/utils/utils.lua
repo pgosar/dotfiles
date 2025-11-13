@@ -19,9 +19,7 @@ end
 ---@param opts table?: options for the keybind
 M.map = function(mode, lhs, rhs, opts)
 	local options = { noremap = true, silent = true }
-	if opts then
-		options = vim.tbl_extend("force", options, opts)
-	end
+	if opts then options = vim.tbl_extend("force", options, opts) end
 	vim.keymap.set(mode, lhs, rhs, options)
 end
 
@@ -30,18 +28,14 @@ end
 ---@param opts table?: options for the augroup
 M.augroup = function(name, opts)
 	local options = { clear = true }
-	if opts then
-		options = vim.tbl_extend("force", options, opts)
-	end
+	if opts then options = vim.tbl_extend("force", options, opts) end
 	vim.api.nvim_create_augroup(name, options)
 end
 
 --- Create new file, used for alpha buffer
 M.create_new_file = function()
 	local filename = vim.fn.input("Enter the filename: ")
-	if filename ~= "" then
-		vim.cmd("edit " .. filename)
-	end
+	if filename ~= "" then vim.cmd("edit " .. filename) end
 end
 
 --- Creates new terminals with ToggleTerm
@@ -78,9 +72,7 @@ M.update_mason = function()
 	registry.update()
 	local packages = registry.get_all_packages()
 	for _, pkg in ipairs(packages) do
-		if pkg:is_installed() then
-			pkg:install()
-		end
+		if pkg:is_installed() then pkg:install() end
 	end
 end
 
@@ -101,9 +93,7 @@ end
 M.supports_formatting = function()
 	local clients = vim.lsp.get_clients()
 	for _, client in ipairs(clients) do
-		if client.supports_method("textDocument/formatting") then
-			return true
-		end
+		if client.supports_method("textDocument/formatting") then return true end
 	end
 	return false
 end
@@ -114,22 +104,21 @@ end
 M.large_file = function(buf)
 	local max_filesize = 100 * 1024 * 1024 -- 100 kb
 	local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-	return require("defaults").settings.bigfile_enable and ok and stats ~= nil and stats.size > max_filesize
+	return require("defaults").settings.bigfile_enable
+		and ok
+		and stats ~= nil
+		and stats.size > max_filesize
 end
 
 --- Set the current working directory to the root of the project
 M.set_root = function()
 	-- Get directory path to start search from
 	local path = vim.api.nvim_buf_get_name(0)
-	if path == "" then
-		return
-	end
+	if path == "" then return end
 	path = vim.fs.dirname(path)
 
 	local root_file = vim.fs.find({ ".git", ".gitignore" }, { path = path, upward = true })[1]
-	if root_file == nil then
-		return
-	end
+	if root_file == nil then return end
 	local root = vim.fs.dirname(root_file)
 	-- Set current directory
 	vim.fn.chdir(root)
@@ -139,9 +128,7 @@ end
 ---@param message string: the message to truncate
 ---@param max_length integer: the maximum length of the message
 M.truncate_message = function(message, max_length)
-	if #message <= max_length then
-		return message
-	end
+	if #message <= max_length then return message end
 
 	-- Find the last newline before the max length
 	local break_point = message:sub(1, max_length):match(".*()\n")
@@ -156,9 +143,7 @@ end
 --- Closes all floating windows
 M.close_floating_windows = function()
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		if vim.api.nvim_win_get_config(win).relative ~= "" then
-			vim.api.nvim_win_close(win, true)
-		end
+		if vim.api.nvim_win_get_config(win).relative ~= "" then vim.api.nvim_win_close(win, true) end
 	end
 end
 

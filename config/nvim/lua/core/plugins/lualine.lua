@@ -18,9 +18,7 @@ return {
 			red = "#EC5F67",
 		}
 
-		local buffer_not_empty = function()
-			return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
-		end
+		local buffer_not_empty = function() return vim.fn.empty(vim.fn.expand("%:t")) ~= 1 end
 
 		local show_width = function()
 			local total_width = 0
@@ -70,9 +68,7 @@ return {
 		end
 
 		components.current_editing_mode = {
-			function()
-				return require("lualine.utils.mode").get_mode()
-			end,
+			function() return require("lualine.utils.mode").get_mode() end,
 			color = function()
 				local mode_color = {
 					n = colors.red,
@@ -124,7 +120,11 @@ return {
 		components.diagnostics = {
 			"diagnostics",
 			sources = { "nvim_diagnostic" },
-			symbols = { error = icons.diagnostics.error, warn = icons.diagnostics.warn, info = icons.diagnostics.info },
+			symbols = {
+				error = icons.diagnostics.error,
+				warn = icons.diagnostics.warn,
+				info = icons.diagnostics.info,
+			},
 			diagnostics_color = {
 				color_error = { fg = colors.red },
 				color_warn = { fg = colors.yellow },
@@ -143,9 +143,7 @@ return {
 				local msg = ""
 				local buf_ft = vim.api.nvim_get_option_value("filetype", {})
 				local clients = vim.lsp.get_clients()
-				if next(clients) == nil then
-					return msg
-				end
+				if next(clients) == nil then return msg end
 				for _, client in ipairs(clients) do
 					local filetypes = client.config.filetypes
 					if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
@@ -173,7 +171,11 @@ return {
 
 		components.diff = {
 			"diff",
-			symbols = { added = icons.git.added, modified = icons.git.modified, removed = icons.git.removed },
+			symbols = {
+				added = icons.git.added,
+				modified = icons.git.modified,
+				removed = icons.git.removed,
+			},
 			diff_color = {
 				added = { fg = colors.green },
 				modified = { fg = colors.orange },

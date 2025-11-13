@@ -4,9 +4,7 @@ return {
 	keys = {
 		{
 			"<leader>fd",
-			function()
-				require("neogen").generate()
-			end,
+			function() require("neogen").generate() end,
 			desc = "generate doc comments",
 		},
 	},

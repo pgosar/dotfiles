@@ -13,9 +13,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local ok, defaults = pcall(require, "defaults")
-if not ok then
-	vim.notify("Failed to load defaults.lua")
-end
+if not ok then vim.notify("Failed to load defaults.lua") end
 _G.group = defaults.group
 local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current_buf())
 
@@ -27,9 +25,7 @@ for _, source in ipairs({
 }) do
 	if not big_file then
 		local status_ok, fault = pcall(require, source)
-		if not status_ok then
-			vim.notify("Failed to load " .. source .. "\n\n" .. fault)
-		end
+		if not status_ok then vim.notify("Failed to load " .. source .. "\n\n" .. fault) end
 	end
 end
 
@@ -49,9 +45,11 @@ if group.plugins.notify then
 end
 
 -- update function
-vim.api.nvim_create_user_command("CyberUpdate", function()
-	require("core.utils.utils").update_all()
-end, { desc = "Updates plugins, mason packages, treesitter parsers" })
+vim.api.nvim_create_user_command(
+	"CyberUpdate",
+	function() require("core.utils.utils").update_all() end,
+	{ desc = "Updates plugins, mason packages, treesitter parsers" }
+)
 
 -- setup spellcheck
 local spell_words = {}
@@ -60,9 +58,7 @@ for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):line
 end
 
 local color_ok, _ = pcall(vim.cmd.colorscheme, require("defaults").colorscheme)
-if not color_ok then
-	vim.cmd.colorscheme("default")
-end
+if not color_ok then vim.cmd.colorscheme("default") end
 
 -- only update LSP diagnostic information when leaving insert mode
 vim.diagnostic.config({

@@ -39,7 +39,10 @@ local function _rename()
 					end
 					updates = updates + vim.tbl_count(document.edits)
 					local short_uri = string.sub(vim.uri_to_fname(uri), #vim.loop.cwd() + 2)
-					table.insert(notif, string.format("\t- %d in %s", vim.tbl_count(document.edits), short_uri))
+					table.insert(
+						notif,
+						string.format("\t- %d in %s", vim.tbl_count(document.edits), short_uri)
+					)
 				end
 			end
 			if result.changes then

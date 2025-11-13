@@ -43,6 +43,9 @@ map("n", "+", ":vertical resize +2<CR>", { desc = "resize window right" })
 map("n", "X", "D", { desc = "cut and yank" })
 map({ "n", "v" }, "d", '"_d', { desc = "cut without yanking" })
 
-map("i", "<C-c>", function()
-	require("core.utils.utils").close_floating_windows()
-end, { desc = "close all floating windows when in insert mode" })
+map(
+	"i",
+	"<C-c>",
+	function() require("core.utils.utils").close_floating_windows() end,
+	{ desc = "close all floating windows when in insert mode" }
+)

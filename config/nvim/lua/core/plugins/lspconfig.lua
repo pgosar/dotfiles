@@ -4,12 +4,10 @@ return {
 
 	keys = {
 		{ "grD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
-		{ "grd", vim.lsp.buf.definition,  desc = "Go to Definition" },
+		{ "grd", vim.lsp.buf.definition, desc = "Go to Definition" },
 		{
 			"<C-h>",
-			function()
-				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
-			end,
+			function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end,
 			desc = "Toggle Inlay Hints",
 		},
 	},
@@ -75,7 +73,10 @@ return {
 			if spec_ok then
 				server_config = vim.tbl_deep_extend("force", {}, default_config, specific or {})
 			else
-				vim.notify("Failed to load config for " .. server .. ": " .. tostring(specific), vim.log.levels.WARN)
+				vim.notify(
+					"Failed to load config for " .. server .. ": " .. tostring(specific),
+					vim.log.levels.WARN
+				)
 			end
 			vim.lsp.config(server, server_config)
 		end
@@ -83,9 +84,7 @@ return {
 		-- Automatically enable Mason-installed servers with default config
 		require("mason-lspconfig").setup({
 			function(server_name)
-				if server_name == "tsserver" then
-					server_name = "ts_ls"
-				end
+				if server_name == "tsserver" then server_name = "ts_ls" end
 
 				-- Skip if we've already configured this server above
 				if not server_specific_configs[server_name] then

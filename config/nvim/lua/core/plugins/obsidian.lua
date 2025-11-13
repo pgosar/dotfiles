@@ -5,32 +5,24 @@ return {
 	keys = {
 		{
 			"<leader>p",
-			function()
-				require("obsidian").commands.paste_img()
-			end,
+			function() require("obsidian").commands.paste_img() end,
 			desc = "Paste clipboard image",
 		},
 		{
 			"<leader>ol",
-			function()
-				require("obsidian").commands.link()
-			end,
+			function() require("obsidian").commands.link() end,
 			mode = "v",
 			desc = "Link current word to file in Obsidian",
 		},
 		{
 			"<leader>oln",
-			function()
-				require("obsidian").commands.link_new()
-			end,
+			function() require("obsidian").commands.link_new() end,
 			mode = "v",
 			desc = "Link current word to new file in Obsidian",
 		},
 		{
 			"<leader>on",
-			function()
-				require("obsidian").commands.new()
-			end,
+			function() require("obsidian").commands.new() end,
 			desc = "New file in Obsidian",
 		},
 	},
@@ -38,9 +30,7 @@ return {
 		ui = { enable = false },
 		mappings = {
 			["<cr>"] = {
-				action = function()
-					return require("obsidian").util.smart_action()
-				end,
+				action = function() return require("obsidian").util.smart_action() end,
 				opts = { buffer = true, expr = true },
 			},
 		},
@@ -62,9 +52,7 @@ return {
 			},
 			{
 				name = "no-vault",
-				path = function()
-					return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
-				end,
+				path = function() return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end,
 				overrides = {
 					notes_subdir = vim.NIL,
 					new_notes_location = "current_dir",

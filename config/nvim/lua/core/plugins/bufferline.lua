@@ -3,13 +3,7 @@ return {
 	cond = group.plugins.bufferline,
 	event = "VimEnter",
 	keys = {
-		{
-			"gb",
-			function()
-				require("bufferline").pick()
-			end,
-			desc = "pick buffer to open",
-		},
+		{ "gb", "<CMD>BufferLinePick<CR>", desc = "pick buffer to open" },
 	},
 	config = function()
 		require("bufferline").setup({

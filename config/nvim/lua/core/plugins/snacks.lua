@@ -11,17 +11,13 @@ return {
 				wo = { winbar = "" },
 			},
 			toggles = { dim = false },
-			on_open = function()
-				require("dropbar.menu").dropbar_menu_t:del()
-			end,
+			on_open = function() require("dropbar.menu").dropbar_menu_t:del() end,
 		},
 	},
 	keys = {
 		{
 			"<leader>zm",
-			function()
-				Snacks.zen()
-			end,
+			function() Snacks.zen() end,
 			desc = "Toggle Zen Mode",
 		},
 	},

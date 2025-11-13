@@ -14,7 +14,7 @@ return {
 			})
 		end,
 		dependencies = {
-			{ "HiPhish/rainbow-delimiters.nvim",            cond = group.plugins.rainbow },
+			{ "HiPhish/rainbow-delimiters.nvim", cond = group.plugins.rainbow },
 			{ "JoosepAlviste/nvim-ts-context-commentstring" },
 			{ "RRethy/nvim-treesitter-endwise" },
 		},

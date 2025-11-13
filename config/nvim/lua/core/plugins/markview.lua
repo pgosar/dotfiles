@@ -5,9 +5,7 @@ return {
 	keys = {
 		{
 			"<leader>mm",
-			function()
-				require("markview").toggle()
-			end,
+			function() require("markview").toggle() end,
 			desc = "Toggle markdown viewer",
 		},
 	},

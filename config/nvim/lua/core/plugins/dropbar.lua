@@ -4,6 +4,6 @@ return {
 	lazy = false,
 	cond = group.plugins.dropbar,
 	keys = {
-		{ "<C-p>", function() require("dropbar.api").pick() end, { desc = "pick from dropbar" }, },
+		{ "<C-p>", function() require("dropbar.api").pick() end, { desc = "pick from dropbar" } },
 	},
 }

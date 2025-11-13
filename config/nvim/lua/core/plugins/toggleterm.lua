@@ -4,9 +4,7 @@ return {
 	keys = {
 		{
 			"<leader><C-\\>",
-			function()
-				require("toggleterm").toggle(0, nil, nil, "float")
-			end,
+			function() require("toggleterm").toggle(0, nil, nil, "float") end,
 			desc = "Toggle floating terminal",
 		},
 		{
@@ -17,9 +15,7 @@ return {
 		},
 		{
 			"<C-\\>",
-			function()
-				require("toggleterm").toggle()
-			end,
+			function() require("toggleterm").toggle() end,
 			desc = "Toggle terminal",
 		},
 		{
@@ -31,9 +27,7 @@ return {
 		},
 		{
 			"<leader>gg",
-			function()
-				require("core.utils.utils").create_floating_terminal("lazygit")
-			end,
+			function() require("core.utils.utils").create_floating_terminal("lazygit") end,
 			desc = "open lazygit",
 		},
 	},

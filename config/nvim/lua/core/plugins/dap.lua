@@ -4,66 +4,46 @@ return {
 	keys = {
 		{
 			"<leader>dc",
-			function()
-				require("dap").continue()
-			end,
+			function() require("dap").continue() end,
 			desc = "Debugger Continue",
 		},
 		{
 			"<leader>dn",
-			function()
-				require("dap").step_over()
-			end,
+			function() require("dap").step_over() end,
 			desc = "Debugger Step Over",
 		},
 		{
 			"<leader>di",
-			function()
-				require("dap").step_into()
-			end,
+			function() require("dap").step_into() end,
 			desc = "Debugger Step Into",
 		},
 		{
 			"<leader>do",
-			function()
-				require("dap").step_out()
-			end,
+			function() require("dap").step_out() end,
 			desc = "Debugger Step Out",
 		},
 		{
 			"<leader>db",
-			function()
-				require("dap").toggle_breakpoint()
-			end,
+			function() require("dap").toggle_breakpoint() end,
 			desc = "Toggle Breakpoint",
 		},
 		{
 			"<leader>dq",
-			function()
-				require("dap").disconnect({ terminateDebuggee = true })
-			end,
+			function() require("dap").disconnect({ terminateDebuggee = true }) end,
 			desc = "Disconnect Debugger",
 		},
 	},
 	config = function()
 		local dap, dapui = require("dap"), require("dapui")
-		dap.listeners.after.event_initialized["dapui_config"] = function()
-			dapui.open()
-		end
-		dap.listeners.before.event_terminated["dapui_config"] = function()
-			dapui.close()
-		end
-		dap.listeners.before.event_exited["dapui_config"] = function()
-			dapui.close()
-		end
+		dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+		dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+		dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
 	end,
 	dependencies = {
 		{
 			"mfussenegger/nvim-dap-python",
 			cond = group.plugins.dap_python,
-			config = function()
-				require("dap-python").setup("~/.conda/debugpy/bin/python")
-			end,
+			config = function() require("dap-python").setup("~/.conda/debugpy/bin/python") end,
 		},
 		{
 			"jay-babu/mason-nvim-dap.nvim",

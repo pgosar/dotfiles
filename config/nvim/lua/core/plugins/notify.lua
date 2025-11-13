@@ -5,9 +5,7 @@ return {
 	keys = {
 		{
 			"<ESC>",
-			function()
-				require("notify").dismiss({})
-			end,
+			function() require("notify").dismiss({}) end,
 			desc = "Dismiss notifications",
 		},
 		{

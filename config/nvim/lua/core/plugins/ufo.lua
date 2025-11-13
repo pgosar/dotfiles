@@ -4,16 +4,12 @@ return {
 	keys = {
 		{
 			"zR",
-			function()
-				require("ufo").openAllFolds()
-			end,
+			function() require("ufo").openAllFolds() end,
 			desc = "Open all UFO folds",
 		},
 		{
 			"zM",
-			function()
-				require("ufo").closeAllFolds()
-			end,
+			function() require("ufo").closeAllFolds() end,
 			desc = "Close all UFO folds",
 		},
 	},
