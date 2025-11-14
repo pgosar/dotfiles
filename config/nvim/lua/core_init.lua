@@ -22,6 +22,7 @@ for _, source in ipairs({
 	"core.keybindings",
 	"core.utils.notify",
 	"core.autocommands",
+	"core.commands",
 }) do
 	if not big_file then
 		local status_ok, fault = pcall(require, source)
@@ -43,13 +44,6 @@ end
 if group.plugins.notify then
 	_, vim.notify = pcall(require, "notify")
 end
-
--- update function
-vim.api.nvim_create_user_command(
-	"CyberUpdate",
-	function() require("core.utils.utils").update_all() end,
-	{ desc = "Updates plugins, mason packages, treesitter parsers" }
-)
 
 -- setup spellcheck
 local spell_words = {}

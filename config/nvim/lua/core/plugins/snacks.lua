@@ -13,6 +13,9 @@ return {
 			toggles = { dim = false },
 			on_open = function() require("dropbar.menu").dropbar_menu_t:del() end,
 		},
+		bufdelete = {
+			enabled = true,
+		},
 	},
 	keys = {
 		{
