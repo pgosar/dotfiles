@@ -1,27 +1,125 @@
 return {
-	"folke/snacks.nvim",
-	priority = 1000,
-	lazy = false,
-	opts = {
-		picker = { enabled = group.plugins.snacks_picker },
-		zen = {
-			enabled = true,
-			win = {
-				backdrop = { transparent = false },
-				wo = { winbar = "" },
-			},
-			toggles = { dim = false },
-			on_open = function() require("dropbar.menu").dropbar_menu_t:del() end,
-		},
-		bufdelete = {
-			enabled = true,
-		},
-	},
-	keys = {
-		{
-			"<leader>zm",
-			function() Snacks.zen() end,
-			desc = "Toggle Zen Mode",
-		},
-	},
+  "folke/snacks.nvim",
+  priority = 1000,
+  lazy = false,
+  opts = {
+    picker = { enabled = group.plugins.snacks_picker },
+    zen = {
+      enabled = true,
+      win = {
+        backdrop = { transparent = false },
+        wo = { winbar = "" },
+      },
+      toggles = { dim = false },
+      on_open = function() require("dropbar.menu").dropbar_menu_t:del() end,
+    },
+    bufdelete = {
+      enabled = true,
+    },
+    dashboard = {
+      enable = true,
+      preset = {
+        header = require("defaults").dashboard_ascii,
+        keys = {
+          {
+            icon = icons.dashboard.recent,
+            key = "f",
+            desc = "Files",
+            action = function() Snacks.dashboard.pick("files") end,
+          },
+          {
+            icon = icons.dashboard.recent,
+            key = "r",
+            desc = "Recent Files",
+            action = function() Snacks.dashboard.pick("oldfiles") end,
+          },
+          {
+            icon = icons.dashboard.new_file,
+            key = "n",
+            desc = "New File",
+            action = require("core.utils.utils").create_new_file,
+          },
+          {
+            icon = icons.dashboard.find,
+            key = "g",
+            desc = "Find Text",
+            action = function() Snacks.dashboard.pick("live_grep") end,
+          },
+          {
+            icon = icons.dashboard.config,
+            key = "c",
+            desc = "Config",
+            action = function() Snacks.dashboard.pick("files", { cwd = vim.fn.stdpath("config") }) end,
+          },
+          {
+            icon = icons.dashboard.session,
+            key = "s",
+            desc = "Restore Session",
+            action = function() require("persistence").select() end,
+          },
+          {
+            icon = icons.dashboard.lazy,
+            key = "L",
+            desc = "Lazy",
+            action = function() vim.cmd("Lazy") end,
+            enabled = package.loaded.lazy ~= nil,
+          },
+          {
+            icon = icons.dashboard.quit,
+            key = "q",
+            desc = "Quit",
+            action = function() vim.cmd("qa") end,
+          },
+        },
+      },
+      sections = {
+        { section = "header" },
+        { section = "keys", gap = 1, padding = 1 },
+        {
+          pane = 2,
+          icon = icons.dashboard.new_file,
+          title = "Recent Files",
+          section = "recent_files",
+          indent = 2,
+          padding = 1,
+        },
+        {
+          pane = 2,
+          icon = icons.dashboard.open_project,
+          title = "Projects",
+          section = "projects",
+          indent = 2,
+          padding = 1,
+        },
+        {
+          pane = 2,
+          icon = icons.git.branch,
+          title = "Git Status",
+          section = "terminal",
+          enabled = function() return Snacks.git.get_root() ~= nil end,
+          cmd = "git status --short --branch --renames",
+          height = 5,
+          padding = 1,
+          ttl = 5 * 60,
+          indent = 3,
+        },
+        {
+          title = "Open Issues",
+          cmd = "gh issue list -L 3",
+          key = "i",
+          action = function() vim.fn.jobstart("gh issue list --web", { detach = true }) end,
+          icon = " ",
+          height = 7,
+        },
+        { section = "startup" },
+      },
+    },
+  },
+  keys = {
+    {
+      "<leader>zm",
+      function() Snacks.zen() end,
+      desc = "Toggle Zen Mode",
+    },
+  },
 }
