@@ -9,10 +9,10 @@ map("n", "m", "<CMD>noh<CR>", { desc = "clear search highlight" })
 -- in insert mode, type <c-d> and your cursor will move past the next separator
 -- such as quotes, parens, brackets, etc.
 map(
-	"i",
-	"<C-d>",
-	"<CMD>set shortmess+=S<CR><left><c-o>/[\"';)>{}\\]]<cr><c-o><CMD>noh<CR><CMD>set shortmess-=S<CR><right>",
-	{ desc = "move past separator" }
+  "i",
+  "<C-d>",
+  "<CMD>set shortmess+=S<CR><left><c-o>/[\"';)>{}\\]]<cr><c-o><CMD>noh<CR><CMD>set shortmess-=S<CR><right>",
+  { desc = "move past separator" }
 )
 map("i", "<C-b>", "<C-o>0", { desc = "move to beginning of line" })
 map("i", "<C-a>", "<C-o>A", { desc = "move to end of line" })
@@ -44,8 +44,8 @@ map("n", "X", "D", { desc = "cut and yank" })
 map({ "n", "v" }, "d", '"_d', { desc = "cut without yanking" })
 
 map(
-	"i",
-	"<C-c>",
-	function() require("core.utils.utils").close_floating_windows() end,
-	{ desc = "close all floating windows when in insert mode" }
+  "i",
+  "<C-c>",
+  function() require("core.utils.utils").close_floating_windows() end,
+  { desc = "close all floating windows when in insert mode" }
 )
