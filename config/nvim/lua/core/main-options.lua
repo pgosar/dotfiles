@@ -24,7 +24,7 @@ vim_opts({
     numberwidth = 6, -- Width of number column
     pumheight = 10, -- Auto-complete menu max height
     scrolloff = 5, -- Lines above/below cursor
-    sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos,terminal,localoptions", -- Session options
+    sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos,terminal,localoptions,folds", -- Session options
     shiftwidth = 2, -- Spaces per indent
     softtabstop = 2, -- Spaces per <Tab>
     tabstop = 2, -- Spaces per tab
