@@ -20,7 +20,6 @@ local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current
 for _, source in ipairs({
   "core.main-options",
   "core.keybindings",
-  "core.utils.notify",
   "core.autocommands",
   "core.commands",
 }) do
@@ -40,6 +39,8 @@ if not big_file then
     },
   })
 end
+
+vim.lsp.buf.rename = require("core.utils.rename").rename
 
 if group.plugins.notify then
   _, vim.notify = pcall(require, "notify")
