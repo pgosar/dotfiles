@@ -13,16 +13,18 @@ local function get_initially_open_buffers()
   return open
 end
 
--- Save a buffer if it is valid and has a name
-local function save_buffer(bufnr)
+-- Format and save a buffer if it is valid and has a name
+local function format_and_save_buffer(bufnr)
   if not vim.api.nvim_buf_is_valid(bufnr) then return end
   local name = vim.api.nvim_buf_get_name(bufnr)
   if name == "" then return end
 
-  -- Check if buffer is modified before saving
   if vim.api.nvim_buf_get_option(bufnr, "modified") then
     local ok, err = pcall(function()
-      vim.api.nvim_buf_call(bufnr, function() vim.cmd("silent! write") end)
+      vim.api.nvim_buf_call(bufnr, function()
+        vim.lsp.buf.format({ bufnr = bufnr, async = false })
+        vim.cmd("silent! write")
+      end)
     end)
     if not ok then vim.notify(string.format("Failed to save %s: %s", name, err), "warn") end
   end
@@ -101,7 +103,6 @@ local function do_rename(param)
   local initially_open = get_initially_open_buffers()
 
   vim.lsp.buf_request(0, "textDocument/rename", param, function(err, result, ctx, config)
-    -- Better error handling
     if err then
       vim.notify(
         string.format("LSP error during rename: %s", vim.inspect(err)),
@@ -129,7 +130,6 @@ local function do_rename(param)
       return
     end
 
-    -- Apply edits via built-in LSP handler
     local apply_ok, apply_err = pcall(
       function() vim.lsp.handlers["textDocument/rename"](err, result, ctx, config) end
     )
@@ -143,10 +143,7 @@ local function do_rename(param)
       return
     end
 
-    -- Collect info for notification
     local message, modified_buffers = collect_edits(result)
-
-    -- Truncate long messages
     local truncate = require("core.utils.utils").truncate_message
     message = truncate(message, 500)
 
@@ -155,11 +152,10 @@ local function do_rename(param)
       timeout = 2500,
     })
 
-    -- Save modified buffers and hide those that weren't originally open
     vim.schedule(function()
       for _, bufnr in ipairs(modified_buffers) do
         if vim.api.nvim_buf_is_valid(bufnr) then
-          save_buffer(bufnr)
+          format_and_save_buffer(bufnr)
           if not initially_open[bufnr] then
             pcall(vim.api.nvim_buf_set_option, bufnr, "buflisted", false)
             pcall(vim.api.nvim_buf_set_option, bufnr, "bufhidden", "hide")
