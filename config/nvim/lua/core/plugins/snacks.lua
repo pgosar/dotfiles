@@ -14,6 +14,7 @@ return {
       on_open = function() require("dropbar.menu").dropbar_menu_t:del() end,
     },
     bufdelete = { enabled = true },
+    statuscolumn = { enabled = true },
     rename = { enabled = true },
     dashboard = {
       enabled = true,
