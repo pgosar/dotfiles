@@ -5,6 +5,7 @@ return {
   keys = {
     { "grD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
     { "grd", vim.lsp.buf.definition, desc = "Go to Definition" },
+    { "Grn", function() Snacks.rename.rename_file() end, desc = "Rename files" },
     {
       "<C-h>",
       function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end,

@@ -13,11 +13,10 @@ return {
       toggles = { dim = false },
       on_open = function() require("dropbar.menu").dropbar_menu_t:del() end,
     },
-    bufdelete = {
-      enabled = true,
-    },
+    bufdelete = { enabled = true },
+    rename = { enabled = true },
     dashboard = {
-      enable = true,
+      enabled = true,
       preset = {
         header = require("defaults").dashboard_ascii,
         keys = {
