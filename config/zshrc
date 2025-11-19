@@ -99,3 +99,6 @@ ulimit -Sn unlimited && ulimit -Sl unlimited
 
 # allow use of gnu tools
 export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+
+# Added by Antigravity
+export PATH="/Users/chilly/.antigravity/antigravity/bin:$PATH"
