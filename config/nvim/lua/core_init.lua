@@ -88,3 +88,11 @@ sign("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "Diagnostic
 sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
 sign("DapBreakpoint", { text = icons.dap.breakpoint })
 sign("DapStopped", { text = icons.dap.stopped })
+
+-- Set default border for all floating windows
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or "rounded"
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
