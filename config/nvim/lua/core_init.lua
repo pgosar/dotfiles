@@ -40,11 +40,11 @@ if not big_file then
   })
 end
 
-vim.lsp.buf.rename = require("core.utils.rename").rename
-
 if group.plugins.notify then
   _, vim.notify = pcall(require, "notify")
 end
+
+vim.lsp.buf.rename = require("core.utils.rename").rename
 
 -- setup spellcheck
 local spell_words = {}
