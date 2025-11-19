@@ -16,6 +16,7 @@ return {
     bufdelete = { enabled = true },
     statuscolumn = { enabled = true },
     rename = { enabled = true },
+    image = { enabled = true },
     dashboard = {
       enabled = true,
       preset = {

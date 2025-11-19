@@ -63,5 +63,5 @@ return {
     if stats and stats.type == "directory" then require("neo-tree") end
   end,
   branch = "v3.x",
-  dependencies = { "nvim-tree/nvim-web-devicons", "3rd/image.nvim" },
+  dependencies = { "nvim-tree/nvim-web-devicons" },
 }
