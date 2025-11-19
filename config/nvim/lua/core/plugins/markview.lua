@@ -10,6 +10,10 @@ return {
     },
   },
   opts = {
+
+    latex = {
+      enable = false,
+    },
     preview = {
       modes = { "n", "i", "no", "c" },
       hybrid_modes = { "i" },
@@ -19,7 +23,7 @@ return {
           vim.wo[win].concealcursor = "nc"
         end,
       },
-      filetypes = { "markdown", "quarto", "rmd", "tex" },
+      filetypes = { "markdown" },
     },
     html = { tags = { default = { conceal = true } } },
   },
