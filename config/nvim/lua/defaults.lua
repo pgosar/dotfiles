@@ -98,6 +98,7 @@ M.ensure_installed = {
     "bash-language-server",
     "cbfmt",
     "clangd",
+    "clang_format",
     "css-lsp",
     "debugpy",
     "delve",
