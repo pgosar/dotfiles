@@ -1,3 +1,4 @@
+-- Draw ASCII diagrams
 return {
   "jbyuki/venn.nvim",
   cond = group.plugins.venn,

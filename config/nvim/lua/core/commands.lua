@@ -1,3 +1,4 @@
+-- Custom user commands 
 -- update function
 vim.api.nvim_create_user_command(
   "CyberUpdate",

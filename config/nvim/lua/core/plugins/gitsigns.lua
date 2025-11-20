@@ -1,3 +1,4 @@
+-- Git integration
 return {
   "lewis6991/gitsigns.nvim",
   cond = group.plugins.gitsigns,

@@ -1,3 +1,4 @@
+-- Utility functions 
 local M = {}
 
 --- Sets vim options based on table

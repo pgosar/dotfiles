@@ -1,3 +1,4 @@
+-- BasedPyright LSP configuration for Python
 return {
   settings = {
     basedpyright = {

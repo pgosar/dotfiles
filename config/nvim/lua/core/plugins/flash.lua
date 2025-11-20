@@ -1,3 +1,4 @@
+-- Jump to any location
 return {
   "folke/flash.nvim",
   cond = group.plugins.flash,

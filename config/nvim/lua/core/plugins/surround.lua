@@ -1,3 +1,4 @@
+-- Add, change, and delete surrounding pairs
 return {
   "kylechui/nvim-surround",
   cond = group.plugins.surround,

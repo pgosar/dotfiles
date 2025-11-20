@@ -1,3 +1,4 @@
+-- Autosave
 return {
   "okuuva/auto-save.nvim",
   event = { "InsertEnter", "InsertLeave", "TextChanged" },

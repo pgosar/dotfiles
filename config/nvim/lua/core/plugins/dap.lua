@@ -1,3 +1,4 @@
+-- Debugger
 return {
   "mfussenegger/nvim-dap",
   cond = group.plugins.dap,

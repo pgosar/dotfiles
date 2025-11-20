@@ -1,3 +1,4 @@
+-- Code refactoring operations
 return {
   "ThePrimeagen/refactoring.nvim",
   cond = group.plugins.refactoring,

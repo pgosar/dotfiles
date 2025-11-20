@@ -1,3 +1,4 @@
+-- Visual scrollbar
 return {
   "petertriho/nvim-scrollbar",
   cond = group.plugins.scrollbar,

@@ -1,3 +1,4 @@
+-- Highlights color codes with their actual colors inline
 return {
   "brenoprata10/nvim-highlight-colors",
   cond = group.plugins.highlight_colors,

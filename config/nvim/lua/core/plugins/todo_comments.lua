@@ -1,3 +1,4 @@
+-- Highlights and searches TODO, FIXME, HACK, and other special comments
 return {
   "folke/todo-comments.nvim",
   cond = group.plugins.todo_comments,

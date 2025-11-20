@@ -1,3 +1,4 @@
+-- Better code folding
 return {
   "kevinhwang91/nvim-ufo",
   cond = group.plugins.ufo,

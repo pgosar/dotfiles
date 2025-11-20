@@ -1,3 +1,4 @@
+-- Pretty list for diagnostics, references, etc
 return {
   "folke/trouble.nvim",
   cond = group.plugins.trouble,

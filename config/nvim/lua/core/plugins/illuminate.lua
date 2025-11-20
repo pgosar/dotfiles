@@ -1,3 +1,4 @@
+-- Highlight other occurrences of the word under the cursor
 return {
   "RRethy/vim-illuminate",
   cond = group.plugins.illuminate,

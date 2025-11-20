@@ -1,3 +1,4 @@
+-- File explorer 
 return {
   "nvim-neo-tree/neo-tree.nvim",
   cond = group.plugins.neotree,

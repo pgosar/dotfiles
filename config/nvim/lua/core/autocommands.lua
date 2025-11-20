@@ -1,3 +1,4 @@
+-- Autocommands 
 local augroup = require("core.utils.utils").augroup
 local cmd = vim.api.nvim_create_autocmd
 

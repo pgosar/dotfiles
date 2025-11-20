@@ -1,3 +1,4 @@
+-- Terminal manager 
 return {
   "akinsho/toggleterm.nvim",
   cond = group.plugins.toggleterm,

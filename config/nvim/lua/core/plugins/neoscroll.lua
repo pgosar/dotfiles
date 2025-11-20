@@ -1,3 +1,4 @@
+-- Smooth scrolling
 return {
   "karb94/neoscroll.nvim",
   cond = group.plugins.neoscroll,

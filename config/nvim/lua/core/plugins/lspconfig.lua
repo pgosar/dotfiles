@@ -1,3 +1,4 @@
+-- LSP configuration
 return {
   "neovim/nvim-lspconfig",
   cond = group.plugins.lspconfig,

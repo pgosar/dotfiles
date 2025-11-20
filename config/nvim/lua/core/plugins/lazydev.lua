@@ -1,3 +1,4 @@
+-- Neovim Lua API type definitions and completions
 return {
   "folke/lazydev.nvim",
   cond = group.plugins.lazydev,

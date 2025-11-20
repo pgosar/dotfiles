@@ -1,3 +1,4 @@
+-- Fuzzy finder
 return {
   "ibhagwan/fzf-lua",
   cmd = "FzfLua",

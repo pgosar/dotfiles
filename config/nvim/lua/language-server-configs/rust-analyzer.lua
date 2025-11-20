@@ -1,3 +1,4 @@
+-- Rust-analyzer LSP configuration for Rust
 return {
   settings = {
     ["rust-analyzer"] = {

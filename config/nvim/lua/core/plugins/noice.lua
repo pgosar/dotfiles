@@ -1,3 +1,4 @@
+-- UI enhancements
 return {
   "folke/noice.nvim",
   cond = group.plugins.noice,

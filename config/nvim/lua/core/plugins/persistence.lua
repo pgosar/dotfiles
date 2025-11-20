@@ -1,3 +1,4 @@
+-- Session manager 
 return {
   "folke/persistence.nvim",
   cond = group.plugins.persistence,

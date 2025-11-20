@@ -1,3 +1,4 @@
+-- Global keybindings 
 local map = require("core.utils.utils").map
 
 map("n", "<leader>l", "<CMD>Lazy<CR>", { desc = "open Lazy UI" })

@@ -1,3 +1,4 @@
+-- Move text around
 return {
   "echasnovski/mini.move",
   cond = group.plugins.move,

@@ -1,3 +1,4 @@
+-- Custom LSP rename implementation with better UI and error handling
 local M = {}
 
 ---------------------------------------------------------------------

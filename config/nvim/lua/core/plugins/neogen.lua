@@ -1,3 +1,4 @@
+-- Generate documentation comments
 return {
   "danymat/neogen",
   cond = group.plugins.neogen,

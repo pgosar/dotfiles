@@ -1,3 +1,4 @@
+-- Global editor options
 local vim_opts = require("core.utils.utils").vim_opts
 vim.opt.shortmess:append("sIW")
 

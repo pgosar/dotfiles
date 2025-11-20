@@ -1,3 +1,4 @@
+-- Multiple cursors support
 -- TODO: blocked - https://github.com/brenton-leighton/multiple-cursors.nvim/issues/65
 -- Vim plugin!
 

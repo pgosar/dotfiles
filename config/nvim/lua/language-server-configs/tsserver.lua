@@ -1,3 +1,4 @@
+-- TypeScript/JavaScript language server configuration
 return {
   settings = {
     typescript = {

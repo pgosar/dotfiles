@@ -1,3 +1,4 @@
+-- Markdown editing utils
 return {
   "tadmccorkle/markdown.nvim",
   cond = group.plugins.markdown,

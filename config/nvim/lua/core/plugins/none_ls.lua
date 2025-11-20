@@ -1,3 +1,4 @@
+-- Provides formatters and linters as LSP sources
 return {
   "nvimtools/none-ls.nvim",
   cond = group.plugins.none_ls,

@@ -1,3 +1,4 @@
+-- Display vertical guide line
 return {
   "lukas-reineke/virt-column.nvim",
   cond = group.plugins.virt_column,

@@ -1,3 +1,4 @@
+-- Default configuration values 
 local M = {}
 
 -- Null-ls sources list

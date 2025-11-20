@@ -1,3 +1,4 @@
+-- Rich markdown preview
 return {
   "OXY2DEV/markview.nvim",
   cond = group.plugins.markview,

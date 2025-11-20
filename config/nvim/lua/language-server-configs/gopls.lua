@@ -1,3 +1,4 @@
+-- Gopls LSP configuration for Go
 return {
   settings = {
     gopls = {

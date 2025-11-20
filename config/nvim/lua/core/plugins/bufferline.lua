@@ -1,3 +1,4 @@
+-- Buffer line with diagnostics
 return {
   "akinsho/bufferline.nvim",
   cond = group.plugins.bufferline,

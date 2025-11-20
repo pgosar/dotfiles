@@ -1,3 +1,4 @@
+-- Breadcrumb navigation/context bar
 return {
   "Bekaboo/dropbar.nvim",
   priority = 2000,

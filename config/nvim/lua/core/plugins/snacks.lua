@@ -1,3 +1,12 @@
+-- Provides:
+-- - picker: Fuzzy file/text picker
+-- - zen: Distraction-free zen mode
+-- - dashboard: Startup screen 
+-- - bufdelete: Smart buffer deletion
+-- - statuscolumn: Enhanced status column
+-- - rename: File renaming with LSP
+-- - image: Image previews
+
 -- ============ ZEN CONFIG ============
 local zen_config = {
   enabled = true,
