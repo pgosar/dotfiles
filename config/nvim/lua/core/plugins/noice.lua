@@ -36,7 +36,7 @@ return {
       cmdline = { view = "cmdline" },
       views = {
         popupmenu = {
-          size = { width = 50, height = 10 },
+          size = require("defaults").plugin_settings.noice_popupmenu,
           border = {
             style = "rounded",
             padding = { 0, 1 },

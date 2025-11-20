@@ -208,6 +208,31 @@ M.colors = {
   },
   scrollbar = "#2f334d",
   terminal = "#222222",
+  lualine = {
+    fg = "#BBC2CF",
+    yellow = "#ECBE7B",
+    cyan = "#008080",
+    darkblue = "#081633",
+    green = "#98BE65",
+    orange = "#FF9E64",
+    violet = "#A9A1E1",
+    magenta = "#C678DD",
+    blue = "#51AFEF",
+    red = "#EC5F67",
+  },
+}
+
+M.plugin_settings = {
+  autosave_delay = 10000, -- 10 seconds
+  virt_column = "100",
+  catppuccin_dim_percentage = 0.1,
+  neoscroll_easing = "quintic",
+  toggleterm_size = 25,
+  trouble_preview_size = 0.3,
+  noice_popupmenu = {
+    width = 50,
+    height = 10,
+  },
 }
 
 M.colorscheme = "catppuccin"

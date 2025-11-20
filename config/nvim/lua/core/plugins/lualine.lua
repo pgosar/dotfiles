@@ -5,19 +5,7 @@ return {
   cond = group.plugins.lualine,
   config = function()
     local lualine = require("lualine")
-
-    local colors = {
-      fg = "#BBC2CF",
-      yellow = "#ECBE7B",
-      cyan = "#008080",
-      darkblue = "#081633",
-      green = "#98BE65",
-      orange = "#FF9E64",
-      violet = "#A9A1E1",
-      magenta = "#C678DD",
-      blue = "#51AFEF",
-      red = "#EC5F67",
-    }
+    local colors = require("defaults").colors.lualine
 
     local buffer_not_empty = function() return vim.fn.empty(vim.fn.expand("%:t")) ~= 1 end
 

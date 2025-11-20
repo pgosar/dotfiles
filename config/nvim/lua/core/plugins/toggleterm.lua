@@ -33,7 +33,7 @@ return {
     },
   },
   opts = {
-    size = 25,
+    size = require("defaults").plugin_settings.toggleterm_size,
     shade_terminals = false,
     start_in_insert = true,
     highlights = {

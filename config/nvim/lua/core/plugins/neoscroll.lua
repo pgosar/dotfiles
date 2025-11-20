@@ -3,5 +3,6 @@ return {
   "karb94/neoscroll.nvim",
   cond = group.plugins.neoscroll,
   event = "VeryLazy",
-  opts = { easing = "quintic", respect_scrolloff = true },
+  opts = { easing = require("defaults").plugin_settings.neoscroll_easing, respect_scrolloff = true },
 }
+

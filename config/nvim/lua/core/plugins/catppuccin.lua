@@ -29,7 +29,7 @@ return {
       },
       dim_inactive = {
         enabled = true,
-        percentage = 0.1,
+        percentage = require("defaults").plugin_settings.catppuccin_dim_percentage,
       },
       flavour = "mocha",
       color_overrides = {

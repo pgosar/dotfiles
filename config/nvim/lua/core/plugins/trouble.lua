@@ -30,7 +30,7 @@ return {
       type = "split",
       relative = "win",
       position = "right",
-      size = 0.3,
+      size = require("defaults").plugin_settings.trouble_preview_size,
     },
     focus = true,
   },
