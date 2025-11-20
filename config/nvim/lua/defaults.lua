@@ -126,38 +126,11 @@ M.ensure_installed = {
 
 M.settings = { bigfile_enable = true }
 
--- setup formatting servers
-M.formatting_servers = {
-  ["rust_analyzer"] = { "rust" },
-  ["zls"] = { "zig" },
-  ["null-ls"] = {
-    "lua",
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "html",
-    "css",
-    "json",
-    "python",
-    "sh",
-    "bash",
-    "zsh",
-    "go",
-    "cpp",
-    "c",
-    "cmake",
-    "systemverilog",
-    "markdown",
-  },
-}
-
 -- default value is true for all
 M.group = {
   plugins = {
     ai = true,
     align = true,
-    alpha = true,
     asyncrun = true,
     autotag = true,
     autosave = true,
@@ -166,13 +139,11 @@ M.group = {
     blink = true,
     dap = true,
     dap_python = true,
-    dressing = true,
     dropbar = true,
     flash = true,
     gitsigns = true,
     highlight_colors = true,
     illuminate = true,
-    image = true,
     indent_blankline = true,
     lazydev = true,
     lualine = true,
@@ -187,9 +158,7 @@ M.group = {
     noice = true,
     none_ls = true,
     notify = true,
-    obsidian = true,
     persistence = true,
-    project = true,
     refactoring = true,
     scrollbar = true,
     scope = true,
@@ -208,7 +177,6 @@ M.group = {
     workspace_diagnostics = true,
     lspconfig = true,
     mason = true,
-    zen = true,
     snack_zen = true,
     snack_dashboard = true,
     snack_picker = true,
