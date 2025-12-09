@@ -1,4 +1,4 @@
--- Default configuration values 
+-- Default configuration values
 local M = {}
 
 -- Null-ls sources list
@@ -133,7 +133,6 @@ M.group = {
   plugins = {
     ai = true,
     align = true,
-    asyncrun = true,
     autotag = true,
     autosave = true,
     bufferline = true,
