@@ -8,79 +8,77 @@ PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
 sketchybar --bar \
-    height=32 \
-    color=0xFF000000 \
-    margin=0 \
-    sticky=on \
-    padding_left=23 \
-    padding_right=23 \
-    notch_width=188 \
-    display=main
+  height=32 \
+  color=0xFF000000 \
+  margin=0 \
+  sticky=on \
+  padding_left=23 \
+  padding_right=23 \
+  notch_width=188
 
 sketchybar --default \
-    background.color=0x00222222 \
-    background.corner_radius=5 \
-    background.padding_right=5 \
-    background.height=26 \
-    icon.font="$FONT_FACE:Medium:15.0" \
-    icon.padding_left=5 \
-    icon.padding_right=5 \
-    label.font="$FONT_FACE:Medium:12.0" \
-    label.color=0xffcad3f5 \
-    label.y_offset=0 \
-    label.padding_left=0 \
-    label.padding_right=5
+  background.color=0x00222222 \
+  background.corner_radius=5 \
+  background.padding_right=5 \
+  background.height=26 \
+  icon.font="$FONT_FACE:Medium:15.0" \
+  icon.padding_left=5 \
+  icon.padding_right=5 \
+  label.font="$FONT_FACE:Medium:12.0" \
+  label.color=0xffcad3f5 \
+  label.y_offset=0 \
+  label.padding_left=0 \
+  label.padding_right=5
 
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
-    --add item spotify e \
-    --set spotify \
-    icon= \
-    icon.y_offset=1 \
-    icon.font="$FONT_FACE:Bold:20.0" \
-    label.drawing=off \
-    label.padding_left=3 \
-    script="$PLUGIN_DIR/spotify.sh" \
-    --subscribe spotify spotify_change mouse.clicked system_woke
+  --add item spotify e \
+  --set spotify \
+  icon= \
+  icon.y_offset=1 \
+  icon.font="$FONT_FACE:Bold:20.0" \
+  label.drawing=off \
+  label.padding_left=3 \
+  script="$PLUGIN_DIR/spotify.sh" \
+  --subscribe spotify spotify_change mouse.clicked system_woke
 
 sketchybar --add item front_app left \
-    --set front_app \
-    background.color=0xffa6da95 \
-    background.padding_left=0 \
-    background.padding_right=0 \
-    icon.y_offset=1 \
-    icon.color=0xff24273a \
-    label.drawing=no \
-    script="$PLUGIN_SHARED_DIR/front_app.sh" \
-    --add item front_app.separator left \
-    --set front_app.separator \
-    background.color=0x00000000 \
-    background.padding_left=-3 \
-    icon= \
-    icon.color=0xffa6da95 \
-    icon.font="$FONT_FACE:Bold:20.0" \
-    icon.padding_left=0 \
-    icon.padding_right=0 \
-    icon.y_offset=1 \
-    label.drawing=no \
-    --add item front_app.name left \
-    --set front_app.name \
-    background.color=0x00000000 \
-    background.padding_right=0 \
-    icon.drawing=off \
-    label.font="$FONT_FACE:Bold:12.0" \
-    label.drawing=yes
+  --set front_app \
+  background.color=0xffa6da95 \
+  background.padding_left=0 \
+  background.padding_right=0 \
+  icon.y_offset=1 \
+  icon.color=0xff24273a \
+  label.drawing=no \
+  script="$PLUGIN_SHARED_DIR/front_app.sh" \
+  --add item front_app.separator left \
+  --set front_app.separator \
+  background.color=0x00000000 \
+  background.padding_left=-3 \
+  icon= \
+  icon.color=0xffa6da95 \
+  icon.font="$FONT_FACE:Bold:20.0" \
+  icon.padding_left=0 \
+  icon.padding_right=0 \
+  icon.y_offset=1 \
+  label.drawing=no \
+  --add item front_app.name left \
+  --set front_app.name \
+  background.color=0x00000000 \
+  background.padding_right=0 \
+  icon.drawing=off \
+  label.font="$FONT_FACE:Bold:12.0" \
+  label.drawing=yes
 
 spaces=()
-for i in {1..9}
-do
-    spaces+=(--add space space$i left \
-      --set space$i associated_display=1 associated_space=$i icon=$i \
-      --set space$i label.drawing=off \
-      --set space$i background.drawing=on \
-      --set space$i background.color=0xff000000 \
-      --set space$i background.corner_radius=5 \
-      --set space$i background.height=20 \
-      --set space$i background.width=20)
+for i in {1..9}; do
+  spaces+=(--add space space$i left
+    --set space$i associated_display=1 associated_space=$i icon=$i
+    --set space$i label.drawing=off
+    --set space$i background.drawing=on
+    --set space$i background.color=0xff000000
+    --set space$i background.corner_radius=5
+    --set space$i background.height=20
+    --set space$i background.width=20)
 done
 sketchybar -m \
   --add item dummy left \
@@ -88,28 +86,27 @@ sketchybar -m \
   --subscribe dummy space_change \
   "${spaces[@]}"
 
-
 sketchybar --add item weather q \
-    --set weather \
-    icon= \
-    icon.color=0xfff5bde6 \
-    icon.font="$FONT_FACE:Bold:15.0" \
-    update_freq=1800 \
-    script="$PLUGIN_SHARED_DIR/weather.sh" \
-    --subscribe weather system_woke
+  --set weather \
+  icon= \
+  icon.color=0xfff5bde6 \
+  icon.font="$FONT_FACE:Bold:15.0" \
+  update_freq=1800 \
+  script="$PLUGIN_SHARED_DIR/weather.sh" \
+  --subscribe weather system_woke
 
 sketchybar --add bracket front_app_bracket \
-    front_app \
-    front_app.separator \
-    front_app.name \
-    --subscribe front_app front_app_switched
+  front_app \
+  front_app.separator \
+  front_app.name \
+  --subscribe front_app front_app_switched
 
 sketchybar --add item clock right \
-    --set clock \
-    icon=󰃰 \
-    icon.color=0xffed8796 \
-    update_freq=10 \
-    script="$PLUGIN_SHARED_DIR/clock.sh"
+  --set clock \
+  icon=󰃰 \
+  icon.color=0xffed8796 \
+  update_freq=10 \
+  script="$PLUGIN_SHARED_DIR/clock.sh"
 
 sketchybar --add item cpu right \
   --set cpu \
@@ -126,17 +123,18 @@ sketchybar --add item temp right \
   script="$PLUGIN_SHARED_DIR/temp.sh"
 
 sketchybar --add item battery right \
-    --set battery \
-    update_freq=20 \
-    script="$PLUGIN_DIR/battery.sh"
+  --set battery \
+  update_freq=20 \
+  script="$PLUGIN_DIR/battery.sh"
 
 sketchybar --add item volume right \
-    --set volume \
-    icon.color=0xff8aadf4 \
-    label.drawing=true \
-    script="$PLUGIN_SHARED_DIR/volume.sh" \
-    --subscribe volume volume_change system_woke
+  --set volume \
+  icon.color=0xff8aadf4 \
+  label.drawing=true \
+  script="$PLUGIN_SHARED_DIR/volume.sh" \
+  --subscribe volume volume_change system_woke
 
 ##### Finalizing Setup #####
 sketchybar --update
 sketchybar --trigger space_change
+
