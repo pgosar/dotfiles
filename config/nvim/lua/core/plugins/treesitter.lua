@@ -1,4 +1,4 @@
--- Syntax highlighting and code parsing engine 
+-- Syntax highlighting and code parsing engine
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -6,7 +6,7 @@ return {
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      require("nvim-treesitter.configs").setup({
+      require("nvim-treesitter.config").setup({
         highlight = { enable = true },
         incremental_selection = { enable = true },
         endwise = { enable = true },
@@ -15,7 +15,7 @@ return {
       })
     end,
     dependencies = {
-      { "HiPhish/rainbow-delimiters.nvim", cond = group.plugins.rainbow },
+      { "HiPhish/rainbow-delimiters.nvim",            cond = group.plugins.rainbow },
       { "JoosepAlviste/nvim-ts-context-commentstring" },
       { "RRethy/nvim-treesitter-endwise" },
     },
