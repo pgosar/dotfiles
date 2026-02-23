@@ -10,6 +10,8 @@
 #
 #
 
+OS="$(uname)"
+
 # ---- Environment Variables -------------------------------------------------
 
 export PATH="$HOME/.local/bin:$PATH"
@@ -23,17 +25,23 @@ export DOTFILES_DIR="$HOME/code/dotfiles"
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_NO_ENV_HINTS=1
+if [ "$OS" = "Linux" ]; then
+  export QT_SCREEN_SCALE_FACTORS="1;1"
+  export LIBGUESTFS_BACKEND=direct
+  export QT_SCREEN_SCALE_FACTORS="0.5"
+elif [ "$OS" = "Darwin" ]; then
+  export HOMEBREW_NO_AUTO_UPDATE=1
+  export HOMEBREW_NO_ENV_HINTS=1
+fi
 
 # ---- Terminal Settings -----------------------------------------------------
 
 DISABLE_MAGIC_FUNCTIONS="true"
-COMPLETION_WAITING_DOTS="true" # show command is auto completing
+COMPLETION_WAITING_DOTS="true"  # show command is auto completing
 ZSH_COLORIZE_STYLE="colorful"  # set color style
-HISTSIZE=10000                 # big history
+HISTSIZE=10000                  # big history
 SAVEHIST=10000
-autoload -U edit-command-line # edit command in vim
+autoload -U edit-command-line   # edit command in vim
 fpath+=~/.zfunc
 autoload -U bashcompinit
 bashcompinit
@@ -46,59 +54,79 @@ unalias -a # remove preset aliases
 # ---- Plugins ---------------------------------------------------------------
 
 plugins=(
-	git
-	pip
-	copyfile
-	command-not-found
-	colored-man-pages
-	history-substring-search
-	last-working-dir
-	safe-paste
-	zsh-interactive-cd
-	zsh-autosuggestions
-	zsh-syntax-highlighting
-	vi-mode
-	conda-zsh-completion
+  git
+  pip
+  copyfile
+  command-not-found
+  colored-man-pages
+  history-substring-search
+  last-working-dir
+  safe-paste
+  zsh-interactive-cd
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  vi-mode
 )
 
+if [ "$OS" = "Linux" ]; then
+  plugins+=(poetry)
+elif [ "$OS" = "Darwin" ]; then
+  plugins+=(conda-zsh-completion)
+fi
+
 # ---- Load Scripts ----------------------------------------------------------
-FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+if [ "$OS" = "Darwin" ]; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 loadpath=$DOTFILES_DIR/config
 source $ZSH/oh-my-zsh.sh >/dev/null 2>&1 # load oh-my-zsh
-if [ -f $loadpath/aliasList.sh ]; then   # load aliases
-	source $loadpath/aliasList.sh
+if [ -f $loadpath/aliasList.sh ]; then    # load aliases
+  source $loadpath/aliasList.sh
 fi
-if [ -f $loadpath/commands.sh ]; then # load commands
-	source $loadpath/commands.sh
+if [ -f $loadpath/commands.sh ]; then     # load commands
+  source $loadpath/commands.sh
 fi
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh # load fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh   # load fzf
 
 # ---- Keybindings -----------------------------------------------------------
 
 bindkey '^d' autosuggest-accept
 bindkey '^k' edit-command-line
 
+# ---- Plugin Settings -------------------------------------------------------
+
+# stops git status from checking untracked files
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
 # ---- Terminal Commands -----------------------------------------------------
 
 source ~/.local/share/LS_COLORS/lscolors.sh
 
 eval "$(register-python-argcomplete pipx)"
-fpath=(~/.zfunc "${fpath[@]}")
-export NVM_DIR="$HOME/.nvm"
-[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
-[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
-
-source ~/miniconda3/etc/profile.d/conda.sh
 source <(fzf --zsh)
 autoload -U compinit
 compinit
-export NODE_PATH=$NODE_PATH:$(npm root -g)
-export MAGICK_HOME=/opt/local
 
-ulimit -Sn unlimited && ulimit -Sl unlimited
-
-# allow use of gnu tools
-export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-
-# Added by Antigravity
-export PATH="/Users/chilly/.antigravity/antigravity/bin:$PATH"
+if [ "$OS" = "Linux" ]; then
+  fortune
+  source /home/chilly/.config/broot/launcher/bash/br
+  source /usr/share/nvm/init-nvm.sh
+  source /usr/share/doc/pkgfile/command-not-found.zsh
+  [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
+  export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
+elif [ "$OS" = "Darwin" ]; then
+  fpath=(~/.zfunc "${fpath[@]}")
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+  [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+  source ~/miniconda3/etc/profile.d/conda.sh
+  export NODE_PATH=$NODE_PATH:$(npm root -g)
+  export MAGICK_HOME=/opt/local
+  ulimit -Sn unlimited && ulimit -Sl unlimited
+  # allow use of gnu tools
+  export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+  # Added by Antigravity
+  export PATH="/Users/chilly/.antigravity/antigravity/bin:$PATH"
+fi
