@@ -12,6 +12,11 @@ rm -rf ~/.config/skhd
 rm -rf ~/.config/svim
 rm -rf ~/.config/yabai
 rm -rf ~/.config/borders
+rm -rf ~/.config/dunst
+rm -rf ~/.config/hypr
+rm -rf ~/.config/rofi
+rm -rf ~/.config/waybar
+rm -f ~/.config/electron28-flags.conf
 rm -f ~/.config/starship.toml
 rm -f ~/.config/topgrade.toml
 
@@ -25,6 +30,11 @@ ln -s "$DOTFILES_DIR/config/skhd" ~/.config/skhd
 ln -s "$DOTFILES_DIR/config/svim" ~/.config/svim
 ln -s "$DOTFILES_DIR/config/yabai" ~/.config/yabai
 ln -s "$DOTFILES_DIR/config/borders" ~/.config/borders
+ln -s "$DOTFILES_DIR/config/dunst" ~/.config/dunst
+ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
+ln -s "$DOTFILES_DIR/config/rofi" ~/.config/rofi
+ln -s "$DOTFILES_DIR/config/waybar" ~/.config/waybar
+ln -s "$DOTFILES_DIR/config/electron28-flags.conf" ~/.config/electron28-flags.conf
 ln -s "$DOTFILES_DIR/config/zshrc" ~/.zshrc
 ln -s "$DOTFILES_DIR/config/zprofile" ~/.zprofile
 ln -s "$DOTFILES_DIR/config/gitconfig" ~/.gitconfig
