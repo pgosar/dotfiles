@@ -86,7 +86,7 @@ M.update_all = function()
   M.update_mason()
   require("nvim-treesitter")
   vim.cmd("TSUpdate")
-  vim.notify("CyberNvim updated!", vim.log.errors.INFO)
+  vim.notify("CyberNvim updated!", vim.log.levels.INFO)
 end
 
 --- Checks whether the attached LSP server supports formatting
