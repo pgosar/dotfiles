@@ -1,0 +1,140 @@
+@import "machiatto.css";
+
+* {
+  color: @lavender;
+  border: 0;
+  padding: 0 0;
+  font-family: JetBrainsMono;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+window#waybar {
+  border: 0px solid rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+#workspaces button {
+  color: @base;
+  border-radius: 50%;
+  margin: 0px 0px;
+}
+
+#workspaces button:hover {
+  color: @mauve;
+  border-radius: 15px;
+}
+
+#workspaces button:hover * {
+  color: @mauve;
+}
+
+#workspaces {
+  border-style: solid;
+  background-color: @base;
+  opacity: 1;
+  margin: 9px 9px 9px 9px;
+}
+
+#workspaces button.focused {
+  color: @mauve;
+  border-radius: 15px;
+}
+
+#workspaces button.focused * {
+  color: @mauve;
+}
+
+#clock,
+#workspaces,
+#battery,
+#cpu,
+#memory,
+#temperature,
+#custom-keyboard-layout,
+#bluetooth,
+#backlight,
+#pulseaudio,
+#tray,
+#custom-spotify,
+#custom-weather {
+  padding: 0px 5px;
+  border-style: solid;
+  background-color: shade(@base, 1);
+  opacity: 1;
+  margin: 9px 0;
+}
+
+#custom-spotify {
+  margin-left: 10px;
+  color: @sky;
+}
+
+#clock,
+#custom-weather,
+#bluetooth {
+  color: @sky;
+}
+
+#backlight {
+  color: @yellow;
+}
+
+#battery {
+  color: @white;
+  margin-right: 7px;
+}
+
+#battery.charging {
+  color: @sky;
+}
+
+@keyframes blink {
+  to {
+    color: @red;
+  }
+}
+
+#battery.critical:not(.charging) {
+  color: #bf616a;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#cpu {
+  color: @sky;
+}
+
+#memory {
+  background-color: #d3869b;
+  color: @base;
+}
+
+#pulseaudio {
+  color: @flamingo;
+}
+
+#pulseaudio.muted {
+  color: @overlay2;
+}
+
+#temperature {
+  color: @teal;
+}
+
+#temperature.critical {
+  color: @red;
+}
+
+#tray {
+  margin: 9px 8px;
+}
+
+#custom-keyboard-layout {
+  color: @peach;
+  font-size: 13px;
+  margin-right: 7px;
+}

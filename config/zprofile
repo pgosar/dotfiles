@@ -1,2 +1,9 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+export MAILSYNC_MUTE=1
 
+if [ "$(uname)" = "Linux" ]; then
+  if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+    exec Hyprland
+  fi
+elif [ "$(uname)" = "Darwin" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
