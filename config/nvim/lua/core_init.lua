@@ -49,8 +49,15 @@ vim.lsp.buf.rename = require("core.utils.rename").rename
 
 -- setup spellcheck
 local spell_words = {}
-for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
-  table.insert(spell_words, word)
+local spell_path = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+local spell_file = io.open(spell_path, "r")
+if spell_file then
+  for word in spell_file:lines() do
+    table.insert(spell_words, word)
+  end
+  spell_file:close()
+else
+  vim.notify("Spell file not found: " .. spell_path, vim.log.levels.ERROR)
 end
 
 local color_ok, _ = pcall(vim.cmd.colorscheme, require("defaults").colorscheme)
