@@ -1,4 +1,4 @@
--- Utility functions 
+-- Utility functions
 local M = {}
 
 --- Sets vim options based on table
@@ -61,7 +61,7 @@ M.create_floating_terminal = function(cmd)
     if vim.fn.executable(cmd) == 1 and instance ~= nil then
       instance:toggle()
     else
-      vim.notify("Command not found: " .. cmd .. ". Ensure it is installed.", "error")
+      vim.notify("Command not found: " .. cmd .. ". Ensure it is installed.", vim.log.levels.ERROR)
     end
   end
 end
@@ -86,7 +86,7 @@ M.update_all = function()
   M.update_mason()
   require("nvim-treesitter")
   vim.cmd("TSUpdate")
-  vim.notify("CyberNvim updated!", "info")
+  vim.notify("CyberNvim updated!", vim.log.errors.INFO)
 end
 
 --- Checks whether the attached LSP server supports formatting
@@ -94,7 +94,7 @@ end
 M.supports_formatting = function()
   local clients = vim.lsp.get_clients()
   for _, client in ipairs(clients) do
-    if client.supports_method("textDocument/formatting") then return true end
+    if client:supports_method("textDocument/formatting") then return true end
   end
   return false
 end
@@ -104,7 +104,7 @@ end
 ---@return boolean is_big: if the file is above 1 MB
 M.large_file = function(buf)
   local max_filesize = 100 * 1024 * 1024 -- 100 kb
-  local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+  local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
   return require("defaults").settings.bigfile_enable
     and ok
     and stats ~= nil
