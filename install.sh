@@ -21,6 +21,7 @@ if [ "$OS" = "Linux" ]; then
   rm -rf ~/.config/hypr
   rm -rf ~/.config/rofi
   rm -rf ~/.config/waybar
+  rm -rf ~/.config/fontconfig
   rm -f ~/.config/electron28-flags.conf
 elif [ "$OS" = "Darwin" ]; then
   rm -rf ~/.config/sketchybar
@@ -54,6 +55,7 @@ if [ "$OS" = "Linux" ]; then
   ln -s "$DOTFILES_DIR/config/rofi" ~/.config/rofi
   ln -s "$DOTFILES_DIR/config/waybar" ~/.config/waybar
   ln -s "$DOTFILES_DIR/config/electron28-flags.conf" ~/.config/electron28-flags.conf
+  ln -s "$DOTFILES_DIR/config/fontconfig" ~/.config/fontconfig
 elif [ "$OS" = "Darwin" ]; then
   ln -s "$DOTFILES_DIR/config/sketchybar" ~/.config/sketchybar
   ln -s "$DOTFILES_DIR/config/skhd" ~/.config/skhd
