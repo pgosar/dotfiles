@@ -1,0 +1,74 @@
+* {
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 15px;
+}
+
+window {
+  margin: 0px;
+  border: 2px solid #6b6475;
+  background-color: rgba(40, 40, 46, 0.95);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+#input {
+  margin: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  color: #e6dcd1;
+  background-color: #1e1e24;
+  outline: none;
+}
+
+#input image {
+  color: #e6dcd1;
+}
+
+#inner-box {
+  margin: 5px 10px 15px 10px;
+  border: none;
+  background-color: transparent;
+}
+
+#outer-box {
+  margin: 5px;
+  border: none;
+  background-color: transparent;
+}
+
+#scroll {
+  margin: 0px;
+  border: none;
+}
+
+/* Individual application text */
+#text {
+  margin: 5px 10px;
+  border: none;
+  color: #e6dcd1;
+}
+
+/* Individual application rows */
+#entry {
+  padding: 8px;
+  margin: 2px 5px;
+  border-radius: 10px;
+  border: none;
+  background-color: transparent;
+}
+
+/* The currently selected application */
+#entry:selected {
+  background-color: #a28ba6;
+  /* Soft cloud purple highlight */
+  border-radius: 10px;
+  outline: none;
+}
+
+/* Force the text/icons to turn dark when highlighted for contrast */
+#entry:selected * {
+  color: #28282e;
+  /* Storm grey text */
+  font-weight: bold;
+}
