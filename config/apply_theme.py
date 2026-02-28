@@ -27,6 +27,11 @@ def generate_css(colors):
     css_content = "/* Auto-generated colors */\n"
     for k, v in colors.items():
         css_content += f"@define-color {k} {v};\n"
+        if k in ["surface", "base", "mantle"]:
+            r = int(v[1:3], 16)
+            g = int(v[3:5], 16)
+            b = int(v[5:7], 16)
+            css_content += f"@define-color {k}_alpha rgba({r}, {g}, {b}, 0.95);\n"
     
     # Generate CSS files
     target_dirs = ["waybar", "wofi"]
@@ -35,16 +40,7 @@ def generate_css(colors):
         with open(os.path.join(CONFIG_DIR, d, "colors.css"), "w") as f:
             f.write(css_content)
 
-    wofi_style_path = os.path.join(CONFIG_DIR, "wofi", "style.css")
-    if os.path.exists(wofi_style_path):
-        with open(wofi_style_path, 'r') as f:
-            wofi_css = f.read()
-        
-        wr, wg, wb = int(colors["surface"][1:3], 16), int(colors["surface"][3:5], 16), int(colors["surface"][5:7], 16)
-        wofi_css = re.sub(r'(window\s*{[^}]*background-color:\s*)[^;]+;', f'\\g<1>rgba({wr}, {wg}, {wb}, 0.95);', wofi_css)
-        
-        with open(wofi_style_path, 'w') as f:
-            f.write(wofi_css)
+
 
 
 

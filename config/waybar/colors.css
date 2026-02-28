@@ -1,7 +1,10 @@
 /* Auto-generated colors */
 @define-color base #1b1924;
+@define-color base_alpha rgba(27, 25, 36, 0.95);
 @define-color mantle #15131c;
+@define-color mantle_alpha rgba(21, 19, 28, 0.95);
 @define-color surface #28282e;
+@define-color surface_alpha rgba(40, 40, 46, 0.95);
 @define-color text #e6dcd1;
 @define-color peach #f2a284;
 @define-color yellow #e6b473;

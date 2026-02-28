@@ -1,4 +1,4 @@
-@import "colors.css";
+@import url("/home/chilly/code/dotfiles/config/wofi/colors.css");
 
 * {
   font-family: "JetBrainsMono Nerd Font", sans-serif;
@@ -7,8 +7,8 @@
 
 window {
   margin: 0px;
-  border: 2px solid @muted;
-  background-color: rgba(40, 40, 46, 0.95);
+  border: 2px solid @blue;
+  background-color: @surface_alpha;
   border-radius: 16px;
   overflow: hidden;
 }
@@ -18,8 +18,8 @@ window {
   padding: 12px;
   border: none;
   border-radius: 12px;
-  color: #e6dcd1;
-  background-color: #1b1924;
+  color: @text;
+  background-color: @base;
   outline: none;
 }
 
@@ -73,4 +73,23 @@ window {
   color: @surface;
   /* Storm grey text */
   font-weight: bold;
+}
+
+/* Fix expander and desktop action dropdown background */
+#expander-box {
+  background-color: transparent;
+}
+
+#expander {
+  background-color: transparent;
+}
+
+list {
+  background-color: @surface_alpha;
+  border-radius: 12px;
+  border: 2px solid @blue;
+}
+
+list #entry {
+  background-color: transparent;
 }
