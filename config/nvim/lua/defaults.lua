@@ -205,7 +205,7 @@ local theme = require("theme_colors")
 M.colors = {
   mocha_override = {
     base = theme.surface,
-    mantle = theme.mantle,
+    mantle = theme.surface,
     crust = theme.base,
   },
   scrollbar = theme.surface,
