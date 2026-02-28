@@ -8,7 +8,7 @@
 window {
   margin: 0px;
   border: 2px solid @muted;
-  background-color: alpha(@surface, 0.95);
+  background-color: rgba(40, 40, 46, 0.95);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -18,8 +18,8 @@ window {
   padding: 12px;
   border: none;
   border-radius: 12px;
-  color: @text;
-  background-color: @base;
+  color: #e6dcd1;
+  background-color: #1b1924;
   outline: none;
 }
 
