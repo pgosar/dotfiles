@@ -1,18 +1,23 @@
-/* Earthy / Natural Palette */
-@define-color base #2b3339;
-/* Deep forest dark */
-@define-color mantle #232a2e;
-@define-color text #d3c6aa;
-/* Warm cream */
-@define-color green #a7c080;
-/* Sage */
-@define-color yellow #dbbc7f;
-/* Warm oak */
-@define-color orange #e69875;
-/* Clay/Terracotta */
-@define-color red #e67e80;
-@define-color blue #7fbbb3;
-/* Slate river */
+/* Twilight / Sunset Palette pulled from your wallpaper */
+@define-color base #1b1924;
+/* Deep twilight silhouette black */
+@define-color mantle #15131c;
+@define-color text #e6dcd1;
+/* Warm dusk cream */
+@define-color peach #f2a284;
+/* Soft sunset cloud peach */
+@define-color yellow #e6b473;
+/* Horizon warm yellow */
+@define-color rose #d37363;
+/* Deep sunset orange/red */
+@define-color blue #6a859c;
+/* Dusk sky blue */
+@define-color purple #a28ba6;
+/* Soft cloud purple */
+@define-color muted #6b6475;
+/* Muted purple-gray for inactive elements */
+@define-color red #c25d5d;
+/* Critical alerts */
 
 * {
   font-family: "JetBrainsMono Nerd Font";
@@ -27,7 +32,7 @@ window#waybar {
   background: transparent;
 }
 
-/* Base pill styling - Removed backlight and battery */
+/* Base pill styling */
 #workspaces,
 #custom-spotify,
 #clock,
@@ -36,12 +41,13 @@ window#waybar {
 #temperature,
 #pulseaudio,
 #bluetooth {
-  background-color: @base;
+  background-color: alpha(@base, 0.85);
+  /* Added slight transparency to blend with the sky */
   color: @text;
   border-radius: 12px;
   padding: 2px 12px;
   margin: 4px 4px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* --- Workspaces --- */
@@ -50,7 +56,7 @@ window#waybar {
 }
 
 #workspaces button {
-  color: #6a7c70;
+  color: @muted;
   border-radius: 10px;
   margin: 2px;
   padding: 0 4px;
@@ -59,17 +65,17 @@ window#waybar {
 
 #workspaces button:hover {
   background: transparent;
-  color: @green;
-  text-shadow: 0px 0px 5px rgba(167, 192, 128, 0.3);
+  color: @peach;
+  text-shadow: 0px 0px 5px rgba(242, 162, 132, 0.4);
 }
 
 #workspaces button.active {
-  color: @green;
+  color: @peach;
 }
 
 /* --- Modules --- */
 #custom-spotify {
-  color: @green;
+  color: @purple;
 }
 
 #clock {
@@ -81,7 +87,7 @@ window#waybar {
 }
 
 #temperature {
-  color: @orange;
+  color: @rose;
 }
 
 #temperature.critical {
@@ -94,11 +100,11 @@ window#waybar {
 }
 
 #pulseaudio {
-  color: @orange;
+  color: @peach;
 }
 
 #pulseaudio.muted {
-  color: #859289;
+  color: @muted;
 }
 
 #bluetooth {
