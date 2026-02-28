@@ -137,6 +137,33 @@ def update_dunstrc(colors):
 
     with open(dunstrc_path, 'w') as f: f.write(content)
 
+def generate_spicetify(colors):
+    spicetify_dir = os.path.join(CONFIG_DIR, "spicetify", "Themes", "Comfy")
+    os.makedirs(spicetify_dir, exist_ok=True)
+    
+    # Needs hex codes without the leading #
+    s_colors = {k: v.lstrip('#') for k, v in colors.items()}
+    
+    content = f"""[Twilight-Sunset]
+text               = {s_colors['text']}
+subtext            = {s_colors['purple']}
+main               = {s_colors['surface']}
+sidebar            = {s_colors['mantle']}
+player             = {s_colors['mantle']}
+card               = {s_colors['base']}
+shadow             = {s_colors['base']}
+selected-row       = {s_colors['purple']}
+button             = {s_colors['peach']}
+button-active      = {s_colors['peach']}
+button-disabled    = {s_colors['muted']}
+tab-active         = {s_colors['purple']}
+notification       = {s_colors['surface']}
+notification-error = {s_colors['red']}
+misc               = {s_colors['blue']}
+"""
+    with open(os.path.join(spicetify_dir, "color.ini"), "w") as f:
+        f.write(content)
+
 def generate_nvim(colors):
     nvim_colors_path = os.path.join(CONFIG_DIR, "nvim", "lua", "theme_colors.lua")
     content = "-- Auto-generated nvim colors\n"
@@ -154,6 +181,7 @@ def main():
     generate_kitty(colors)
     generate_hyprland(colors)
     update_dunstrc(colors)
+    generate_spicetify(colors)
     generate_nvim(colors)
     print("Successfully generated color configs!")
 
