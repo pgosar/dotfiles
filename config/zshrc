@@ -26,6 +26,7 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 
 if [ "$OS" = "Linux" ]; then
+  export QT_QPA_PLATFORMTHEME="qt5ct"
   export QT_SCREEN_SCALE_FACTORS="1;1"
   export LIBGUESTFS_BACKEND=direct
   export QT_SCREEN_SCALE_FACTORS="0.5"
