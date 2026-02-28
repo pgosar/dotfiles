@@ -165,6 +165,64 @@ def generate_nvim(colors):
     with open(nvim_colors_path, "w") as f:
         f.write(content)
 
+def generate_firefox(colors):
+    import configparser
+    import sys
+    
+    if sys.platform == "darwin":
+        base_dir = os.path.expanduser("~/Library/Application Support/Firefox")
+    else:
+        base_dir = os.path.expanduser("~/.mozilla/firefox")
+        
+    profiles_ini_path = os.path.join(base_dir, "profiles.ini")
+    profile_dir = ""
+    
+    if os.path.exists(profiles_ini_path):
+        config = configparser.ConfigParser()
+        config.read(profiles_ini_path)
+        for section in config.sections():
+            if config.has_option(section, "Path") and "default-release" in config.get(section, "Path"):
+                path_val = config.get(section, "Path")
+                is_relative = config.get(section, "IsRelative", fallback="1")
+                if is_relative == "1":
+                    profile_dir = os.path.join(base_dir, path_val)
+                else:
+                    profile_dir = path_val
+                break
+    
+    if not profile_dir:
+        import glob
+        profiles = glob.glob(os.path.join(base_dir, "*.default-release"))
+        if profiles:
+            profile_dir = profiles[0]
+            
+    if not profile_dir:
+        return
+    
+    textfox_chrome_dir = os.path.join(profile_dir, "chrome")
+    
+    if not os.path.exists(textfox_chrome_dir):
+        return
+
+    config_path = os.path.join(textfox_chrome_dir, "config.css")
+    
+    css_content = "/* Auto-generated textfox colors */\n"
+    css_content += ":root {\n"
+    
+    # Textfox mappings
+    # Using textfox's expected tf- variables
+    css_content += f"  --tf-bg: {colors['base']};\n"
+    css_content += f"  --tf-accent: {colors['purple']};\n"
+    css_content += f"  --tf-border: {colors['surface']};\n"
+    css_content += f"  --color: {colors['text']};\n"
+    css_content += f"  --identity-icon-color: {colors['text']};\n"
+    css_content += f"  --identity-tab-color: {colors['purple']};\n"
+    
+    css_content += "}\n"
+
+    with open(config_path, "w") as f:
+        f.write(css_content)
+
 def main():
     colors = load_theme()
     generate_css(colors)
@@ -173,6 +231,7 @@ def main():
     update_dunstrc(colors)
     generate_spicetify(colors)
     generate_nvim(colors)
+    generate_firefox(colors)
     print("Successfully generated color configs!")
 
 if __name__ == "__main__":
