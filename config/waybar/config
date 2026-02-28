@@ -1,49 +1,44 @@
 {
-
-    "layer": "top", // Waybar at top layer
-    "position": "top", // Waybar position (top|bottom|left|right)
-    "height": 10,
-    "margin": "-7 0 -7 0",
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "spacing": 8,
+    "margin-top": 8,
+    "margin-left": 15,
+    "margin-right": 15,
     "modules-left": ["hyprland/workspaces", "custom/spotify"],
-    "modules-center": ["clock", "custom/weather"],
-    "modules-right": ["backlight", "pulseaudio", "custom/keyboard-layout", "temperature",
-    "cpu", "battery", "bluetooth", "tray"],
+    "modules-center": ["clock"],
+    "modules-right": ["tray", "cpu", "temperature", "pulseaudio", "bluetooth"],
 
- // Modules configuration
-      "hyprland/workspaces": {
+    "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
         "active-only": false,
         "format-icons": {
-          "default": "",
-          "active": ""
+            "default": "",
+            "active": ""
+        },
+        "persistent-workspaces": {
+            "*": 5
         }
-      },
-      "custom/spotify": {
-      "exec": "/usr/bin/python3 /home/chilly/.config/waybar/scripts/mediaplayer.py",
-      "format": "  {}",
-      "max-length": 60,
-      "return-type": "json",
-      "on-click": "playerctl play-pause",
-      "on-scroll-up": "playerctl next",
-      "on-scroll-down": "playerctl previous"
+    },
+    "custom/spotify": {
+        "exec": "/usr/bin/python3 /home/chilly/.config/waybar/scripts/mediaplayer.py",
+        "format": "  {}",
+        "max-length": 40,
+        "return-type": "json",
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
     },
     "tray": {
-        "icon-size": 12,
-        "spacing": 6
+        "icon-size": 16,
+        "spacing": 10
     },
     "clock": {
-        "format": "   {:%a %d %b %H:%M}",
+        "format": "  {:%a %d %b  %I:%M %p}",
         "format-alt": "  {:%d/%m/%Y %H:%M:%S}",
         "interval": 1
-    },
-    "custom/weather": {
-        "exec": "~/.config/waybar/scripts/weather.sh",
-        "format": "{}",
-        "return-type": "json",
-        "interval": 1800,
-        "tooltip": "true",
-        "on-click": "xdg-open https://wttr.in/"
     },
     "cpu": {
         "format": "  {usage: >3}%",
@@ -52,50 +47,21 @@
     "temperature": {
         "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
         "critical-threshold": 80,
-        "format-critical": "{temperatureC}°C ",
-        "format": "  {temperatureC}°C"
+        "format-critical": " {temperatureC}°C",
+        "format": " {temperatureC}°C"
     },
-    "backlight": {
-        "format": "{icon}  {percent: >3}%",
-        "format-icons": ["", "󰃠"],
-        "on-scroll-down": "brightnessctl -c backlight set 5%-",
-        "on-scroll-up": "brightnessctl -c backlight set +5%"
+    "bluetooth": {
+        "format": "",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected"
     },
-    "battery": {
-        "states": {
-            "good": 70,
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{icon}  {capacity: >3}%",
-        "format-icons": ["", "", "", "", ""]
-    },
-  "bluetooth": {
-    "format": " {status}",
-    "format-icons": ["", "", "", "", ""],
-    "format-connected": " {device_alias}",
-    "format-connected-battery": " {device_alias} {icon}   {device_battery_percentage}%",
-    // "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
-    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
-  },
     "pulseaudio": {
-        "scroll-step": 1,
+        "scroll-step": 5,
         "format": "{icon} {volume: >3}%",
-        "format-bluetooth": "{icon} {volume: >3}%",
-        "format-muted":"󰝟  muted",
-        "format-icons": ["󰖀", "󰕾 "],
-        "on-click": "pavucontrol",
-        "on-scroll-up": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%+",
-        "on-scroll-down": "wpctl set-volume -l 5 @DEFAULT_AUDIO_SINK@ 5%-"
-    },
-   "custom/keyboard-layout": {
-      	"interval": 1,
-      	"format": " ",
-      	"tooltip": false,
-        "on-click": "~/.config/waybar/scripts/openVirtualKeyboard.sh &",
-  },
-  },
+        "format-bluetooth": "󰂰 {volume: >3}%",
+        "format-muted": "󰝟  Muted",
+        "format-icons": ["󰕿", "󰖀", "󰕾"],
+        "on-click": "pavucontrol"
+    }
 }
