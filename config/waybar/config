@@ -82,7 +82,7 @@
     },
     "cpu": {
         "format": "  {usage: >3}%",
-        "on-click": "kitty -e bashtop"
+        "on-click": "kitty -e btop"
     },
     "temperature": {
         "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
