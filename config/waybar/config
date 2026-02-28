@@ -6,17 +6,58 @@
     "margin-top": 8,
     "margin-left": 15,
     "margin-right": 15,
-    "modules-left": ["hyprland/workspaces", "custom/spotify"],
-    "modules-center": ["clock"],
-    "modules-right": ["tray", "cpu", "temperature", "pulseaudio", "bluetooth"],
-
+    "modules-left": [
+        "custom/launcher",
+        "group/island-left"
+    ],
+    "modules-center": [
+        "group/island-center"
+    ],
+    "modules-right": [
+        "group/island-right"
+    ],
+    "group/island-left": {
+        "orientation": "horizontal",
+        "modules": [
+            "hyprland/workspaces",
+            "hyprland/window"
+        ]
+    },
+    "group/island-center": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/spotify",
+            "clock"
+        ]
+    },
+    "group/island-right": {
+        "orientation": "horizontal",
+        "modules": [
+            "tray",
+            "cpu",
+            "temperature",
+            "pulseaudio",
+            "bluetooth"
+        ]
+    },
+    "custom/launcher": {
+        "format": "",
+        "on-click": "pkill wofi || wofi --show drun",
+        "tooltip": false
+    },
+    "hyprland/window": {
+        "format": "{class}",
+        "icon": true,
+        "icon-size": 18,
+        "max-length": 50
+    },
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
         "active-only": false,
         "format-icons": {
-            "default": "",
-            "active": "󰮯",
+            "default": "󰊠",
+            "active": "󰮯"
         },
         "persistent-workspaces": {
             "*": 5
@@ -36,7 +77,6 @@
         "spacing": 10
     },
     "clock": {
-        // "format": "  {:%a %d %b  %I:%M %p}",
         "format": "  {:%a %d %b %H:%M:%S}",
         "interval": 1
     },
@@ -61,7 +101,11 @@
         "format": "{icon} {volume: >3}%",
         "format-bluetooth": "󰂰 {volume: >3}%",
         "format-muted": "󰝟  Muted",
-        "format-icons": ["󰕿", "󰖀", "󰕾"],
+        "format-icons": [
+            "󰕿",
+            "󰖀",
+            "󰕾"
+        ],
         "on-click": "pavucontrol"
     }
 }

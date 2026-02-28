@@ -13,8 +13,34 @@ window#waybar {
   background: transparent;
 }
 
-/* Base pill styling */
+#island-left,
+#island-center,
+#island-right {
+  background-color: alpha(@base, 0.85);
+  border-radius: 16px;
+  padding: 2px 8px;
+  margin: 4px 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+#custom-launcher {
+  background-color: alpha(@base, 0.85);
+  border-radius: 16px;
+  padding: 2px 14px 2px 10px;
+  margin: 4px 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  color: @blue;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+#custom-launcher:hover {
+  text-shadow: 0px 0px 8px alpha(@blue, 0.6);
+}
+
 #workspaces,
+#window,
 #custom-spotify,
 #clock,
 #tray,
@@ -22,18 +48,14 @@ window#waybar {
 #temperature,
 #pulseaudio,
 #bluetooth {
-  background-color: alpha(@base, 0.85);
-  /* Added slight transparency to blend with the sky */
   color: @text;
-  border-radius: 12px;
-  padding: 2px 12px;
-  margin: 4px 4px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 0px 6px;
+  margin: 0px 2px;
 }
 
 /* --- Workspaces --- */
 #workspaces {
-  padding: 2px 6px;
+  padding: 0px 4px;
 }
 
 #workspaces button {
@@ -55,6 +77,11 @@ window#waybar {
 }
 
 /* --- Modules --- */
+#window {
+  color: @text;
+  margin-left: 8px;
+}
+
 #custom-spotify {
   color: @purple;
 }
