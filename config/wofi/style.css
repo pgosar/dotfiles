@@ -1,3 +1,5 @@
+@import "colors.css";
+
 * {
   font-family: "JetBrainsMono Nerd Font", sans-serif;
   font-size: 15px;
@@ -5,8 +7,8 @@
 
 window {
   margin: 0px;
-  border: 2px solid #6b6475;
-  background-color: rgba(40, 40, 46, 0.95);
+  border: 2px solid @muted;
+  background-color: alpha(@surface, 0.95);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -16,13 +18,13 @@ window {
   padding: 12px;
   border: none;
   border-radius: 12px;
-  color: #e6dcd1;
-  background-color: #1e1e24;
+  color: @text;
+  background-color: @base;
   outline: none;
 }
 
 #input image {
-  color: #e6dcd1;
+  color: @text;
 }
 
 #inner-box {
@@ -46,7 +48,7 @@ window {
 #text {
   margin: 5px 10px;
   border: none;
-  color: #e6dcd1;
+  color: @text;
 }
 
 /* Individual application rows */
@@ -60,7 +62,7 @@ window {
 
 /* The currently selected application */
 #entry:selected {
-  background-color: #a28ba6;
+  background-color: @purple;
   /* Soft cloud purple highlight */
   border-radius: 10px;
   outline: none;
@@ -68,7 +70,7 @@ window {
 
 /* Force the text/icons to turn dark when highlighted for contrast */
 #entry:selected * {
-  color: #28282e;
+  color: @surface;
   /* Storm grey text */
   font-weight: bold;
 }

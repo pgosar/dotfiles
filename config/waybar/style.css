@@ -1,23 +1,4 @@
-/* Twilight / Sunset Palette pulled from your wallpaper */
-@define-color base #1b1924;
-/* Deep twilight silhouette black */
-@define-color mantle #15131c;
-@define-color text #e6dcd1;
-/* Warm dusk cream */
-@define-color peach #f2a284;
-/* Soft sunset cloud peach */
-@define-color yellow #e6b473;
-/* Horizon warm yellow */
-@define-color rose #d37363;
-/* Deep sunset orange/red */
-@define-color blue #6a859c;
-/* Dusk sky blue */
-@define-color purple #a28ba6;
-/* Soft cloud purple */
-@define-color muted #6b6475;
-/* Muted purple-gray for inactive elements */
-@define-color red #c25d5d;
-/* Critical alerts */
+@import "colors.css";
 
 * {
   font-family: "JetBrainsMono Nerd Font";

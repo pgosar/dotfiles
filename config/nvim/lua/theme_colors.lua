@@ -1,0 +1,22 @@
+-- Auto-generated nvim colors
+return {
+  base = "#1b1924",
+  mantle = "#15131c",
+  surface = "#28282e",
+  text = "#e6dcd1",
+  peach = "#f2a284",
+  yellow = "#e6b473",
+  rose = "#d37363",
+  blue = "#6a859c",
+  purple = "#a28ba6",
+  muted = "#6b6475",
+  red = "#c25d5d",
+  green = "#8b9a73",
+  cyan = "#7b9ea3",
+  white = "#f5ebe0",
+  light_green = "#a1b088",
+  light_peach = "#eebd8a",
+  light_blue = "#809ebb",
+  light_purple = "#bcadd4",
+  light_cyan = "#92bac0",
+}

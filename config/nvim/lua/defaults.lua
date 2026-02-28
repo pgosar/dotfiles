@@ -200,25 +200,27 @@ M.group = {
   },
 }
 
+local theme = require("theme_colors")
+
 M.colors = {
   mocha_override = {
-    base = "#28282e",
-    mantle = "#29292e",
-    crust = "#28282e",
+    base = theme.surface,
+    mantle = theme.mantle,
+    crust = theme.base,
   },
-  scrollbar = "#2f334d",
-  terminal = "#222222",
+  scrollbar = theme.surface,
+  terminal = theme.surface,
   lualine = {
-    fg = "#BBC2CF",
-    yellow = "#ECBE7B",
-    cyan = "#008080",
-    darkblue = "#081633",
-    green = "#98BE65",
-    orange = "#FF9E64",
-    violet = "#A9A1E1",
-    magenta = "#C678DD",
-    blue = "#51AFEF",
-    red = "#EC5F67",
+    fg = theme.text,
+    yellow = theme.yellow,
+    cyan = theme.cyan,
+    darkblue = theme.base,
+    green = theme.green,
+    orange = theme.peach,
+    violet = theme.purple,
+    magenta = theme.rose,
+    blue = theme.blue,
+    red = theme.red,
   },
 }
 
