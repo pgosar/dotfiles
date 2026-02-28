@@ -8,7 +8,14 @@
   # default editor
   editor = 'nvim'
 	# trailing whitespace doesn't cause merge conflicts
-	whitespace = -trailing-space
+  whitespace = -trailing-space
+  # git diff
+  pager = delta
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  navigate = true
+  dark = true
 [credential "https://github.com"]
 	helper =
 	helper = !/usr/bin/gh auth git-credential
@@ -33,6 +40,7 @@
   # Disable decorate for reflog
   decorate = false
 [merge]
+  conflictStyle = zdiff3
 	ff = false
 [mergetool]
   # Clean up backup files
