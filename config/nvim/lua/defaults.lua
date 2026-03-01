@@ -45,6 +45,7 @@ end
 -- Auto install sources
 M.ensure_installed = {
   treesitter = {
+    "qmljs",
     "asm",
     "bash",
     "c",
@@ -119,6 +120,7 @@ M.ensure_installed = {
     "wgsl_analyzer",
     "mdformat",
     "zls",
+    "qmlls",
   },
   dap = {
     "python",
