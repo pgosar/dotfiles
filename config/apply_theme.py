@@ -220,7 +220,7 @@ def generate_firefox(colors):
     if sys.platform == "darwin":
         base_dir = os.path.expanduser("~/Library/Application Support/Firefox")
     else:
-        base_dir = os.path.expanduser("~/.mozilla/firefox")
+        base_dir = os.path.expanduser("~/.config/mozilla/firefox")
 
     profiles_ini_path = os.path.join(base_dir, "profiles.ini")
     profile_dir = ""
