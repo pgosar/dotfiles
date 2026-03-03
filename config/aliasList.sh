@@ -48,7 +48,6 @@ if [ "$OS" = "Linux" ]; then
   alias \
     hh="hstr" \
     yt="youtube-dl --add-metadata -ic" \
-    fd="~/.cargo/bin/fd" \
     save="kitty @ ls > ~/.local/kitty.app/kitty-dump.json; cat ~/.local/kitty.app/kitty-dump.json |
 python3 ~/.local/kitty.app/kitty-convert-dump.py > ~/.local/kitty.app/kitty-session.kitty" \
     wiki="wikiSummary.py" \
