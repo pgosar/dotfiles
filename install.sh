@@ -22,6 +22,7 @@ if [ "$OS" = "Linux" ]; then
   rm -rf ~/.config/hypr
   rm -rf ~/.config/waybar
   rm -rf ~/.config/wofi
+  rm -rf ~/.config/wireplumber
   rm -rf ~/.config/fontconfig
   rm -rf ~/.config/quickshell
   rm -f ~/.config/electron28-flags.conf
@@ -88,6 +89,7 @@ if [ "$OS" = "Linux" ]; then
   ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
   ln -s "$DOTFILES_DIR/config/waybar" ~/.config/waybar
   ln -s "$DOTFILES_DIR/config/wofi" ~/.config/wofi
+  ln -s "$DOTFILES_DIR/config/wireplumber" ~/.config/wireplumber
   ln -s "$DOTFILES_DIR/config/electron28-flags.conf" ~/.config/electron28-flags.conf
   ln -s "$DOTFILES_DIR/config/quickshell" ~/.config/quickshell
   ln -s "$DOTFILES_DIR/config/fontconfig" ~/.config/fontconfig
