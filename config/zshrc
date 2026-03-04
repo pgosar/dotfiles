@@ -128,3 +128,5 @@ elif [ "$OS" = "Darwin" ]; then
   # Added by Antigravity
   export PATH="/Users/chilly/.antigravity/antigravity/bin:$PATH"
 fi
+
+export PATH=$PATH:/home/chilly/.spicetify

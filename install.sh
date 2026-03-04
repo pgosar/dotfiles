@@ -11,7 +11,8 @@ rm -f ~/.tmux.conf
 rm -rf ~/.config/ranger
 rm -rf ~/.config/kitty
 rm -rf ~/.config/nvim
-rm -rf ~/.config/spicetify
+rm -f ~/.config/spicetify/config-xpui.ini
+rm -f ~/.config/spicetify/Themes/Comfy/color.ini
 rm -f ~/.config/starship.toml
 rm -f ~/.config/topgrade.toml
 
@@ -49,7 +50,9 @@ ln -s "$DOTFILES_DIR/config/gitconfig" ~/.gitconfig
 ln -s "$DOTFILES_DIR/config/starship.toml" ~/.config/starship.toml
 ln -s "$DOTFILES_DIR/config/topgrade.toml" ~/.config/topgrade.toml
 ln -s "$DOTFILES_DIR/config/tmux.conf" ~/.tmux.conf
-ln -s "$DOTFILES_DIR/config/spicetify" ~/.config/spicetify
+mkdir -p ~/.config/spicetify/Themes/Comfy
+ln -s "$DOTFILES_DIR/config/spicetify/config-xpui.ini" ~/.config/spicetify/config-xpui.ini
+ln -s "$DOTFILES_DIR/config/spicetify/Themes/Comfy/color.ini" ~/.config/spicetify/Themes/Comfy/color.ini
 
 # ---- Firefox Shared Setup --------------------------------------------------
 
