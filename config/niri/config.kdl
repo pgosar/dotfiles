@@ -65,7 +65,7 @@ layout {
     focus-ring {
         // Colors populated by apply_theme.py
         width 2
-        active-color "#be988c" // fallback
+        active-color "#c99282" // fallback
         inactive-color "#211b1caa" // fallback
     }
 

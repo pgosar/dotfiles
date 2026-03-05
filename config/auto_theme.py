@@ -43,6 +43,16 @@ def adjust_color(hex_color, target_l, max_s=0.20):
     s = min(s, max_s)
     return hls_to_hex(h, target_l, s)
 
+def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
+    """
+    Ensures foreground colors are bright enough to be readable against dark backgrounds
+    but not overly saturated so they still fit the theme.
+    """
+    h, l, s = hex_to_hls(hex_color)
+    l = max(l, min_l)
+    s = max(min_s, min(s, max_s))
+    return hls_to_hex(h, l, s)
+
 
 bg_color = wal["special"]["background"]
 
@@ -62,18 +72,18 @@ my_theme = {
     "muted": adjust_color(wal["colors"]["color8"], target_l=0.45, max_s=0.15),
     "white": wal["colors"]["color15"],
     # Accents
-    "red": wal["colors"]["color1"],
-    "green": wal["colors"]["color2"],
-    "yellow": wal["colors"]["color3"],
-    "blue": wal["colors"]["color4"],
-    "purple": wal["colors"]["color5"],
-    "cyan": wal["colors"]["color6"],
-    "rose": wal["colors"]["color9"],
-    "light_green": wal["colors"]["color10"],
-    "light_peach": wal["colors"]["color11"],
-    "light_blue": wal["colors"]["color12"],
-    "light_purple": wal["colors"]["color13"],
-    "light_cyan": wal["colors"]["color14"],
+    "red": ensure_readability(wal["colors"]["color1"]),
+    "green": ensure_readability(wal["colors"]["color2"]),
+    "yellow": ensure_readability(wal["colors"]["color3"]),
+    "blue": ensure_readability(wal["colors"]["color4"]),
+    "purple": ensure_readability(wal["colors"]["color5"]),
+    "cyan": ensure_readability(wal["colors"]["color6"]),
+    "rose": ensure_readability(wal["colors"]["color9"]),
+    "light_green": ensure_readability(wal["colors"]["color10"]),
+    "light_peach": ensure_readability(wal["colors"]["color11"]),
+    "light_blue": ensure_readability(wal["colors"]["color12"]),
+    "light_purple": ensure_readability(wal["colors"]["color13"]),
+    "light_cyan": ensure_readability(wal["colors"]["color14"]),
     "peach": wal["colors"]["color15"],
 }
 
