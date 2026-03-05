@@ -108,6 +108,32 @@ def generate_hyprland(colors):
         f.write(content)
 
 
+def generate_niri(colors):
+    niri_config_path = os.path.join(CONFIG_DIR, "niri", "config.kdl")
+    if not os.path.exists(niri_config_path):
+        return
+        
+    with open(niri_config_path, "r") as f:
+        content = f.read()
+        
+    # Replace active-color and inactive-color in focus-ring
+    content = re.sub(
+        r'(active-color\s+)".*?"',
+        f'\\g<1>"{colors["blue"]}"',
+        content,
+    )
+    # Using base with some transparency as fallback
+    inactive_color = colors["base"] + "aa"
+    content = re.sub(
+        r'(inactive-color\s+)".*?"',
+        f'\\g<1>"{inactive_color}"',
+        content,
+    )
+    
+    with open(niri_config_path, "w") as f:
+        f.write(content)
+
+
 def update_dunstrc(colors):
     dunstrc_path = os.path.join(CONFIG_DIR, "dunst", "dunstrc")
     if not os.path.exists(dunstrc_path):
@@ -360,6 +386,7 @@ def main():
     generate_css(colors)
     generate_kitty(colors)
     generate_hyprland(colors)
+    generate_niri(colors)
     update_dunstrc(colors)
     generate_spicetify(colors)
     generate_nvim(colors)

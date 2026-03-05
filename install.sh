@@ -20,6 +20,7 @@ rm -f ~/.config/topgrade.toml
 if [ "$OS" = "Linux" ]; then
   rm -rf ~/.config/dunst
   rm -rf ~/.config/hypr
+  rm -rf ~/.config/niri
   rm -rf ~/.config/waybar
   rm -rf ~/.config/wofi
   rm -rf ~/.config/wireplumber
@@ -88,6 +89,7 @@ fi
 if [ "$OS" = "Linux" ]; then
   ln -s "$DOTFILES_DIR/config/dunst" ~/.config/dunst
   ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
+  ln -s "$DOTFILES_DIR/config/niri" ~/.config/niri
   ln -s "$DOTFILES_DIR/config/waybar" ~/.config/waybar
   ln -s "$DOTFILES_DIR/config/wofi" ~/.config/wofi
   ln -s "$DOTFILES_DIR/config/wireplumber" ~/.config/wireplumber

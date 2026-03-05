@@ -113,6 +113,7 @@ compinit
 if [ "$OS" = "Linux" ]; then
   source /usr/share/doc/pkgfile/command-not-found.zsh
   [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
   export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 elif [ "$OS" = "Darwin" ]; then
   fpath=(~/.zfunc "${fpath[@]}")

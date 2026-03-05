@@ -19,8 +19,8 @@
     "group/island-left": {
         "orientation": "horizontal",
         "modules": [
-            "hyprland/workspaces",
-            "hyprland/window"
+            "niri/workspaces",
+            "niri/window"
         ]
     },
     "group/island-center": {
@@ -45,22 +45,18 @@
         "on-click": "pkill wofi || wofi --show drun",
         "tooltip": false
     },
-    "hyprland/window": {
+    "niri/window": {
         "format": "{class}",
         "icon": true,
         "icon-size": 18,
         "max-length": 50
     },
-    "hyprland/workspaces": {
+    "niri/workspaces": {
         "format": "{icon}",
-        "on-click": "activate",
-        "active-only": false,
+        "sort-by-name": true,
         "format-icons": {
-            "default": "󰊠",
-            "active": "󰮯"
-        },
-        "persistent-workspaces": {
-            "*": 5
+            "active": "󰮯",
+            "default": "󰊠"
         }
     },
     "custom/spotify": {
