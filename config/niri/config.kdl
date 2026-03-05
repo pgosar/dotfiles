@@ -65,7 +65,7 @@ layout {
     focus-ring {
         // Colors populated by apply_theme.py
         width 2
-        active-color "#9E6959" // fallback
+        active-color "#be988c" // fallback
         inactive-color "#211b1caa" // fallback
     }
 
@@ -74,6 +74,14 @@ layout {
     }
 
     center-focused-column "never"
+
+    default-column-width {}
+}
+
+window-rule {
+    // Apply to all windows
+    geometry-corner-radius 12
+    clip-to-geometry true
 }
 
 cursor {
@@ -195,6 +203,11 @@ window-rule {
     match app-id=r#"^steam_app_.*$"#
     open-on-output "Microstep MPG321UX OLED 0x01010101"
     open-on-workspace "1"
+}
+
+window-rule {
+    match app-id=r#"^kitty$"#
+    draw-border-with-background false
 }
 
 window-rule {
