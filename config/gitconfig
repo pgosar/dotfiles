@@ -9,13 +9,18 @@
   editor = 'nvim'
 	# trailing whitespace doesn't cause merge conflicts
   whitespace = -trailing-space
-  # git diff
-  pager = delta
-[interactive]
-  diffFilter = delta --color-only
-[delta]
-  navigate = true
-  dark = true
+
+[diff]
+  tool = difftastic
+
+[difftool]
+  prompt = false
+
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+
+[pager]
+  difftool = true
 [credential "https://github.com"]
 	helper =
 	helper = !/usr/bin/gh auth git-credential
