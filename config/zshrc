@@ -103,7 +103,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # ---- Terminal Commands -----------------------------------------------------
 
-source ~/.local/share/LS_COLORS/lscolors.sh
+export LS_COLORS="$(vivid generate catppuccin-mocha)"
 
 eval "$(register-python-argcomplete pipx)"
 source <(fzf --zsh)
