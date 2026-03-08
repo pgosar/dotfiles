@@ -83,7 +83,7 @@ fi
 source "$ZSH"/oh-my-zsh.sh >/dev/null 2>&1 # load oh-my-zsh
 
 loadpath="$DOTFILES_DIR/config"
-if [ -f "$loadpath/aliasList.sh" ]; then   # load aliases
+if [ -f "$loadpath/aliasList.sh" ]; then # load aliases
   # shellcheck source=/dev/null
   source "$loadpath/aliasList.sh"
 fi
@@ -115,7 +115,6 @@ eval "$(register-python-argcomplete pipx)"
 
 # shellcheck disable=SC1090
 source <(fzf --zsh)
-
 
 autoload -U compinit
 compinit

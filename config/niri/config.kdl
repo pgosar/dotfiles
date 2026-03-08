@@ -12,7 +12,7 @@ hotkey-overlay {
     skip-at-startup
 }
 
-spawn-at-startup "sh" "-c" "ypridle"
+spawn-at-startup "sh" "-c" "hypridle"
 spawn-at-startup "sh" "-c" "hyprpaper"
 spawn-at-startup "sh" "-c" "waybar"
 spawn-at-startup "sh" "-c" "/usr/lib/hyprpolkitagent/hyprpolkitagent"
