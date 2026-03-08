@@ -16,6 +16,7 @@ spawn-at-startup "sh" "-c" "ypridle"
 spawn-at-startup "sh" "-c" "hyprpaper"
 spawn-at-startup "sh" "-c" "waybar"
 spawn-at-startup "sh" "-c" "/usr/lib/hyprpolkitagent/hyprpolkitagent"
+spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 spawn-at-startup "sh" "-c" "nm-applet"
 spawn-at-startup "sh" "-c" "blueman-applet"
 
@@ -119,6 +120,7 @@ binds {
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
     Mod+R { spawn "wofi"; }
+    Ctrl+Shift+P { spawn "sh" "-c" "cliphist list | wofi -S dmenu | cliphist decode | wl-copy"; }
     Mod+S { switch-preset-column-width; } // Pseudo/split replacement
 
     // Focus (Seamless Multi-Monitor Wrap)
