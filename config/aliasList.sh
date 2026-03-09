@@ -29,3 +29,6 @@ alias \
   cp="cp -iv" \
   mv="mv -iv" \
   rm="rip -i"
+
+# other
+alias icat="kitty +kitten icat"
