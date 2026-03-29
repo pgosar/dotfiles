@@ -20,7 +20,9 @@
         "orientation": "horizontal",
         "modules": [
             "niri/workspaces",
-            "niri/window"
+            "hyprland/workspaces",
+            "niri/window",
+            "hyprland/window"
         ]
     },
     "group/island-center": {
@@ -51,9 +53,23 @@
         "icon-size": 18,
         "max-length": 50
     },
+    "hyprland/window": {
+        "format": "{class}",
+        "icon": true,
+        "icon-size": 18,
+        "max-length": 50
+    },
     "niri/workspaces": {
         "format": "{icon}",
         "sort-by-name": true,
+        "format-icons": {
+            "active": "󰮯",
+            "default": "󰊠"
+        }
+    },
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "~/.config/hypr/scripts/switch-workspace.sh {name}",
         "format-icons": {
             "active": "󰮯",
             "default": "󰊠"
