@@ -14,7 +14,7 @@ hotkey-overlay {
 
 spawn-at-startup "sh" "-c" "hypridle"
 spawn-at-startup "sh" "-c" "hyprpaper"
-spawn-at-startup "sh" "-c" "waybar"
+spawn-at-startup "sh" "-c" "~/.config/waybar/scripts/launch.sh"
 spawn-at-startup "sh" "-c" "/usr/lib/hyprpolkitagent/hyprpolkitagent"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 spawn-at-startup "sh" "-c" "nm-applet"
