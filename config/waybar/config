@@ -19,9 +19,7 @@
     "group/island-left": {
         "orientation": "horizontal",
         "modules": [
-            "niri/workspaces",
             "hyprland/workspaces",
-            "niri/window",
             "hyprland/window"
         ]
     },
@@ -47,25 +45,11 @@
         "on-click": "pkill wofi || wofi --show drun",
         "tooltip": false
     },
-    "niri/window": {
-        "format": "{class}",
-        "icon": true,
-        "icon-size": 18,
-        "max-length": 50
-    },
     "hyprland/window": {
         "format": "{class}",
         "icon": true,
         "icon-size": 18,
         "max-length": 50
-    },
-    "niri/workspaces": {
-        "format": "{icon}",
-        "sort-by-name": true,
-        "format-icons": {
-            "active": "󰮯",
-            "default": "󰊠"
-        }
     },
     "hyprland/workspaces": {
         "format": "{icon}",
