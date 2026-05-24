@@ -151,3 +151,4 @@ if [ "$OS" = "Linux" ]; then
 elif [ "$OS" = "Darwin" ]; then
   ulimit -Sn unlimited && ulimit -Sl unlimited
 fi
+
