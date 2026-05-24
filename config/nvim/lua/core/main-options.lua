@@ -11,7 +11,7 @@ vim_opts({
     cursorline = true, -- Highlight cursor line
     cursorlineopt = "number", -- Highlight cursor line number
     foldenable = true, -- Enable folding
-    foldexpr = "nvim_treesitter#foldexpr()", -- Treesitter folding
+    foldexpr = "v:lua.vim.treesitter.foldexpr()", -- Treesitter folding
     foldlevel = 99, -- Set fold level
     foldlevelstart = 99, -- Start with all folds open
     foldmethod = "expr", -- Fold based on expression
