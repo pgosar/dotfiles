@@ -40,23 +40,28 @@ return {
       lineFoldingOnly = true,
     }
 
-    local function on_attach(client, bufnr)
-      local wd_ok, wd = pcall(require, "workspace-diagnostics")
-      if wd_ok then
-        wd.populate_workspace_diagnostics(client, bufnr)
-
-        -- HACK: For some reason the above method call causes lualine's diff view to break,
-        -- and it only works again after re-entering the buffer which the below simulates
-        vim.cmd([[silent! doautocmd BufLeave]])
-        vim.cmd([[silent! doautocmd BufEnter]])
-      end
-    end
-
-    -- Default configuration for all servers
-    local default_config = {
+    -- Define global default capabilities
+    vim.lsp.config("*", {
       capabilities = capabilities,
-      on_attach = on_attach,
-    }
+    })
+
+    -- Handle LspAttach for all servers (migrated from on_attach callback)
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then return end
+
+        local wd_ok, wd = pcall(require, "workspace-diagnostics")
+        if wd_ok then
+          wd.populate_workspace_diagnostics(client, args.buf)
+
+          -- HACK: For some reason the above method call causes lualine's diff view to break,
+          -- and it only works again after re-entering the buffer which the below simulates
+          vim.cmd([[silent! doautocmd BufLeave]])
+          vim.cmd([[silent! doautocmd BufEnter]])
+        end
+      end,
+    })
 
     -- Load server-specific configurations
     local server_specific_configs = {
@@ -71,30 +76,20 @@ return {
 
     for server, config_module in pairs(server_specific_configs) do
       local spec_ok, specific = pcall(require, config_module)
-      local server_config = default_config
 
       if spec_ok then
-        server_config = vim.tbl_deep_extend("force", {}, default_config, specific or {})
+        vim.lsp.config(server, specific or {})
       else
         vim.notify(
           "Failed to load config for " .. server .. ": " .. tostring(specific),
           vim.log.levels.WARN
         )
       end
-      vim.lsp.config(server, server_config)
     end
 
     -- Automatically enable Mason-installed servers with default config
     require("mason-lspconfig").setup({
-      function(server_name)
-        if server_name == "tsserver" then server_name = "ts_ls" end
-
-        -- Skip if we've already configured this server above
-        if not server_specific_configs[server_name] then
-          vim.lsp.config(server_name, default_config)
-          vim.lsp.enable(server_name)
-        end
-      end,
+      automatic_enable = true,
     })
 
     for server, _ in pairs(server_specific_configs) do
