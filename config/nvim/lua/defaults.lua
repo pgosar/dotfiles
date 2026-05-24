@@ -72,7 +72,6 @@ M.ensure_installed = {
     "jsdoc",
     "json",
     "json5",
-    "jsonc",
     "latex",
     "lua",
     "luap",
