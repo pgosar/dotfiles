@@ -5,7 +5,6 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   config = function()
     local null_ls = require("null-ls")
-    require("mason").setup()
     null_ls.setup({
       sources = require("defaults").setup_sources(null_ls.builtins),
     })
