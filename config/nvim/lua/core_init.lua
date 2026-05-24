@@ -89,13 +89,9 @@ if big_file then
   })
 end
 
-local sign = vim.fn.sign_define
-sign("DiagnosticSignError", { text = icons.diagnostics.error, texthl = "DiagnosticSignError" })
-sign("DiagnosticSignWarn", { text = icons.diagnostics.warn, texthl = "DiagnosticSignWarn" })
-sign("DiagnosticSignInfo", { text = icons.diagnostics.info, texthl = "DiagnosticSignInfo" })
-sign("DiagnosticSignHint", { text = icons.diagnostics.hint, texthl = "DiagnosticSignHint" })
-sign("DapBreakpoint", { text = icons.dap.breakpoint })
-sign("DapStopped", { text = icons.dap.stopped })
+vim.fn.sign_define("DapBreakpoint", { text = icons.dap.breakpoint })
+vim.fn.sign_define("DapStopped", { text = icons.dap.stopped })
+
 
 -- Set default border for all floating windows
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
