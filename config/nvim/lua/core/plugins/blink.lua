@@ -5,7 +5,7 @@ return {
   event = { "InsertEnter", "CmdlineEnter" },
   version = "v0.*",
   dependencies = { { "rafamadriz/friendly-snippets" } },
-  opts = function()
+  config = function()
     local neogen_ok, neogen = pcall(require, "neogen")
     local blink = require("blink.cmp")
     blink.setup({
