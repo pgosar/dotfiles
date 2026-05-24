@@ -34,9 +34,7 @@ elif [ "$OS" = "Darwin" ]; then
   rm -rf ~/.config/borders
 fi
 
-# ---- Source Environment ----------------------------------------------------
-
-source ./dotfiles_env.sh
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---- Shared Symlinks -------------------------------------------------------
 
@@ -55,7 +53,11 @@ ln -s "$DOTFILES_DIR/config/spicetify/Themes/Comfy/color.ini" ~/.config/spicetif
 # ---- Firefox Shared Setup --------------------------------------------------
 
 if [ "$OS" = "Linux" ]; then
-  FIREFOX_BASE=~/.mozilla/firefox
+  if [ -d ~/.config/mozilla/firefox ]; then
+    FIREFOX_BASE=~/.config/mozilla/firefox
+  else
+    FIREFOX_BASE=~/.mozilla/firefox
+  fi
 elif [ "$OS" = "Darwin" ]; then
   FIREFOX_BASE=~/Library/Application\ Support/Firefox
 fi
