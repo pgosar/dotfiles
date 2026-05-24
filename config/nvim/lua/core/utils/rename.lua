@@ -9,7 +9,7 @@ local M = {}
 local function get_initially_open_buffers()
   local open = {}
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_get_option(bufnr, "buflisted") then open[bufnr] = true end
+    if vim.api.nvim_get_option_value("buflisted", { buf = bufnr }) then open[bufnr] = true end
   end
   return open
 end
@@ -20,7 +20,7 @@ local function format_and_save_buffer(bufnr)
   local name = vim.api.nvim_buf_get_name(bufnr)
   if name == "" then return end
 
-  if vim.api.nvim_buf_get_option(bufnr, "modified") then
+  if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then
     local ok, err = pcall(function()
       vim.api.nvim_buf_call(bufnr, function()
         vim.lsp.buf.format({ bufnr = bufnr, async = false })
@@ -38,7 +38,7 @@ local function collect_edits(result)
   local notif_lines = {}
   local files, updates = 0, 0
 
-  local cwd_len = #vim.loop.cwd() + 2
+  local cwd_len = #vim.uv.cwd() + 2
 
   local function handle(uri, edits)
     files = files + 1
@@ -158,8 +158,8 @@ local function do_rename(param)
         if vim.api.nvim_buf_is_valid(bufnr) then
           format_and_save_buffer(bufnr)
           if not initially_open[bufnr] then
-            pcall(vim.api.nvim_buf_set_option, bufnr, "buflisted", false)
-            pcall(vim.api.nvim_buf_set_option, bufnr, "bufhidden", "hide")
+            pcall(vim.api.nvim_set_option_value, "buflisted", false, { buf = bufnr })
+            pcall(vim.api.nvim_set_option_value, "bufhidden", "hide", { buf = bufnr })
           end
         end
       end
@@ -175,7 +175,7 @@ function M.rename()
   local param = vim.lsp.util.make_position_params(0, "utf-8")
   param.old = vim.fn.expand("<cword>")
 
-  local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
   if #clients == 0 then
     vim.notify("No LSP client attached", "error", { title = "[LSP] rename" })
     return
