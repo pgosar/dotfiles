@@ -3,21 +3,18 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     cond = group.plugins.treesitter,
+    branch = "main",
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      require("nvim-treesitter.config").setup({
-        highlight = { enable = true },
-        incremental_selection = { enable = true },
-        endwise = { enable = true },
-        auto_install = true,
-        ensure_installed = require("defaults").ensure_installed.treesitter,
-      })
+      require("nvim-treesitter").setup()
+
+      local parsers = require("defaults").ensure_installed.treesitter
+      require("nvim-treesitter").install(parsers)
     end,
     dependencies = {
       { "HiPhish/rainbow-delimiters.nvim",            cond = group.plugins.rainbow },
       { "JoosepAlviste/nvim-ts-context-commentstring" },
-      { "RRethy/nvim-treesitter-endwise" },
     },
   },
 }

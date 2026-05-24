@@ -84,7 +84,6 @@ M.update_all = function()
   require("lazy").sync({ wait = true })
   vim.notify("Updating Mason packages...")
   M.update_mason()
-  require("nvim-treesitter")
   vim.cmd("TSUpdate")
   vim.notify("CyberNvim updated!", vim.log.levels.INFO)
 end
