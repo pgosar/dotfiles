@@ -3,6 +3,7 @@ follow = mouse
 indicate_hidden = yes
 offset = 10x10
 notification_height = 0
+layer = overlay
 
 separator_height = 2
 
