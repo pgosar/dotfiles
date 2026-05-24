@@ -20,6 +20,10 @@ return {
     },
   },
   opts = {
+    top_down = true,
+    on_open = function(win)
+      vim.api.nvim_win_set_config(win, { zindex = 175 })
+    end,
     icons = {
       ERROR = icons.diagnostics.error,
       WARN = icons.diagnostics.warn,
