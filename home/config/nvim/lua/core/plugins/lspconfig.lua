@@ -57,8 +57,10 @@ return {
 
           -- HACK: For some reason the above method call causes lualine's diff view to break,
           -- and it only works again after re-entering the buffer which the below simulates
-          vim.cmd([[silent! doautocmd BufLeave]])
-          vim.cmd([[silent! doautocmd BufEnter]])
+          if args.buf == vim.api.nvim_get_current_buf() then
+            vim.cmd([[silent! doautocmd BufLeave]])
+            vim.cmd([[silent! doautocmd BufEnter]])
+          end
         end
       end,
     })

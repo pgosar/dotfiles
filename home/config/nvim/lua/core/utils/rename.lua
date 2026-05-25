@@ -131,11 +131,24 @@ local function do_rename(param)
       return
     end
 
+    -- Setup autocommand to prevent bufferline flashing for newly opened buffers
+    local group = vim.api.nvim_create_augroup("LspRenameSilence", { clear = true })
+    vim.api.nvim_create_autocmd({ "BufAdd", "BufCreate" }, {
+      group = group,
+      callback = function(args)
+        if not initially_open[args.buf] then
+          pcall(vim.api.nvim_set_option_value, "buflisted", false, { buf = args.buf })
+          pcall(vim.api.nvim_set_option_value, "bufhidden", "hide", { buf = args.buf })
+        end
+      end,
+    })
+
     local apply_ok, apply_err = pcall(
       function() vim.lsp.handlers["textDocument/rename"](err, result, ctx, config) end
     )
 
     if not apply_ok then
+      pcall(vim.api.nvim_clear_autocmds, { group = group })
       vim.notify(
         string.format("Failed to apply edits: %s", apply_err),
         "error",
@@ -158,11 +171,11 @@ local function do_rename(param)
         if vim.api.nvim_buf_is_valid(bufnr) then
           format_and_save_buffer(bufnr)
           if not initially_open[bufnr] then
-            pcall(vim.api.nvim_set_option_value, "buflisted", false, { buf = bufnr })
-            pcall(vim.api.nvim_set_option_value, "bufhidden", "hide", { buf = bufnr })
+            pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
           end
         end
       end
+      pcall(vim.api.nvim_clear_autocmds, { group = group })
     end)
   end)
 end
