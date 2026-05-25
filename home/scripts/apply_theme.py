@@ -364,6 +364,20 @@ def generate_qt(colors):
             config.write(f)
 
 
+def generate_quickshell(colors):
+    content = "/* Auto-generated quickshell colors */\n"
+    content += "import QtQuick\n\n"
+    content += "QtObject {\n"
+    for k, v in colors.items():
+        content += f'    readonly property color {k}: "{v}"\n'
+    content += "}\n"
+    
+    quickshell_dir = os.path.join(CONFIG_DIR, "quickshell")
+    os.makedirs(quickshell_dir, exist_ok=True)
+    with open(os.path.join(quickshell_dir, "Colors.qml"), "w") as f:
+        f.write(content)
+
+
 def main():
     colors = load_theme()
     generate_css(colors)
@@ -375,8 +389,10 @@ def main():
     generate_firefox(colors)
     generate_gtk(colors)
     generate_qt(colors)
+    generate_quickshell(colors)
     print("Successfully generated color configs!")
 
 
 if __name__ == "__main__":
     main()
+
