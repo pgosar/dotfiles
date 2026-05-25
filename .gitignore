@@ -1,4 +1,4 @@
 .DS_STORE
 .git/
 .qmlls.ini
-config/hypr/hyprland.conf
+home/config/hypr/hyprland.conf

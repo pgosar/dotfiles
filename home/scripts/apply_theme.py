@@ -2,8 +2,8 @@ import json
 import os
 import re
 
-CONFIG_DIR = os.path.expanduser("~/code/dotfiles/config")
-THEME_JSON = os.path.join(CONFIG_DIR, "theme.json")
+CONFIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config"))
+THEME_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "theme.json")
 
 
 def load_theme():

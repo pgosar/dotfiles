@@ -15,7 +15,7 @@ OS="$(uname)"
 
 # ---- Environment Variables -------------------------------------------------
 
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:/Users/chilly/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
 export DOTFILES_DIR="$HOME/code/dotfiles"
@@ -82,7 +82,7 @@ fi
 
 source "$ZSH"/oh-my-zsh.sh >/dev/null 2>&1 # load oh-my-zsh
 
-loadpath="$DOTFILES_DIR/config"
+loadpath="$DOTFILES_DIR/home/scripts"
 if [ -f "$loadpath/aliasList.sh" ]; then # load aliases
   # shellcheck source=/dev/null
   source "$loadpath/aliasList.sh"

@@ -75,8 +75,7 @@
   upstream = cyan
 [tag]
   # Sort tags as version numbers
-	subModuleSummary = true
-  showUntrackedFiles = all
+  sort = version:refname
 [alias]
   edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}')
 

@@ -88,7 +88,7 @@ my_theme = {
 }
 
 # 4. Save
-theme_file = os.path.expanduser("~/code/dotfiles/config/theme.json")
+theme_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "theme.json")
 with open(theme_file, "w") as f:
     json.dump(my_theme, f, indent=2)
 
@@ -96,5 +96,5 @@ print(f"Theme generated from {os.path.basename(wallpaper_path)}!")
 print(f"Base BG: {base}, Mantle: {mantle}, Surface: {surface}")
 
 # 5. Push configs everywhere
-apply_script = os.path.expanduser("~/code/dotfiles/config/apply_theme.py")
+apply_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apply_theme.py")
 subprocess.run(["python3", apply_script])

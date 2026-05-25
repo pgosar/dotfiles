@@ -38,17 +38,17 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---- Shared Symlinks -------------------------------------------------------
 
-ln -s "$DOTFILES_DIR/config/nvim" ~/.config/nvim
-ln -s "$DOTFILES_DIR/config/kitty" ~/.config/kitty
-ln -s "$DOTFILES_DIR/config/zshrc" ~/.zshrc
-ln -s "$DOTFILES_DIR/config/zprofile" ~/.zprofile
-ln -s "$DOTFILES_DIR/config/gitconfig" ~/.gitconfig
-ln -s "$DOTFILES_DIR/config/starship.toml" ~/.config/starship.toml
-ln -s "$DOTFILES_DIR/config/topgrade.toml" ~/.config/topgrade.toml
-ln -s "$DOTFILES_DIR/config/tmux.conf" ~/.tmux.conf
+ln -s "$DOTFILES_DIR/home/config/nvim" ~/.config/nvim
+ln -s "$DOTFILES_DIR/home/config/kitty" ~/.config/kitty
+ln -s "$DOTFILES_DIR/home/zshrc" ~/.zshrc
+ln -s "$DOTFILES_DIR/home/zprofile" ~/.zprofile
+ln -s "$DOTFILES_DIR/home/gitconfig" ~/.gitconfig
+ln -s "$DOTFILES_DIR/home/config/starship.toml" ~/.config/starship.toml
+ln -s "$DOTFILES_DIR/home/config/topgrade.toml" ~/.config/topgrade.toml
+ln -s "$DOTFILES_DIR/home/tmux.conf" ~/.tmux.conf
 mkdir -p ~/.config/spicetify/Themes/Comfy
-ln -s "$DOTFILES_DIR/config/spicetify/config-xpui.ini" ~/.config/spicetify/config-xpui.ini
-ln -s "$DOTFILES_DIR/config/spicetify/Themes/Comfy/color.ini" ~/.config/spicetify/Themes/Comfy/color.ini
+ln -s "$DOTFILES_DIR/home/config/spicetify/config-xpui.ini" ~/.config/spicetify/config-xpui.ini
+ln -s "$DOTFILES_DIR/home/config/spicetify/Themes/Comfy/color.ini" ~/.config/spicetify/Themes/Comfy/color.ini
 
 # ---- Firefox Shared Setup --------------------------------------------------
 
@@ -88,21 +88,21 @@ fi
 # ---- OS-Specific Symlinks --------------------------------------------------
 
 if [ "$OS" = "Linux" ]; then
-  ln -s "$DOTFILES_DIR/config/dunst" ~/.config/dunst
-  ln -s "$DOTFILES_DIR/config/hypr" ~/.config/hypr
-  ln -s "$DOTFILES_DIR/config/waybar" ~/.config/waybar
-  ln -s "$DOTFILES_DIR/config/wofi" ~/.config/wofi
-  ln -s "$DOTFILES_DIR/config/wireplumber" ~/.config/wireplumber
-  ln -s "$DOTFILES_DIR/config/electron28-flags.conf" ~/.config/electron28-flags.conf
-  ln -s "$DOTFILES_DIR/config/quickshell" ~/.config/quickshell
-  ln -s "$DOTFILES_DIR/config/fontconfig" ~/.config/fontconfig
+  ln -s "$DOTFILES_DIR/home/config/dunst" ~/.config/dunst
+  ln -s "$DOTFILES_DIR/home/config/hypr" ~/.config/hypr
+  ln -s "$DOTFILES_DIR/home/config/waybar" ~/.config/waybar
+  ln -s "$DOTFILES_DIR/home/config/wofi" ~/.config/wofi
+  ln -s "$DOTFILES_DIR/home/config/wireplumber" ~/.config/wireplumber
+  ln -s "$DOTFILES_DIR/home/config/electron28-flags.conf" ~/.config/electron28-flags.conf
+  ln -s "$DOTFILES_DIR/home/config/quickshell" ~/.config/quickshell
+  ln -s "$DOTFILES_DIR/home/config/fontconfig" ~/.config/fontconfig
 
   # Initialize Firefox and Spicetify Dynamic Themes
-  python3 "$DOTFILES_DIR/config/apply_theme.py"
+  python3 "$DOTFILES_DIR/home/scripts/apply_theme.py"
 elif [ "$OS" = "Darwin" ]; then
-  ln -s "$DOTFILES_DIR/config/sketchybar" ~/.config/sketchybar
-  ln -s "$DOTFILES_DIR/config/skhd" ~/.config/skhd
-  ln -s "$DOTFILES_DIR/config/svim" ~/.config/svim
-  ln -s "$DOTFILES_DIR/config/yabai" ~/.config/yabai
-  ln -s "$DOTFILES_DIR/config/borders" ~/.config/borders
+  ln -s "$DOTFILES_DIR/home/config/sketchybar" ~/.config/sketchybar
+  ln -s "$DOTFILES_DIR/home/config/skhd" ~/.config/skhd
+  ln -s "$DOTFILES_DIR/home/config/svim" ~/.config/svim
+  ln -s "$DOTFILES_DIR/home/config/yabai" ~/.config/yabai
+  ln -s "$DOTFILES_DIR/home/config/borders" ~/.config/borders
 fi
