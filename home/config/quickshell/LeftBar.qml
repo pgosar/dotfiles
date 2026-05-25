@@ -155,7 +155,8 @@ PanelWindow {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
-                    Networking.wifiEnabled = !Networking.wifiEnabled;
+                    root.wifiSettingsOpen = !root.wifiSettingsOpen;
+                    root.btSettingsOpen = false;
                 }
             }
         }
@@ -182,9 +183,8 @@ PanelWindow {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
-                    if (Bluetooth.defaultAdapter) {
-                        Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled;
-                    }
+                    root.btSettingsOpen = !root.btSettingsOpen;
+                    root.wifiSettingsOpen = false;
                 }
             }
         }

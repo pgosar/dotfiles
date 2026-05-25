@@ -95,6 +95,10 @@ ShellRoot {
     property var connectedDevices: Bluetooth.devices.values.filter(d => d.connected)
     property string connectedDeviceNames: connectedDevices.map(d => d.name).join(", ")
 
+    // quick settings state
+    property bool wifiSettingsOpen: false
+    property bool btSettingsOpen: false
+
     // 1. LEFT PANEL WINDOWS
     Variants {
         model: Quickshell.screens
@@ -108,7 +112,20 @@ ShellRoot {
         }
     }
 
-    // 2. TOP PANEL WINDOWS
+    // 2. QUICK SETTINGS FLYOUT WINDOWS
+    Variants {
+        model: Quickshell.screens
+        delegate: Component {
+            QuickSettingsFlyout {
+                modelData: modelData
+                colors: themeColors
+                wifiSettingsOpen: root.wifiSettingsOpen
+                btSettingsOpen: root.btSettingsOpen
+            }
+        }
+    }
+
+    // 3. TOP PANEL WINDOWS
     Variants {
         model: Quickshell.screens
         delegate: Component {
@@ -124,3 +141,4 @@ ShellRoot {
         }
     }
 }
+
