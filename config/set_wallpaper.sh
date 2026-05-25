@@ -20,27 +20,24 @@ python3 ~/code/dotfiles/config/auto_theme.py "$WALLPAPER"
 # Update Hyprland
 hyprctl reload
 hyprctl hyprpaper preload "$WALLPAPER"
-hyprctl hyprpaper wallpaper "desc:Microstep MPG321UX OLED 0x01010101,$WALLPAPER"
-hyprctl hyprpaper wallpaper "desc:Samsung Electric Company Odyssey G5 HNBY700285,$WALLPAPER"
+hyprctl hyprpaper wallpaper ",$WALLPAPER"
 hyprctl hyprpaper unload all
 
 cat <<EOF >~/code/dotfiles/config/hypr/hyprpaper.conf
-source = ~/.config/hypr/monitors.conf
 splash = false
 ipc = on
 
-wallpaper {
-    monitor = \$monitor1
-    path = $WALLPAPER
-    fit_mode = cover
-}
+preload = $WALLPAPER
 
 wallpaper {
-    monitor = \$monitor2
+    monitor = 
     path = $WALLPAPER
     fit_mode = cover
 }
 EOF
+
+# Sync wallpaper to Hyprlock config background path
+sed -i -E 's|^(    path = ).*$|\1'"$WALLPAPER"'|' ~/code/dotfiles/config/hypr/hyprlock.conf
 
 killall waybar
 waybar &

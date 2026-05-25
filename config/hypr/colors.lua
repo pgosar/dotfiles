@@ -1,0 +1,22 @@
+-- Auto-generated hyprland colors
+return {
+  base = "211b1c",
+  mantle = "191415",
+  surface = "2f2728",
+  text = "c7c2c3",
+  muted = "7d676c",
+  white = "c7c2c3",
+  red = "82adc9",
+  green = "c98282",
+  yellow = "cc8f7e",
+  blue = "c99282",
+  purple = "c99982",
+  cyan = "e79872",
+  rose = "82adc9",
+  light_green = "c98282",
+  light_peach = "cc8f7e",
+  light_blue = "c99282",
+  light_purple = "c99982",
+  light_cyan = "e79872",
+  peach = "c7c2c3",
+}

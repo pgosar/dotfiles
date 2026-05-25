@@ -53,7 +53,6 @@
     },
     "hyprland/workspaces": {
         "format": "{icon}",
-        "on-click": "~/.config/hypr/scripts/switch-workspace.sh {name}",
         "format-icons": {
             "active": "󰮯",
             "default": "󰊠"

@@ -107,6 +107,14 @@ def generate_hyprland(colors):
     with open(os.path.join(CONFIG_DIR, "hypr", "colors.conf"), "w") as f:
         f.write(content)
 
+    # Generate colors.lua
+    lua_content = "-- Auto-generated hyprland colors\nreturn {\n"
+    for k, v in colors.items():
+        lua_content += f'  {k} = "{v.lstrip("#")}",\n'
+    lua_content += "}\n"
+    with open(os.path.join(CONFIG_DIR, "hypr", "colors.lua"), "w") as f:
+        f.write(lua_content)
+
 
 
 def update_dunstrc(colors):
