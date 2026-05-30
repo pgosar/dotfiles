@@ -25,6 +25,8 @@ PanelWindow {
     margins {
         left: 60
     }
+    exclusiveZone: 0
+    exclusionMode: PanelWindow.ExclusionMode.Ignore
     
     color: "transparent"
     property bool expanded: false

@@ -26,8 +26,8 @@ PanelWindow {
         bottom: true
     }
     implicitWidth: 60
-    exclusiveZone: 60
-    exclusionMode: PanelWindow.ExclusionMode.Normal
+    exclusiveZone: 0
+    exclusionMode: PanelWindow.ExclusionMode.Ignore
 
     // Background
     Rectangle {
@@ -36,8 +36,14 @@ PanelWindow {
         opacity: 0.90
         border.color: colors.purple
         border.width: 1.5
-        radius: 12
-        anchors.margins: 4
+        topLeftRadius: 0
+        bottomLeftRadius: 0
+        topRightRadius: 12
+        bottomRightRadius: 12
+        anchors.leftMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
+        anchors.rightMargin: 4
     }
 
     ColumnLayout {
@@ -157,6 +163,7 @@ PanelWindow {
                 onClicked: {
                     root.wifiSettingsOpen = !root.wifiSettingsOpen;
                     root.btSettingsOpen = false;
+                    root.wallpaperSwitcherOpen = false;
                 }
             }
         }
@@ -185,6 +192,33 @@ PanelWindow {
                 onClicked: {
                     root.btSettingsOpen = !root.btSettingsOpen;
                     root.wifiSettingsOpen = false;
+                    root.wallpaperSwitcherOpen = false;
+                }
+            }
+        }
+
+        // Wallpaper Switcher Toggle Widget
+        Text {
+            text: "󰏘"
+            color: root.wallpaperSwitcherOpen ? colors.peach : colors.muted
+            Layout.alignment: Qt.AlignHCenter
+            font {
+                family: "JetBrainsMono Nerd Font"
+                pixelSize: 20
+                bold: true
+            }
+
+            ToolTip.visible: wpHover.containsMouse
+            ToolTip.text: "Change Wallpaper & Theme"
+
+            MouseArea {
+                id: wpHover
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                    root.wallpaperSwitcherOpen = !root.wallpaperSwitcherOpen;
+                    root.wifiSettingsOpen = false;
+                    root.btSettingsOpen = false;
                 }
             }
         }
