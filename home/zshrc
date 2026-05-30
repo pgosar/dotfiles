@@ -25,6 +25,7 @@ export VISUAL='nvim'
 if [ "$OS" = "Linux" ]; then
   export QT_QPA_PLATFORMTHEME="qt5ct"
   export QT_SCREEN_SCALE_FACTORS="0.5"
+  export QML_XHR_ALLOW_FILE_READ=1
   export LIBGUESTFS_BACKEND="direct"
   export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 elif [ "$OS" = "Darwin" ]; then

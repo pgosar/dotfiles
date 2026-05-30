@@ -369,7 +369,24 @@ def generate_quickshell(colors):
     content += "import QtQuick\n\n"
     content += "QtObject {\n"
     for k, v in colors.items():
-        content += f'    readonly property color {k}: "{v}"\n'
+        content += f'    property color {k}: "{v}"\n'
+    
+    content += "\n    function reload() {\n"
+    content += '        var xhr = new XMLHttpRequest();\n'
+    content += '        xhr.open("GET", "file:///home/chilly/code/dotfiles/home/scripts/theme.json?t=" + Date.now());\n'
+    content += '        xhr.onreadystatechange = function() {\n'
+    content += '            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {\n'
+    content += '                try {\n'
+    content += '                    var c = JSON.parse(xhr.responseText);\n'
+    for k in colors.keys():
+        content += f'                    if (c.{k} !== undefined) {k} = c.{k};\n'
+    content += '                } catch (e) {\n'
+    content += '                    console.log("Failed to parse theme.json:", e);\n'
+    content += '                }\n'
+    content += '            }\n'
+    content += '        };\n'
+    content += '        xhr.send();\n'
+    content += '    }\n'
     content += "}\n"
     
     quickshell_dir = os.path.join(CONFIG_DIR, "quickshell")
