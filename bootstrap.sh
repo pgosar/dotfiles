@@ -42,7 +42,7 @@ PACMAN_PACKAGES=(
     nvtop usbutils dmidecode
 
     # Desktop & Window Managers
-    hyprland hyprlang hyprgraphics hyprshot quickshell waybar wofi dunst
+    hyprland hyprlang hyprgraphics hyprshot hyprpaper quickshell waybar wofi dunst
     xsettingsd cliphist wl-clipboard yazi kitty zsh plasma-desktop
     plasma-login-manager sddm bluedevil blueman kscreen powerdevil kde-gtk-config
     kdialog kinfocenter spectacle gwenview plasma-nm plasma-pa plasma-thunderbolt
@@ -67,7 +67,7 @@ PACMAN_PACKAGES=(
     steam gamescope mangohud
 
     # Extra
-    firefox ttf-jetbrains-mono-nerd vivid
+    firefox ttf-jetbrains-mono-nerd vivid python-pywal
 )
 
 echo "Installing Pacman packages..."
