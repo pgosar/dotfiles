@@ -2,14 +2,45 @@ import Quickshell
 import Quickshell.Services.Mpris
 import Quickshell.Bluetooth
 import Quickshell.Networking
+import Quickshell.Io
 import QtQuick
 
 ShellRoot {
     id: root
 
-    // Instantiate generated colors
-    Colors {
+    Loader {
+        id: colorsLoader
+        source: "Colors.qml"
+        function reload() {
+            source = "Colors.qml?t=" + Date.now();
+        }
+    }
+
+    QtObject {
         id: themeColors
+        property color base: colorsLoader.item ? colorsLoader.item.base : "#211b1c"
+        property color mantle: colorsLoader.item ? colorsLoader.item.mantle : "#191415"
+        property color surface: colorsLoader.item ? colorsLoader.item.surface : "#2f2728"
+        property color text: colorsLoader.item ? colorsLoader.item.text : "#c7c2c3"
+        property color muted: colorsLoader.item ? colorsLoader.item.muted : "#7d676c"
+        property color white: colorsLoader.item ? colorsLoader.item.white : "#c7c2c3"
+        property color red: colorsLoader.item ? colorsLoader.item.red : "#82adc9"
+        property color green: colorsLoader.item ? colorsLoader.item.green : "#c98282"
+        property color yellow: colorsLoader.item ? colorsLoader.item.yellow : "#cc8f7e"
+        property color blue: colorsLoader.item ? colorsLoader.item.blue : "#c99282"
+        property color purple: colorsLoader.item ? colorsLoader.item.purple : "#c99982"
+        property color cyan: colorsLoader.item ? colorsLoader.item.cyan : "#e79872"
+        property color rose: colorsLoader.item ? colorsLoader.item.rose : "#82adc9"
+        property color light_green: colorsLoader.item ? colorsLoader.item.light_green : "#c98282"
+        property color light_peach: colorsLoader.item ? colorsLoader.item.light_peach : "#cc8f7e"
+        property color light_blue: colorsLoader.item ? colorsLoader.item.light_blue : "#c99282"
+        property color light_purple: colorsLoader.item ? colorsLoader.item.light_purple : "#c99982"
+        property color light_cyan: colorsLoader.item ? colorsLoader.item.light_cyan : "#e79872"
+        property color peach: colorsLoader.item ? colorsLoader.item.peach : "#c7c2c3"
+
+        function reload() {
+            colorsLoader.reload();
+        }
     }
 
     // Weather state variables (fetched natively via XMLHttpRequest)
@@ -98,6 +129,45 @@ ShellRoot {
     // quick settings state
     property bool wifiSettingsOpen: false
     property bool btSettingsOpen: false
+    property bool wallpaperSwitcherOpen: false
+    property string activeWallpaperPath: ""
+
+    function readCurrentWallpaper() {
+        readWallpaperProc.running = false;
+        readWallpaperProc.running = true;
+    }
+
+    Process {
+        id: readWallpaperProc
+        command: ["grep", "^preload =", "/home/chilly/code/dotfiles/home/config/hypr/hyprpaper.conf"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var t = this.text.trim();
+                if (t.startsWith("preload =")) {
+                    root.activeWallpaperPath = t.substring(9).trim();
+                }
+            }
+        }
+    }
+
+    function changeWallpaper(path) {
+        setWallpaperProc.command = ["/home/chilly/code/dotfiles/home/scripts/set_wallpaper.sh", path];
+        setWallpaperProc.running = true;
+    }
+
+    Process {
+        id: setWallpaperProc
+        onExited: (exitCode, exitStatus) => {
+            if (exitCode === 0) {
+                themeColors.reload();
+                root.readCurrentWallpaper();
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        root.readCurrentWallpaper();
+    }
 
     // 1. LEFT PANEL WINDOWS
     Variants {
@@ -137,6 +207,17 @@ ShellRoot {
                 weatherTemp: root.weatherTemp
                 weatherDesc: root.weatherDesc
                 weatherIcon: root.weatherIcon
+            }
+        }
+    }
+
+    // 4. WALLPAPER SWITCHER WINDOWS
+    Variants {
+        model: Quickshell.screens
+        delegate: Component {
+            WallpaperSwitcher {
+                modelData: modelData
+                colors: themeColors
             }
         }
     }
