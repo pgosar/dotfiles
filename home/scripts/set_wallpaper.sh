@@ -15,15 +15,19 @@ fi
 echo "Setting wallpaper to $WALLPAPER..."
 
 # Generate and apply colors via Pywal
-python3 ~/code/dotfiles/config/auto_theme.py "$WALLPAPER"
+python3 ~/code/dotfiles/home/scripts/auto_theme.py "$WALLPAPER"
 
-# Update Hyprland
-hyprctl reload
-hyprctl hyprpaper preload "$WALLPAPER"
-hyprctl hyprpaper wallpaper ",$WALLPAPER"
-hyprctl hyprpaper unload all
+if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
+	echo "Running under KDE, applying wallpaper using plasma-apply-wallpaperimage..."
+	plasma-apply-wallpaperimage "$WALLPAPER"
+else
+	# Update Hyprland
+	hyprctl reload
+	hyprctl hyprpaper preload "$WALLPAPER"
+	hyprctl hyprpaper wallpaper ",$WALLPAPER"
+	hyprctl hyprpaper unload all
 
-cat <<EOF >~/code/dotfiles/config/hypr/hyprpaper.conf
+	cat <<EOF >~/code/dotfiles/home/config/hypr/hyprpaper.conf
 splash = false
 ipc = on
 
@@ -35,9 +39,10 @@ wallpaper {
     fit_mode = cover
 }
 EOF
+fi
 
 # Sync wallpaper to Hyprlock config background path
-sed -i -E 's|^(    path = ).*$|\1'"$WALLPAPER"'|' ~/code/dotfiles/config/hypr/hyprlock.conf
+sed -i -E 's|^(    path = ).*$|\1'"$WALLPAPER"'|' ~/code/dotfiles/home/config/hypr/hyprlock.conf
 
 killall waybar
 waybar &
