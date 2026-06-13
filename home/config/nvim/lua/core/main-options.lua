@@ -12,6 +12,7 @@ vim_opts({
     cursorlineopt = "number", -- Highlight cursor line number
     foldenable = true, -- Enable folding
     foldexpr = "v:lua.vim.treesitter.foldexpr()", -- Treesitter folding
+    foldcolumn = "0", -- Disable fold column
     foldlevel = 99, -- Set fold level
     foldlevelstart = 99, -- Start with all folds open
     foldmethod = "expr", -- Fold based on expression
@@ -24,6 +25,7 @@ vim_opts({
     number = true, -- Show line numbers
     numberwidth = 6, -- Width of number column
     pumheight = 10, -- Auto-complete menu max height
+    report = 9999, -- Silence 'fewer lines' etc. reports
     scrolloff = 5, -- Lines above/below cursor
     sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos,terminal,localoptions,folds", -- Session options
     shiftwidth = 2, -- Spaces per indent
@@ -46,3 +48,20 @@ vim_opts({
     mapleader = " ",
   },
 })
+
+local defaults = require("defaults")
+if defaults.group.plugins.virt_column then
+  vim.opt.colorcolumn = defaults.plugin_settings.virt_column
+end
+
+-- Ensure spell directory and file exist on fresh install
+local spell_dir = vim.fn.stdpath("config") .. "/spell"
+local spell_path = spell_dir .. "/en.utf-8.add"
+if vim.fn.isdirectory(spell_dir) == 0 then vim.fn.mkdir(spell_dir, "p") end
+if vim.fn.filereadable(spell_path) == 0 then
+  local f = io.open(spell_path, "w")
+  if f then
+    f:write("")
+    f:close()
+  end
+end

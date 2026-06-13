@@ -2,3 +2,4 @@
 spell/
 lazy-lock.json
 .DS_Store
+/pack/
