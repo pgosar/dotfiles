@@ -41,7 +41,7 @@ end
 
 --- Creates new terminals with ToggleTerm
 ---@param cmd string: the command to run
----@return function|Terminal: the created terminal
+---@return function|table?: the created terminal
 M.create_floating_terminal = function(cmd)
   local instance = nil
   if vim.fn.executable(cmd) == 1 then
@@ -68,6 +68,7 @@ end
 
 --- Update all mason packages
 M.update_mason = function()
+  vim.cmd("packadd mason.nvim")
   local registry = require("mason-registry")
   registry.refresh()
   registry.update()
@@ -77,15 +78,74 @@ M.update_mason = function()
   end
 end
 
+--- Update plugins in pack directories
+M.update_plugins = function()
+  local start_path = vim.fn.stdpath("config") .. "/pack/plugins/start/*"
+  local opt_path = vim.fn.stdpath("config") .. "/pack/plugins/opt/*"
+  local plugin_dirs = {}
+  for _, path in ipairs({ start_path, opt_path }) do
+    local dirs = vim.fn.glob(path, false, true)
+    for _, dir in ipairs(dirs) do
+      if vim.fn.isdirectory(dir) == 1 then table.insert(plugin_dirs, dir) end
+    end
+  end
+
+  vim.notify("Updating plugins...")
+  local count = 0
+  for _, dir in ipairs(plugin_dirs) do
+    local name = vim.fs.basename(dir)
+    local stderr = {}
+    vim.fn.jobstart({ "git", "pull" }, {
+      cwd = dir,
+      stdout_buffered = true,
+      stderr_buffered = true,
+      on_stderr = function(_, data)
+        for _, line in ipairs(data) do
+          if line ~= "" then table.insert(stderr, line) end
+        end
+      end,
+      on_exit = function(_, code)
+        if code ~= 0 then
+          local err_msg = #stderr > 0 and table.concat(stderr, "\n") or "Unknown error"
+          vim.notify("Failed to update " .. name .. ":\n" .. err_msg, vim.log.levels.WARN)
+        end
+      end,
+    })
+    count = count + 1
+  end
+  vim.notify("Queued updates for " .. count .. " plugins.")
+end
+
 --- Updates CyberNvim
 M.update_all = function()
-  vim.notify("Pulling latest changes...")
-  vim.fn.jobstart({ "git", "pull", "--rebase" })
-  require("lazy").sync({ wait = true })
-  vim.notify("Updating Mason packages...")
-  M.update_mason()
-  vim.cmd("TSUpdate")
-  vim.notify("CyberNvim updated!", vim.log.levels.INFO)
+  vim.notify("Pulling latest dotfiles changes...")
+  local stderr = {}
+  vim.fn.jobstart({ "git", "pull", "--rebase" }, {
+    cwd = vim.fn.stdpath("config"),
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stderr = function(_, data)
+      for _, line in ipairs(data) do
+        if line ~= "" then table.insert(stderr, line) end
+      end
+    end,
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.notify("Dotfiles updated successfully.")
+      else
+        local err_msg = #stderr > 0 and table.concat(stderr, "\n") or "Unknown error"
+        vim.notify("Failed to pull latest dotfiles:\n" .. err_msg, vim.log.levels.ERROR)
+      end
+      M.update_plugins()
+      vim.notify("Updating Mason packages...")
+      local pcall_ok, err = pcall(M.update_mason)
+      if not pcall_ok then
+        vim.notify("Failed to update Mason packages: " .. tostring(err), vim.log.levels.WARN)
+      end
+      vim.cmd("TSUpdate")
+      vim.notify("CyberNvim updated!", vim.log.levels.INFO)
+    end,
+  })
 end
 
 --- Checks whether the attached LSP server supports formatting

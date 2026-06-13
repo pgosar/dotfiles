@@ -1,4 +1,4 @@
--- Autocommands 
+-- Autocommands
 local augroup = require("core.utils.utils").augroup
 local cmd = vim.api.nvim_create_autocmd
 
@@ -57,7 +57,7 @@ end
 
 -- Disable creating new comment on next line on enter
 if group.autocommands.comment then
-  cmd({ "Filetype" }, {
+  cmd({ "FileType" }, {
     desc = "disable autocomment next line on enter",
     group = augroup("disable_autocomment_next_line"),
     pattern = "*",
@@ -94,20 +94,6 @@ if group.autocommands.autoroot then
   })
 end
 
--- Auto formats on auto save
-if group.autocommands.auto_format_on_autosave and group.plugins.autosave then
-  cmd("User", {
-    pattern = "AutoSaveWritePost",
-    group = augroup("auto_format"),
-    callback = function()
-      if vim.fn.filereadable(vim.fn.expand("%:p")) == 1 then
-        vim.lsp.buf.format()
-        vim.cmd("write!")
-      end
-    end,
-  })
-end
-
 -- No line numbers in terminal buffers
 if group.autocommands.term_line_numbers then
   cmd({ "FileType" }, {
@@ -131,3 +117,162 @@ if group.autocommands.autoformat then
     end,
   })
 end
+
+-- Setup native auto-save
+if group.autocommands.autosave then
+  local timers = {}
+  local function save_buf(bufnr)
+    if vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].modified then
+      vim.api.nvim_buf_call(bufnr, function()
+        if group.autocommands.auto_format_on_autosave then
+          pcall(vim.lsp.buf.format, { bufnr = bufnr, async = false })
+        end
+        vim.cmd("silent! write")
+      end)
+    end
+  end
+
+  -- Defer saving on TextChanged/InsertLeave
+  vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+    group = augroup("AutosaveGroup", { clear = true }),
+    callback = function(args)
+      local bufnr = args.buf
+      if
+        vim.api.nvim_buf_is_valid(bufnr)
+        and vim.bo[bufnr].modified
+        and not vim.bo[bufnr].readonly
+        and vim.fn.empty(vim.bo[bufnr].buftype) == 1
+      then
+        if timers[bufnr] then timers[bufnr]:stop() end
+        timers[bufnr] = vim.defer_fn(function()
+          save_buf(bufnr)
+          timers[bufnr] = nil
+        end, require("defaults").plugin_settings.autosave_delay or 1000)
+      end
+    end,
+  })
+
+  -- Save immediately on BufLeave/FocusLost
+  vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost" }, {
+    group = augroup("AutosaveGroupImmediate", { clear = true }),
+    callback = function(args)
+      local bufnr = args.buf
+      if
+        vim.api.nvim_buf_is_valid(bufnr)
+        and vim.bo[bufnr].modified
+        and not vim.bo[bufnr].readonly
+        and vim.fn.empty(vim.bo[bufnr].buftype) == 1
+      then
+        if timers[bufnr] then
+          timers[bufnr]:stop()
+          timers[bufnr] = nil
+        end
+        save_buf(bufnr)
+      end
+    end,
+  })
+end
+
+-- Setup native session auto-save on exit
+if group.autocommands.persistence then
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = augroup("SessionAutosave", { clear = true }),
+    callback = function() require("core.utils.session").save_session() end,
+  })
+end
+
+-- Setup native document highlight (LSP reference highlight)
+if group.autocommands.illuminate then
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = augroup("LspDocumentHighlight", { clear = true }),
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      if client and client:supports_method("textDocument/documentHighlight") then
+        vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+          buffer = args.buf,
+          callback = vim.lsp.buf.document_highlight,
+        })
+        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+          buffer = args.buf,
+          callback = vim.lsp.buf.clear_references,
+        })
+      end
+    end,
+  })
+end
+
+-- Lazy loading event triggered autocommands
+
+-- 1. LSP stack lazy loading
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  group = augroup("LazyLoadLSP", { clear = true }),
+  once = true,
+  callback = function()
+    local lsp_plugins = {
+      "nvim-lspconfig",
+      "mason.nvim",
+      "mason-lspconfig.nvim",
+      "none-ls.nvim",
+      "mason-null-ls.nvim",
+      "workspace-diagnostics.nvim",
+      "SchemaStore.nvim",
+      "async.nvim",
+      "refactoring.nvim",
+      "lazydev.nvim",
+    }
+    for _, p in ipairs(lsp_plugins) do
+      vim.cmd("packadd " .. p)
+    end
+    require("core.configs.lazydev")
+    require("core.configs.lsp")
+    -- Re-trigger FileType to attach LSP to the current buffer
+    vim.cmd("silent! doautocmd FileType")
+  end,
+})
+
+-- 2. Blink Completion lazy loading
+vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter" }, {
+  group = augroup("LazyLoadBlink", { clear = true }),
+  once = true,
+  callback = function()
+    vim.cmd("packadd friendly-snippets")
+    vim.cmd("packadd blink.cmp")
+    require("core.configs.blink")
+  end,
+})
+
+-- 3. Markdown rendering lazy loading
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("LazyLoadMarkdown", { clear = true }),
+  pattern = "markdown",
+  once = true,
+  callback = function()
+    vim.cmd("packadd markdown.nvim")
+    vim.cmd("packadd markview.nvim")
+    require("core.configs.markdown")
+  end,
+})
+
+-- 4. Todo Comments lazy loading
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  group = augroup("LazyLoadTodo", { clear = true }),
+  once = true,
+  callback = function()
+    vim.cmd("packadd todo-comments.nvim")
+    require("core.configs.todo")
+  end,
+})
+
+-- 5. Editor editing helper plugins lazy loading (gitsigns, highlight-colors, indent-blankline)
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  group = augroup("LazyLoadEditHelpers", { clear = true }),
+  once = true,
+  callback = function()
+    vim.cmd("packadd gitsigns.nvim")
+    vim.cmd("packadd nvim-highlight-colors")
+    vim.cmd("packadd indent-blankline.nvim")
+    require("core.configs.gitsigns")
+    require("core.configs.highlight_colors")
+    require("core.configs.indent_blankline")
+  end,
+})

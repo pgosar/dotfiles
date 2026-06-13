@@ -27,7 +27,9 @@ local function format_and_save_buffer(bufnr)
         vim.cmd("silent! write")
       end)
     end)
-    if not ok then vim.notify(string.format("Failed to save %s: %s", name, err), "warn") end
+    if not ok then
+      vim.notify(string.format("Failed to save %s: %s", name, err), vim.log.levels.WARN)
+    end
   end
 end
 
@@ -100,14 +102,14 @@ end
 -- Main rename function
 ---------------------------------------------------------------------
 
-local function do_rename(param)
+local function do_rename(param, old_name)
   local initially_open = get_initially_open_buffers()
 
   vim.lsp.buf_request(0, "textDocument/rename", param, function(err, result, ctx, config)
     if err then
       vim.notify(
         string.format("LSP error during rename: %s", vim.inspect(err)),
-        "error",
+        vim.log.levels.ERROR,
         { title = "[LSP] rename", timeout = 3000 }
       )
       return
@@ -115,8 +117,8 @@ local function do_rename(param)
 
     if not result then
       vim.notify(
-        string.format("No result from LSP server for rename: %s -> %s", param.old, param.newName),
-        "warn",
+        string.format("No result from LSP server for rename: %s -> %s", old_name, param.newName),
+        vim.log.levels.WARN,
         { title = "[LSP] rename", timeout = 2000 }
       )
       return
@@ -124,8 +126,8 @@ local function do_rename(param)
 
     if not result.documentChanges and not result.changes then
       vim.notify(
-        string.format("No changes returned for rename: %s -> %s", param.old, param.newName),
-        "warn",
+        string.format("No changes returned for rename: %s -> %s", old_name, param.newName),
+        vim.log.levels.WARN,
         { title = "[LSP] rename", timeout = 2000 }
       )
       return
@@ -151,7 +153,7 @@ local function do_rename(param)
       pcall(vim.api.nvim_clear_autocmds, { group = group })
       vim.notify(
         string.format("Failed to apply edits: %s", apply_err),
-        "error",
+        vim.log.levels.ERROR,
         { title = "[LSP] rename", timeout = 3000 }
       )
       return
@@ -161,8 +163,8 @@ local function do_rename(param)
     local truncate = require("core.utils.utils").truncate_message
     message = truncate(message, 500)
 
-    vim.notify(message, "info", {
-      title = string.format("[LSP] rename: %s -> %s", param.old, param.newName),
+    vim.notify(message, vim.log.levels.INFO, {
+      title = string.format("[LSP] rename: %s -> %s", old_name, param.newName),
       timeout = 2500,
     })
 
@@ -185,12 +187,12 @@ end
 ---------------------------------------------------------------------
 
 function M.rename()
-  local param = vim.lsp.util.make_position_params(0, "utf-8")
-  param.old = vim.fn.expand("<cword>")
+  local param = vim.lsp.util.make_position_params(0, "utf-8") --[[@as table]]
+  local old_name = vim.fn.expand("<cword>")
 
   local clients = vim.lsp.get_clients({ bufnr = 0 })
   if #clients == 0 then
-    vim.notify("No LSP client attached", "error", { title = "[LSP] rename" })
+    vim.notify("No LSP client attached", vim.log.levels.ERROR, { title = "[LSP] rename" })
     return
   end
 
@@ -203,23 +205,27 @@ function M.rename()
   end
 
   if not supports_rename then
-    vim.notify("No LSP client supports rename", "error", { title = "[LSP] rename" })
+    vim.notify("No LSP client supports rename", vim.log.levels.ERROR, { title = "[LSP] rename" })
     return
   end
 
-  vim.ui.input({ prompt = "rename to> ", default = param.old }, function(input)
+  vim.ui.input({ prompt = "rename to> ", default = old_name }, function(input)
     if input == nil then
-      vim.notify("aborted", "warn", { title = "[LSP] rename", render = "compact" })
+      vim.notify("aborted", vim.log.levels.WARN, { title = "[LSP] rename", render = "compact" })
       return
     end
 
-    if input == param.old then
-      vim.notify("name unchanged", "warn", { title = "[LSP] rename", render = "compact" })
+    if input == old_name then
+      vim.notify(
+        "name unchanged",
+        vim.log.levels.WARN,
+        { title = "[LSP] rename", render = "compact" }
+      )
       return
     end
 
     param.newName = input
-    do_rename(param)
+    do_rename(param, old_name)
   end)
 end
 
