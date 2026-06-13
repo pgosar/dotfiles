@@ -39,7 +39,7 @@ def generate_css(colors):
             css_content += f"@define-color {k}_alpha rgba({r}, {g}, {b}, 0.95);\n"
 
     # Generate CSS files
-    target_dirs = ["waybar", "wofi"]
+    target_dirs = ["wofi"]
     for d in target_dirs:
         os.makedirs(os.path.join(CONFIG_DIR, d), exist_ok=True)
         with open(os.path.join(CONFIG_DIR, d, "colors.css"), "w") as f:
@@ -114,7 +114,6 @@ def generate_hyprland(colors):
     lua_content += "}\n"
     with open(os.path.join(CONFIG_DIR, "hypr", "colors.lua"), "w") as f:
         f.write(lua_content)
-
 
 
 def update_dunstrc(colors):
@@ -326,20 +325,38 @@ def generate_gtk(colors):
         with open(gtk_dir + "/gtk.css", "w") as f:
             f.write(css_content)
 
+
 def generate_qt(colors):
     c = {k: f"#ff{v.lstrip('#')}" for k, v in colors.items()}
     c_muted = f"#80{colors['text'].lstrip('#')}"
     qt_colors = (
-        c['text'], c['surface'], c['surface'], c['mantle'],
-        c['mantle'], c['mantle'], c['text'], c['white'],
-        c['text'], c['base'], c['base'], c['mantle'],
-        c['purple'], c['base'], c['blue'], c['purple'],
-        c['surface'], c['text'], c['mantle'], c['text'], c_muted
+        c["text"],
+        c["surface"],
+        c["surface"],
+        c["mantle"],
+        c["mantle"],
+        c["mantle"],
+        c["text"],
+        c["white"],
+        c["text"],
+        c["base"],
+        c["base"],
+        c["mantle"],
+        c["purple"],
+        c["base"],
+        c["blue"],
+        c["purple"],
+        c["surface"],
+        c["text"],
+        c["mantle"],
+        c["text"],
+        c_muted,
     )
     color_str = ", ".join(qt_colors)
     conf_content = f"[ColorScheme]\nactive_colors={color_str}\ndisabled_colors={color_str}\ninactive_colors={color_str}\n"
 
     import configparser
+
     for qt_ver in ["qt5ct", "qt6ct"]:
         colors_dir = os.path.expanduser(f"~/.config/{qt_ver}/colors")
         os.makedirs(colors_dir, exist_ok=True)
@@ -349,17 +366,21 @@ def generate_qt(colors):
         qt_conf_path = os.path.expanduser(f"~/.config/{qt_ver}/{qt_ver}.conf")
         config = configparser.ConfigParser()
         config.optionxform = str
-        
+
         if os.path.exists(qt_conf_path):
             config.read(qt_conf_path)
-            
+
         if not config.has_section("Appearance"):
             config.add_section("Appearance")
-            
-        config.set("Appearance", "color_scheme_path", os.path.expanduser(f"~/.config/{qt_ver}/colors/pywal.conf"))
+
+        config.set(
+            "Appearance",
+            "color_scheme_path",
+            os.path.expanduser(f"~/.config/{qt_ver}/colors/pywal.conf"),
+        )
         config.set("Appearance", "custom_palette", "true")
         config.set("Appearance", "style", "Fusion")
-        
+
         with open(qt_conf_path, "w") as f:
             config.write(f)
 
@@ -370,25 +391,25 @@ def generate_quickshell(colors):
     content += "QtObject {\n"
     for k, v in colors.items():
         content += f'    property color {k}: "{v}"\n'
-    
+
     content += "\n    function reload() {\n"
-    content += '        var xhr = new XMLHttpRequest();\n'
+    content += "        var xhr = new XMLHttpRequest();\n"
     content += '        xhr.open("GET", "file:///home/chilly/code/dotfiles/home/scripts/theme.json?t=" + Date.now());\n'
-    content += '        xhr.onreadystatechange = function() {\n'
-    content += '            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {\n'
-    content += '                try {\n'
-    content += '                    var c = JSON.parse(xhr.responseText);\n'
+    content += "        xhr.onreadystatechange = function() {\n"
+    content += "            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {\n"
+    content += "                try {\n"
+    content += "                    var c = JSON.parse(xhr.responseText);\n"
     for k in colors.keys():
-        content += f'                    if (c.{k} !== undefined) {k} = c.{k};\n'
-    content += '                } catch (e) {\n'
+        content += f"                    if (c.{k} !== undefined) {k} = c.{k};\n"
+    content += "                } catch (e) {\n"
     content += '                    console.log("Failed to parse theme.json:", e);\n'
-    content += '                }\n'
-    content += '            }\n'
-    content += '        };\n'
-    content += '        xhr.send();\n'
-    content += '    }\n'
+    content += "                }\n"
+    content += "            }\n"
+    content += "        };\n"
+    content += "        xhr.send();\n"
+    content += "    }\n"
     content += "}\n"
-    
+
     quickshell_dir = os.path.join(CONFIG_DIR, "quickshell")
     os.makedirs(quickshell_dir, exist_ok=True)
     with open(os.path.join(quickshell_dir, "Colors.qml"), "w") as f:
@@ -412,4 +433,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
