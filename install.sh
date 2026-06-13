@@ -20,12 +20,12 @@ rm -f ~/.config/topgrade.toml
 if [ "$OS" = "Linux" ]; then
   rm -rf ~/.config/dunst
   rm -rf ~/.config/hypr
-  rm -rf ~/.config/waybar
   rm -rf ~/.config/wofi
   rm -rf ~/.config/wireplumber
   rm -rf ~/.config/fontconfig
   rm -rf ~/.config/quickshell
   rm -f ~/.config/electron28-flags.conf
+  rm -rf ~/.config/systemd
 elif [ "$OS" = "Darwin" ]; then
   rm -rf ~/.config/sketchybar
   rm -rf ~/.config/skhd
@@ -64,11 +64,11 @@ fi
 
 if [ -n "$FIREFOX_BASE" ]; then
   # Read active profile from profiles.ini (otherwise grab first default-release)
-  FIREFOX_PROFILE_PATH=$(grep "Path=" "$FIREFOX_BASE/profiles.ini" 2>/dev/null | grep "default-release" | cut -d "=" -f 2 | head -n 1)
+  FIREFOX_PROFILE_PATH=$(grep "Path=" "$FIREFOX_BASE/profiles.ini" 2> /dev/null | grep "default-release" | cut -d "=" -f 2 | head -n 1)
   if [ -n "$FIREFOX_PROFILE_PATH" ]; then
     FIREFOX_PROFILE="$FIREFOX_BASE/$FIREFOX_PROFILE_PATH"
   else
-    FIREFOX_PROFILE=$(ls -d "$FIREFOX_BASE"/*.default-release 2>/dev/null | head -n 1)
+    FIREFOX_PROFILE=$(ls -d "$FIREFOX_BASE"/*.default-release 2> /dev/null | head -n 1)
   fi
 
   if [ -n "$FIREFOX_PROFILE" ]; then
@@ -90,12 +90,12 @@ fi
 if [ "$OS" = "Linux" ]; then
   ln -s "$DOTFILES_DIR/home/config/dunst" ~/.config/dunst
   ln -s "$DOTFILES_DIR/home/config/hypr" ~/.config/hypr
-  ln -s "$DOTFILES_DIR/home/config/waybar" ~/.config/waybar
   ln -s "$DOTFILES_DIR/home/config/wofi" ~/.config/wofi
   ln -s "$DOTFILES_DIR/home/config/wireplumber" ~/.config/wireplumber
   ln -s "$DOTFILES_DIR/home/config/electron28-flags.conf" ~/.config/electron28-flags.conf
   ln -s "$DOTFILES_DIR/home/config/quickshell" ~/.config/quickshell
   ln -s "$DOTFILES_DIR/home/config/fontconfig" ~/.config/fontconfig
+  ln -s "$DOTFILES_DIR/home/config/systemd" ~/.config/systemd
 
   # Initialize Firefox and Spicetify Dynamic Themes
   python3 "$DOTFILES_DIR/home/scripts/apply_theme.py"
