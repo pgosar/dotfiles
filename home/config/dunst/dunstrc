@@ -12,7 +12,7 @@ horizontal_padding = 12
 text_icon_padding = 10
 frame_width = 2
 
-frame_color = "#7d676c"
+frame_color = "#707574"
 separator_color = frame
 
 sort = yes
@@ -43,16 +43,16 @@ timeout = 5
 
 [urgency_low]
 background = "#2f2728"
-foreground = "#c7c2c3"
+foreground = "#b2b9b8"
 frame_color = "#c99282"
 
 [urgency_normal]
 background = "#2f2728"
-foreground = "#c7c2c3"
+foreground = "#b2b9b8"
 frame_color = "#c99982"
 
 [urgency_critical]
 background = "#2f2728"
-foreground = "#c7c2c3"
+foreground = "#b2b9b8"
 frame_color = "#82adc9"
 timeout = 0
