@@ -1,0 +1,13 @@
+[Unit]
+Description=Gracefully close applications on shutdown
+Before=graphical-session.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/bin/killall -15 firefox
+ExecStop=/usr/bin/sleep 1.5
+
+[Install]
+WantedBy=default.target

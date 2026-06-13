@@ -1,0 +1,6 @@
+[Unit]
+Description=Snapshot GDLauncher Minecraft Instances
+
+[Service]
+Type=oneshot
+ExecStart=/home/chilly/minecraft_backup.sh

@@ -1,0 +1,19 @@
+[Unit]
+Description=Unmute motherboard USB audio outputs
+After=pipewire.service wireplumber.service
+Wants=pipewire.service
+
+[Service]
+Type=oneshot
+# Wait for WirePlumber to finish UCM initialization, then force all switches on.
+# The ALC4080 UCM profile disables some switches that need to stay on for this board.
+ExecStartPre=/usr/bin/sleep 5
+ExecStart=/bin/bash -c '\
+  for i in 0 1 2; do \
+    amixer -c Audio sset "PCM",$i on 2>/dev/null; \
+  done; \
+  amixer -c Audio sset "PCM" 87 2>/dev/null; \
+'
+
+[Install]
+WantedBy=default.target
