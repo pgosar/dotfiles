@@ -1,3 +1,2 @@
 #!/bin/bash
-mkdir -p ~/Server/Drive/Minecraft
-zip -r ~/Server/Drive/Minecraft/Instances_Backup.zip ~/.local/share/gdlauncher_carbon/data/instances
+rsync -avz -e ssh --delete ~/.local/share/gdlauncher_carbon/data/instances/ chilly@192.168.1.184:~/Replicas/Minecraft
