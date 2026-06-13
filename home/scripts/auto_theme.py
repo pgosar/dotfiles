@@ -43,6 +43,7 @@ def adjust_color(hex_color, target_l, max_s=0.20):
     s = min(s, max_s)
     return hls_to_hex(h, target_l, s)
 
+
 def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
     """
     Ensures foreground colors are bright enough to be readable against dark backgrounds
@@ -96,5 +97,7 @@ print(f"Theme generated from {os.path.basename(wallpaper_path)}!")
 print(f"Base BG: {base}, Mantle: {mantle}, Surface: {surface}")
 
 # 5. Push configs everywhere
-apply_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apply_theme.py")
+apply_script = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "apply_theme.py"
+)
 subprocess.run(["python3", apply_script])

@@ -3,67 +3,67 @@
 ICON_PADDING_RIGHT=5
 
 case $INFO in
-"Arc")
+  "Arc")
     ICON_PADDING_RIGHT=5
     ICON=󰞍
     ;;
-"Code")
+  "Code")
     ICON_PADDING_RIGHT=4
     ICON=󰨞
     ;;
-"Calendar")
+  "Calendar")
     ICON_PADDING_RIGHT=3
     ICON=
     ;;
-"Discord")
+  "Discord")
     ICON=
     ;;
-"FaceTime")
+  "FaceTime")
     ICON_PADDING_RIGHT=5
     ICON=
     ;;
-"Finder")
+  "Finder")
     ICON=󰀶
     ;;
-"Google Chrome")
+  "Google Chrome")
     ICON_PADDING_RIGHT=7
     ICON=
     ;;
-"IINA")
+  "IINA")
     ICON_PADDING_RIGHT=4
     ICON=󰕼
     ;;
-"kitty")
+  "kitty")
     ICON=󰄛
     ;;
-"Messages")
+  "Messages")
     ICON=
     ;;
-"Notion")
+  "Notion")
     ICON_PADDING_RIGHT=6
     ICON=󰎚
     ;;
-"Preview")
+  "Preview")
     ICON_PADDING_RIGHT=3
     ICON=
     ;;
-"PS Remote Play")
+  "PS Remote Play")
     ICON_PADDING_RIGHT=3
     ICON=
     ;;
-"Spotify")
+  "Spotify")
     ICON_PADDING_RIGHT=2
     ICON=
     ;;
-"TextEdit")
+  "TextEdit")
     ICON_PADDING_RIGHT=4
     ICON=
     ;;
-"Transmission")
+  "Transmission")
     ICON_PADDING_RIGHT=3
     ICON=󰶘
     ;;
-*)
+  *)
     ICON_PADDING_RIGHT=2
     ICON=
     ;;
