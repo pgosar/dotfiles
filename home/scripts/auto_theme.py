@@ -4,6 +4,8 @@ import os
 import sys
 import colorsys
 
+from paths import APPLY_THEME_SCRIPT, THEME_JSON
+
 if len(sys.argv) < 2:
     print("Usage: python3 auto_theme.py <path-to-wallpaper>")
     sys.exit(1)
@@ -89,15 +91,11 @@ my_theme = {
 }
 
 # 4. Save
-theme_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "theme.json")
-with open(theme_file, "w") as f:
+with open(THEME_JSON, "w") as f:
     json.dump(my_theme, f, indent=2)
 
 print(f"Theme generated from {os.path.basename(wallpaper_path)}!")
 print(f"Base BG: {base}, Mantle: {mantle}, Surface: {surface}")
 
 # 5. Push configs everywhere
-apply_script = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "apply_theme.py"
-)
-subprocess.run(["python3", apply_script])
+subprocess.run(["python3", str(APPLY_THEME_SCRIPT)])

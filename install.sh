@@ -1,69 +1,81 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 OS="$(uname)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=home/scripts/paths.sh
+source "$SCRIPT_DIR/home/scripts/paths.sh"
 
-# ---- Shared Cleanup --------------------------------------------------------
+CONFIG_HOME="$HOME/.config"
 
-rm -f ~/.zshrc
-rm -f ~/.zprofile
-rm -f ~/.gitconfig
-rm -f ~/.tmux.conf
-rm -rf ~/.config/kitty
-rm -rf ~/.config/nvim
-rm -f ~/.config/spicetify/config-xpui.ini
-rm -f ~/.config/spicetify/Themes/Comfy/color.ini
-rm -f ~/.config/starship.toml
-rm -f ~/.config/topgrade.toml
+link_path() {
+  local src="$1"
+  local dest="$2"
 
-# ---- OS-Specific Cleanup ---------------------------------------------------
+  mkdir -p "$(dirname "$dest")"
+  rm -rf "$dest"
+  ln -s "$src" "$dest"
+}
 
-if [ "$OS" = "Linux" ]; then
-  rm -rf ~/.config/dunst
-  rm -rf ~/.config/hypr
-  rm -rf ~/.config/wofi
-  rm -rf ~/.config/wireplumber
-  rm -rf ~/.config/fontconfig
-  rm -rf ~/.config/quickshell
-  rm -f ~/.config/electron28-flags.conf
-  rm -rf ~/.config/systemd
-elif [ "$OS" = "Darwin" ]; then
-  rm -rf ~/.config/sketchybar
-  rm -rf ~/.config/skhd
-  rm -rf ~/.config/svim
-  rm -rf ~/.config/yabai
-  rm -rf ~/.config/borders
-fi
+link_entries() {
+  local entry src dest
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  for entry in "$@"; do
+    IFS="|" read -r src dest <<< "$entry"
+    link_path "$src" "$dest"
+  done
+}
+
+SHARED_LINKS=(
+  "$DOTFILES_CONFIG_DIR/nvim|$CONFIG_HOME/nvim"
+  "$DOTFILES_CONFIG_DIR/kitty|$CONFIG_HOME/kitty"
+  "$DOTFILES_HOME_DIR/zshrc|$HOME/.zshrc"
+  "$DOTFILES_HOME_DIR/zprofile|$HOME/.zprofile"
+  "$DOTFILES_HOME_DIR/gitconfig|$HOME/.gitconfig"
+  "$DOTFILES_CONFIG_DIR/starship.toml|$CONFIG_HOME/starship.toml"
+  "$DOTFILES_CONFIG_DIR/topgrade.toml|$CONFIG_HOME/topgrade.toml"
+  "$DOTFILES_HOME_DIR/tmux.conf|$HOME/.tmux.conf"
+  "$DOTFILES_CONFIG_DIR/spicetify/config-xpui.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
+  "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/color.ini|$CONFIG_HOME/spicetify/Themes/Comfy/color.ini"
+)
+
+LINUX_LINKS=(
+  "$DOTFILES_CONFIG_DIR/dunst|$CONFIG_HOME/dunst"
+  "$DOTFILES_CONFIG_DIR/hypr|$CONFIG_HOME/hypr"
+  "$DOTFILES_CONFIG_DIR/wofi|$CONFIG_HOME/wofi"
+  "$DOTFILES_CONFIG_DIR/wireplumber|$CONFIG_HOME/wireplumber"
+  "$DOTFILES_CONFIG_DIR/electron28-flags.conf|$CONFIG_HOME/electron28-flags.conf"
+  "$DOTFILES_CONFIG_DIR/quickshell|$CONFIG_HOME/quickshell"
+  "$DOTFILES_CONFIG_DIR/fontconfig|$CONFIG_HOME/fontconfig"
+  "$DOTFILES_CONFIG_DIR/systemd|$CONFIG_HOME/systemd"
+  "$DOTFILES_SCRIPTS_DIR|$CONFIG_HOME/dotfiles-scripts"
+)
+
+DARWIN_LINKS=(
+  "$DOTFILES_CONFIG_DIR/sketchybar|$CONFIG_HOME/sketchybar"
+  "$DOTFILES_CONFIG_DIR/skhd|$CONFIG_HOME/skhd"
+  "$DOTFILES_CONFIG_DIR/svim|$CONFIG_HOME/svim"
+  "$DOTFILES_CONFIG_DIR/yabai|$CONFIG_HOME/yabai"
+  "$DOTFILES_CONFIG_DIR/borders|$CONFIG_HOME/borders"
+)
 
 # ---- Shared Symlinks -------------------------------------------------------
 
-ln -s "$DOTFILES_DIR/home/config/nvim" ~/.config/nvim
-ln -s "$DOTFILES_DIR/home/config/kitty" ~/.config/kitty
-ln -s "$DOTFILES_DIR/home/zshrc" ~/.zshrc
-ln -s "$DOTFILES_DIR/home/zprofile" ~/.zprofile
-ln -s "$DOTFILES_DIR/home/gitconfig" ~/.gitconfig
-ln -s "$DOTFILES_DIR/home/config/starship.toml" ~/.config/starship.toml
-ln -s "$DOTFILES_DIR/home/config/topgrade.toml" ~/.config/topgrade.toml
-ln -s "$DOTFILES_DIR/home/tmux.conf" ~/.tmux.conf
-mkdir -p ~/.config/spicetify/Themes/Comfy
-ln -s "$DOTFILES_DIR/home/config/spicetify/config-xpui.ini" ~/.config/spicetify/config-xpui.ini
-ln -s "$DOTFILES_DIR/home/config/spicetify/Themes/Comfy/color.ini" ~/.config/spicetify/Themes/Comfy/color.ini
+link_entries "${SHARED_LINKS[@]}"
 
 # ---- Firefox Shared Setup --------------------------------------------------
 
 if [ "$OS" = "Linux" ]; then
-  if [ -d ~/.config/mozilla/firefox ]; then
-    FIREFOX_BASE=~/.config/mozilla/firefox
+  if [ -d "$CONFIG_HOME/mozilla/firefox" ]; then
+    FIREFOX_BASE="$CONFIG_HOME/mozilla/firefox"
   else
-    FIREFOX_BASE=~/.mozilla/firefox
+    FIREFOX_BASE="$HOME/.mozilla/firefox"
   fi
 elif [ "$OS" = "Darwin" ]; then
-  FIREFOX_BASE=~/Library/Application\ Support/Firefox
+  FIREFOX_BASE="$HOME/Library/Application Support/Firefox"
 fi
 
 if [ -n "$FIREFOX_BASE" ]; then
-  # Read active profile from profiles.ini (otherwise grab first default-release)
+  # Read active profile from profiles.ini, otherwise grab the first default-release.
   FIREFOX_PROFILE_PATH=$(grep "Path=" "$FIREFOX_BASE/profiles.ini" 2> /dev/null | grep "default-release" | cut -d "=" -f 2 | head -n 1)
   if [ -n "$FIREFOX_PROFILE_PATH" ]; then
     FIREFOX_PROFILE="$FIREFOX_BASE/$FIREFOX_PROFILE_PATH"
@@ -72,7 +84,6 @@ if [ -n "$FIREFOX_BASE" ]; then
   fi
 
   if [ -n "$FIREFOX_PROFILE" ]; then
-    # Check if the textfox theme is already installed by looking for its user.js and chrome/userChrome.css
     if [ ! -f "$FIREFOX_PROFILE/user.js" ] || [ ! -d "$FIREFOX_PROFILE/chrome" ]; then
       echo "Installing Textfox theme to Firefox profile..."
       /bin/rm -rf /tmp/textfox_clone
@@ -88,21 +99,10 @@ fi
 # ---- OS-Specific Symlinks --------------------------------------------------
 
 if [ "$OS" = "Linux" ]; then
-  ln -s "$DOTFILES_DIR/home/config/dunst" ~/.config/dunst
-  ln -s "$DOTFILES_DIR/home/config/hypr" ~/.config/hypr
-  ln -s "$DOTFILES_DIR/home/config/wofi" ~/.config/wofi
-  ln -s "$DOTFILES_DIR/home/config/wireplumber" ~/.config/wireplumber
-  ln -s "$DOTFILES_DIR/home/config/electron28-flags.conf" ~/.config/electron28-flags.conf
-  ln -s "$DOTFILES_DIR/home/config/quickshell" ~/.config/quickshell
-  ln -s "$DOTFILES_DIR/home/config/fontconfig" ~/.config/fontconfig
-  ln -s "$DOTFILES_DIR/home/config/systemd" ~/.config/systemd
+  link_entries "${LINUX_LINKS[@]}"
 
-  # Initialize Firefox and Spicetify Dynamic Themes
-  python3 "$DOTFILES_DIR/home/scripts/apply_theme.py"
+  # Initialize Firefox and Spicetify dynamic themes.
+  python3 "$APPLY_THEME_SCRIPT"
 elif [ "$OS" = "Darwin" ]; then
-  ln -s "$DOTFILES_DIR/home/config/sketchybar" ~/.config/sketchybar
-  ln -s "$DOTFILES_DIR/home/config/skhd" ~/.config/skhd
-  ln -s "$DOTFILES_DIR/home/config/svim" ~/.config/svim
-  ln -s "$DOTFILES_DIR/home/config/yabai" ~/.config/yabai
-  ln -s "$DOTFILES_DIR/home/config/borders" ~/.config/borders
+  link_entries "${DARWIN_LINKS[@]}"
 fi

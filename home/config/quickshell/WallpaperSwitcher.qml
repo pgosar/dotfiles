@@ -8,6 +8,10 @@ import Qt.labs.folderlistmodel
 PanelWindow {
     id: wallpaperSwitcherWindow
 
+    Paths {
+        id: paths
+    }
+
     // Properties passed from root
     required property var modelData
     screen: modelData
@@ -120,7 +124,7 @@ PanelWindow {
 
                 model: FolderListModel {
                     id: folderModel
-                    folder: "file:///home/chilly/code/dotfiles/home/walls"
+                    folder: paths.wallpaperFolderUrl
                     nameFilters: ["*.png", "*.jpg", "*.jpeg", "*.webp"]
                 }
 

@@ -2,8 +2,16 @@ import json
 import os
 import re
 
-CONFIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config"))
-THEME_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "theme.json")
+from paths import (
+    CONFIG_DIR,
+    QUICKSHELL_COLORS,
+    QUICKSHELL_PATHS,
+    SET_WALLPAPER_SCRIPT,
+    THEME_JSON,
+    WALLPAPERS_DIR,
+    HYPRPAPER_CONFIG,
+    file_uri,
+)
 
 
 def load_theme():
@@ -41,8 +49,8 @@ def generate_css(colors):
     # Generate CSS files
     target_dirs = ["wofi"]
     for d in target_dirs:
-        os.makedirs(os.path.join(CONFIG_DIR, d), exist_ok=True)
-        with open(os.path.join(CONFIG_DIR, d, "colors.css"), "w") as f:
+        os.makedirs(CONFIG_DIR / d, exist_ok=True)
+        with open(CONFIG_DIR / d / "colors.css", "w") as f:
             f.write(css_content)
 
 
@@ -91,8 +99,8 @@ def generate_kitty(colors):
     for k, v in kitty_colors.items():
         content += f"{k:24} {v}\n"
 
-    os.makedirs(os.path.join(CONFIG_DIR, "kitty"), exist_ok=True)
-    with open(os.path.join(CONFIG_DIR, "kitty", "colors.conf"), "w") as f:
+    os.makedirs(CONFIG_DIR / "kitty", exist_ok=True)
+    with open(CONFIG_DIR / "kitty" / "colors.conf", "w") as f:
         f.write(content)
 
 
@@ -103,8 +111,8 @@ def generate_hyprland(colors):
         content += f"${k} = {hex_to_rgb_hypr(v)}\n"
         content += f"${k}Alpha = {v.lstrip('#')}\n"
 
-    os.makedirs(os.path.join(CONFIG_DIR, "hypr"), exist_ok=True)
-    with open(os.path.join(CONFIG_DIR, "hypr", "colors.conf"), "w") as f:
+    os.makedirs(CONFIG_DIR / "hypr", exist_ok=True)
+    with open(CONFIG_DIR / "hypr" / "colors.conf", "w") as f:
         f.write(content)
 
     # Generate colors.lua
@@ -112,12 +120,12 @@ def generate_hyprland(colors):
     for k, v in colors.items():
         lua_content += f'  {k} = "{v.lstrip("#")}",\n'
     lua_content += "}\n"
-    with open(os.path.join(CONFIG_DIR, "hypr", "colors.lua"), "w") as f:
+    with open(CONFIG_DIR / "hypr" / "colors.lua", "w") as f:
         f.write(lua_content)
 
 
 def update_dunstrc(colors):
-    dunstrc_path = os.path.join(CONFIG_DIR, "dunst", "dunstrc")
+    dunstrc_path = CONFIG_DIR / "dunst" / "dunstrc"
     if not os.path.exists(dunstrc_path):
         return
     with open(dunstrc_path, "r") as f:
@@ -182,7 +190,7 @@ def update_dunstrc(colors):
 
 
 def generate_spicetify(colors):
-    spicetify_dir = os.path.join(CONFIG_DIR, "spicetify", "Themes", "Comfy")
+    spicetify_dir = CONFIG_DIR / "spicetify" / "Themes" / "Comfy"
     os.makedirs(spicetify_dir, exist_ok=True)
 
     # Needs hex codes without the leading #
@@ -205,12 +213,12 @@ notification       = {s_colors['surface']}
 notification-error = {s_colors['red']}
 misc               = {s_colors['blue']}
 """
-    with open(os.path.join(spicetify_dir, "color.ini"), "w") as f:
+    with open(spicetify_dir / "color.ini", "w") as f:
         f.write(content)
 
 
 def generate_nvim(colors):
-    nvim_colors_path = os.path.join(CONFIG_DIR, "nvim", "lua", "theme_colors.lua")
+    nvim_colors_path = CONFIG_DIR / "nvim" / "lua" / "theme_colors.lua"
     content = "-- Auto-generated nvim colors\n"
     content += "return {\n"
     for k, v in colors.items():
@@ -394,7 +402,7 @@ def generate_quickshell(colors):
 
     content += "\n    function reload() {\n"
     content += "        var xhr = new XMLHttpRequest();\n"
-    content += '        xhr.open("GET", "file:///home/chilly/code/dotfiles/home/scripts/theme.json?t=" + Date.now());\n'
+    content += f'        xhr.open("GET", "{file_uri(THEME_JSON)}?t=" + Date.now());\n'
     content += "        xhr.onreadystatechange = function() {\n"
     content += "            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {\n"
     content += "                try {\n"
@@ -410,9 +418,25 @@ def generate_quickshell(colors):
     content += "    }\n"
     content += "}\n"
 
-    quickshell_dir = os.path.join(CONFIG_DIR, "quickshell")
+    quickshell_dir = CONFIG_DIR / "quickshell"
     os.makedirs(quickshell_dir, exist_ok=True)
-    with open(os.path.join(quickshell_dir, "Colors.qml"), "w") as f:
+    with open(QUICKSHELL_COLORS, "w") as f:
+        f.write(content)
+
+
+def generate_quickshell_paths():
+    content = f"""/* Auto-generated quickshell paths */
+import QtQuick
+
+QtObject {{
+    readonly property string hyprpaperConfigPath: "{HYPRPAPER_CONFIG}"
+    readonly property string setWallpaperScriptPath: "{SET_WALLPAPER_SCRIPT}"
+    readonly property string wallpaperFolderUrl: "{file_uri(WALLPAPERS_DIR)}"
+}}
+"""
+
+    os.makedirs(QUICKSHELL_PATHS.parent, exist_ok=True)
+    with open(QUICKSHELL_PATHS, "w") as f:
         f.write(content)
 
 
@@ -428,6 +452,7 @@ def main():
     generate_gtk(colors)
     generate_qt(colors)
     generate_quickshell(colors)
+    generate_quickshell_paths()
     print("Successfully generated color configs!")
 
 

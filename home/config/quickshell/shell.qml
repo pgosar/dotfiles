@@ -8,6 +8,10 @@ import QtQuick
 ShellRoot {
     id: root
 
+    Paths {
+        id: paths
+    }
+
     Loader {
         id: colorsLoader
         source: "Colors.qml"
@@ -139,7 +143,7 @@ ShellRoot {
 
     Process {
         id: readWallpaperProc
-        command: ["grep", "^preload =", "/home/chilly/code/dotfiles/home/config/hypr/hyprpaper.conf"]
+        command: ["grep", "^preload =", paths.hyprpaperConfigPath]
         stdout: StdioCollector {
             onStreamFinished: {
                 var t = this.text.trim();
@@ -151,7 +155,7 @@ ShellRoot {
     }
 
     function changeWallpaper(path) {
-        setWallpaperProc.command = ["/home/chilly/code/dotfiles/home/scripts/set_wallpaper.sh", path];
+        setWallpaperProc.command = [paths.setWallpaperScriptPath, path];
         setWallpaperProc.running = true;
     }
 
@@ -222,4 +226,3 @@ ShellRoot {
         }
     }
 }
-

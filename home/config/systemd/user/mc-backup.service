@@ -3,4 +3,4 @@ Description=Snapshot GDLauncher Minecraft Instances
 
 [Service]
 Type=oneshot
-ExecStart=/home/chilly/code/dotfiles/home/scripts/minecraft_backup.sh
+ExecStart=%h/.config/dotfiles-scripts/minecraft_backup.sh

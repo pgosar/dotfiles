@@ -18,7 +18,7 @@ OS="$(uname)"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
-export DOTFILES_DIR="$HOME/code/dotfiles"
+export DOTFILES_DIR="${DOTFILES_DIR:-${${(%):-%x}:A:h:h}}"
 export EDITOR='nvim'
 export VISUAL='nvim'
 
@@ -152,4 +152,3 @@ if [ "$OS" = "Linux" ]; then
 elif [ "$OS" = "Darwin" ]; then
   ulimit -Sn unlimited && ulimit -Sl unlimited
 fi
-
