@@ -1,16 +1,19 @@
-local colors = require("defaults").colors.mocha_override
+local defaults = require("defaults")
+local colors = defaults.colors.mocha_override
+local plugins = defaults.group.plugins
+
 require("catppuccin").setup({
   integrations = {
-    alpha = true,
-    gitsigns = true,
-    hop = true,
-    blink_cmp = true,
-    lsp_trouble = true,
-    mason = true,
-    neotest = true,
-    rainbow_delimiters = true,
-    fzf = true,
-    which_key = true,
+    alpha = false,
+    gitsigns = plugins.gitsigns,
+    hop = false,
+    blink_cmp = plugins.blink,
+    lsp_trouble = plugins.trouble,
+    mason = plugins.mason,
+    neotest = plugins.neotest,
+    rainbow_delimiters = plugins.rainbow_delimiters,
+    fzf = plugins.fzf,
+    which_key = plugins.which_key,
   },
   dim_inactive = {
     enabled = true,

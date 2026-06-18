@@ -1,5 +1,6 @@
+local defaults = require("defaults")
 local lualine = require("lualine")
-local colors = require("defaults").colors.lualine
+local colors = defaults.colors.lualine
 local buffer_not_empty = function() return vim.fn.empty(vim.fn.expand("%:t")) ~= 1 end
 local show_width = function()
   local total_width = 0
@@ -74,11 +75,13 @@ components.current_editing_mode = {
 
 components.filename = {
   function()
-    return require("nvim-web-devicons").get_icon(
-      vim.fn.expand("%:t"),
-      vim.fn.expand("%:e"),
-      { default = true }
-    ) .. " " .. vim.fn.expand("%:t")
+    local filename = vim.fn.expand("%:t")
+    if not defaults.group.plugins.nvim_web_devicons then return filename end
+
+    local ok, devicons = pcall(require, "nvim-web-devicons")
+    if not ok then return filename end
+
+    return devicons.get_icon(filename, vim.fn.expand("%:e"), { default = true }) .. " " .. filename
   end,
   cond = buffer_not_empty,
   color = { fg = colors.magenta, gui = "bolditalic" },
@@ -114,7 +117,7 @@ components.lsp_server_name = {
     local clients = vim.lsp.get_clients()
     if next(clients) == nil then return msg end
     for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
+      local filetypes = client.config and client.config["filetypes"]
       if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
         return icons.lualine.lsp .. " " .. client.name
       end

@@ -39,36 +39,10 @@ M.create_new_file = function()
   if filename ~= "" then vim.cmd("edit " .. filename) end
 end
 
---- Creates new terminals with ToggleTerm
----@param cmd string: the command to run
----@return function|table?: the created terminal
-M.create_floating_terminal = function(cmd)
-  local instance = nil
-  if vim.fn.executable(cmd) == 1 then
-    local terminal = require("toggleterm.terminal").Terminal
-    instance = terminal:new({
-      cmd = cmd,
-      dir = "git_dir",
-      direction = "float",
-      float_opts = {
-        border = "double",
-      },
-    })
-    instance:toggle()
-  end
-  -- check if TermExec function exists
-  return function()
-    if vim.fn.executable(cmd) == 1 and instance ~= nil then
-      instance:toggle()
-    else
-      vim.notify("Command not found: " .. cmd .. ". Ensure it is installed.", vim.log.levels.ERROR)
-    end
-  end
-end
-
 --- Update all mason packages
 M.update_mason = function()
-  vim.cmd("packadd mason.nvim")
+  if not require("core.utils.plugins").load("mason") then return end
+
   local registry = require("mason-registry")
   registry.refresh()
   registry.update()
@@ -80,14 +54,12 @@ end
 
 --- Update plugins in pack directories
 M.update_plugins = function()
-  local start_path = vim.fn.stdpath("config") .. "/pack/plugins/start/*"
-  local opt_path = vim.fn.stdpath("config") .. "/pack/plugins/opt/*"
   local plugin_dirs = {}
-  for _, path in ipairs({ start_path, opt_path }) do
-    local dirs = vim.fn.glob(path, false, true)
-    for _, dir in ipairs(dirs) do
-      if vim.fn.isdirectory(dir) == 1 then table.insert(plugin_dirs, dir) end
-    end
+
+  for _, plugin in ipairs(require("core.plugins")) do
+    local package_type = plugin.lazy and "opt" or "start"
+    local dir = vim.fn.stdpath("config") .. "/pack/plugins/" .. package_type .. "/" .. plugin.name
+    if vim.fn.isdirectory(dir) == 1 then table.insert(plugin_dirs, dir) end
   end
 
   vim.notify("Updating plugins...")
@@ -137,12 +109,16 @@ M.update_all = function()
         vim.notify("Failed to pull latest dotfiles:\n" .. err_msg, vim.log.levels.ERROR)
       end
       M.update_plugins()
-      vim.notify("Updating Mason packages...")
-      local pcall_ok, err = pcall(M.update_mason)
-      if not pcall_ok then
-        vim.notify("Failed to update Mason packages: " .. tostring(err), vim.log.levels.WARN)
+
+      if require("core.utils.plugins").enabled("mason") then
+        vim.notify("Updating Mason packages...")
+        local pcall_ok, err = pcall(M.update_mason)
+        if not pcall_ok then
+          vim.notify("Failed to update Mason packages: " .. tostring(err), vim.log.levels.WARN)
+        end
       end
-      vim.cmd("TSUpdate")
+
+      if require("core.utils.plugins").enabled("nvim_treesitter") then vim.cmd("TSUpdate") end
       vim.notify("CyberNvim updated!", vim.log.levels.INFO)
     end,
   })
@@ -160,14 +136,11 @@ end
 
 --- Whether the currently opening file is very big or not
 ---@param buf integer: the current buffer to check
----@return boolean is_big: if the file is above 1 MB
+---@return boolean is_big: if the file is above configured big-file threshold
 M.large_file = function(buf)
-  local max_filesize = 100 * 1024 * 1024 -- 100 kb
+  local settings = require("defaults").settings
   local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
-  return require("defaults").settings.bigfile_enable
-    and ok
-    and stats ~= nil
-    and stats.size > max_filesize
+  return settings.bigfile_enable and ok and stats ~= nil and stats.size > settings.bigfile_threshold
 end
 
 --- Set the current working directory to the root of the project

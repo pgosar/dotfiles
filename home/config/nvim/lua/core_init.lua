@@ -84,8 +84,10 @@ for _, p in ipairs(plugins) do
   end
 end
 
--- Force load all start packages immediately so they are available in runtimepath
-vim.cmd("packloadall")
+-- Load only enabled start packages so defaults.lua remains the source of truth.
+for _, plugin in ipairs(plugins) do
+  if not plugin.lazy then vim.cmd("packadd " .. plugin.name) end
+end
 
 if needs_restart then
   vim.notify("All plugins installed! Please restart Neovim.", vim.log.levels.INFO)
@@ -108,25 +110,28 @@ end
 vim.lsp.buf.rename = require("core.utils.rename").rename
 -- Run plugin configurations
 if not big_file then
+  local plugin_loader = require("core.utils.plugins")
   -- Load all non-lazy start configs
   for _, name in ipairs({
     "catppuccin",
-    "treesitter",
+    "nvim_treesitter",
     "dropbar",
     "lualine",
     "snacks",
     "surround",
-    "whichkey",
-    "ai",
-    "align",
+    "which_key",
+    "mini_ai",
+    "mini_align",
     "autopairs",
-    "autotag",
+    "nvim_ts_autotag",
     "bufferline",
-    "multicursor",
+    "vim_visual_multi",
   }) do
-    local load_ok, err = pcall(require, "core.configs." .. name)
-    if not load_ok then
-      vim.notify("Failed to load config " .. name .. ": " .. tostring(err), vim.log.levels.ERROR)
+    if plugin_loader.enabled(name) then
+      local load_ok, err = pcall(require, "core.configs." .. name)
+      if not load_ok then
+        vim.notify("Failed to load config " .. name .. ": " .. tostring(err), vim.log.levels.ERROR)
+      end
     end
   end
 end

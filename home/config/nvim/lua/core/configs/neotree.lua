@@ -1,4 +1,10 @@
-local function on_move(data) Snacks.rename.on_rename_file(data.source, data.destination) end
+local group = require("defaults").group
+
+local function on_move(data)
+  if group.plugins.snacks and group.plugins.snack_rename and Snacks and Snacks.rename then
+    Snacks.rename.on_rename_file(data.source, data.destination)
+  end
+end
 local events = require("neo-tree.events")
 
 require("neo-tree").setup({

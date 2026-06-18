@@ -96,133 +96,131 @@ map(
 )
 
 -- Lazy loaded plugins wrappers
+local plugins = require("core.utils.plugins")
 
 -- FZF-Lua Loader
 local function load_fzf(action)
-  return function()
-    vim.cmd("packadd fzf-lua")
-    require("core.configs.fzf")
-    require("fzf-lua")[action]()
-  end
+  return plugins.with("fzf", function() require("fzf-lua")[action]() end)
 end
-map("n", "<leader>ff", load_fzf("files"), { desc = "Find files" })
-map("n", "<leader>fg", load_fzf("live_grep"), { desc = "Grep for text" })
-map("n", "<leader>fb", load_fzf("buffers"), { desc = "Search through open buffers" })
+if plugins.enabled("fzf") then
+  map("n", "<leader>ff", load_fzf("files"), { desc = "Find files" })
+  map("n", "<leader>fg", load_fzf("live_grep"), { desc = "Grep for text" })
+  map("n", "<leader>fb", load_fzf("buffers"), { desc = "Search through open buffers" })
+end
 
 -- Neo-tree Loader
-map("n", "<leader>nt", function()
-  vim.cmd("packadd nui.nvim")
-  vim.cmd("packadd neo-tree.nvim")
-  require("core.configs.neotree")
-  require("neo-tree.command").execute({ toggle = true, reveal = true, position = "float" })
-end, { desc = "toggle neotree" })
+if plugins.enabled("neotree") then
+  map(
+    "n",
+    "<leader>nt",
+    plugins.with(
+      "neotree",
+      function()
+        require("neo-tree.command").execute({ toggle = true, reveal = true, position = "float" })
+      end
+    ),
+    { desc = "toggle neotree" }
+  )
+end
 
 -- Trouble Loader
 local function load_trouble(mode)
-  return function()
-    vim.cmd("packadd trouble.nvim")
-    require("core.configs.trouble")
-    require("trouble").toggle(mode)
-  end
+  return plugins.with("trouble", function() require("trouble").toggle(mode) end)
 end
-map("n", "<leader>tf", load_trouble("diagnostics"), { desc = "Trouble toggle diagnostics" })
-map("n", "<leader>tt", load_trouble("todo"), { desc = "Trouble toggle todo" })
-map("n", "<leader>ts", load_trouble("symbols"), { desc = "Trouble toggle symbols" })
-map("n", "<leader>tl", load_trouble("lsp"), { desc = "Trouble toggle lsp" })
+if plugins.enabled("trouble") then
+  map("n", "<leader>tf", load_trouble("diagnostics"), { desc = "Trouble toggle diagnostics" })
+  map("n", "<leader>tt", load_trouble("todo"), { desc = "Trouble toggle todo" })
+  map("n", "<leader>ts", load_trouble("symbols"), { desc = "Trouble toggle symbols" })
+  map("n", "<leader>tl", load_trouble("lsp"), { desc = "Trouble toggle lsp" })
+end
 
 -- Neogen Loader
-map("n", "<leader>fd", function()
-  vim.cmd("packadd neogen")
-  require("core.configs.neogen")
-  require("neogen").generate()
-end, { desc = "generate doc comments" })
+if plugins.enabled("neogen") then
+  map(
+    "n",
+    "<leader>fd",
+    plugins.with("neogen", function() require("neogen").generate() end),
+    { desc = "generate doc comments" }
+  )
+end
 
 -- Neotest Loader
-map("n", "<leader>nr", function()
-  vim.cmd("packadd nvim-nio")
-  vim.cmd("packadd neotest")
-  require("core.configs.neotest")
-  require("neotest").run.run()
-end, { desc = "run test with neotest" })
+if plugins.enabled("neotest") then
+  map(
+    "n",
+    "<leader>nr",
+    plugins.with("neotest", function() require("neotest").run.run() end),
+    { desc = "run test with neotest" }
+  )
+end
 
 -- DAP Loader
-local function load_dap(callback)
-  return function()
-    local dap_plugins = {
-      "nvim-nio",
-      "nvim-dap",
-      "nvim-dap-ui",
-      "nvim-dap-virtual-text",
-      "nvim-dap-lldb",
-      "nvim-dap-python",
-      "mason-nvim-dap.nvim",
-    }
-    for _, p in ipairs(dap_plugins) do
-      vim.cmd("packadd " .. p)
-    end
-    require("core.configs.dap")
-    callback()
-  end
+local function load_dap(callback) return plugins.with("dap", callback) end
+if plugins.enabled("dap") then
+  map(
+    "n",
+    "<leader>dc",
+    load_dap(function() require("dap").continue() end),
+    { desc = "Debugger Continue" }
+  )
+  map(
+    "n",
+    "<leader>dn",
+    load_dap(function() require("dap").step_over() end),
+    { desc = "Debugger Step Over" }
+  )
+  map(
+    "n",
+    "<leader>di",
+    load_dap(function() require("dap").step_into() end),
+    { desc = "Debugger Step Into" }
+  )
+  map(
+    "n",
+    "<leader>do",
+    load_dap(function() require("dap").step_out() end),
+    { desc = "Debugger Step Out" }
+  )
+  map(
+    "n",
+    "<leader>db",
+    load_dap(function() require("dap").toggle_breakpoint() end),
+    { desc = "Toggle Breakpoint" }
+  )
+  map(
+    "n",
+    "<leader>dq",
+    load_dap(function() require("dap").disconnect({ terminateDebuggee = true }) end),
+    { desc = "Disconnect Debugger" }
+  )
 end
-map(
-  "n",
-  "<leader>dc",
-  load_dap(function() require("dap").continue() end),
-  { desc = "Debugger Continue" }
-)
-map(
-  "n",
-  "<leader>dn",
-  load_dap(function() require("dap").step_over() end),
-  { desc = "Debugger Step Over" }
-)
-map(
-  "n",
-  "<leader>di",
-  load_dap(function() require("dap").step_into() end),
-  { desc = "Debugger Step Into" }
-)
-map(
-  "n",
-  "<leader>do",
-  load_dap(function() require("dap").step_out() end),
-  { desc = "Debugger Step Out" }
-)
-map(
-  "n",
-  "<leader>db",
-  load_dap(function() require("dap").toggle_breakpoint() end),
-  { desc = "Toggle Breakpoint" }
-)
-map(
-  "n",
-  "<leader>dq",
-  load_dap(function() require("dap").disconnect({ terminateDebuggee = true }) end),
-  { desc = "Disconnect Debugger" }
-)
 
 -- Venn Loader keybinding
-map("n", "<leader>v", ":ToggleVenn<CR>", { desc = "toggle venn" })
+if plugins.enabled("venn") then
+  map("n", "<leader>v", ":ToggleVenn<CR>", { desc = "toggle venn" })
+end
 
 -- Snacks Zen Mode keybinding (Snacks is a start plugin)
-map("n", "<leader>zm", function() require("snacks").zen() end, { desc = "Toggle Zen Mode" })
+if plugins.enabled("snacks") and plugins.enabled("snack_zen") then
+  map("n", "<leader>zm", function() require("snacks").zen() end, { desc = "Toggle Zen Mode" })
+end
 
 -- Flash Loader keybindings
 local function load_flash(action)
-  return function()
-    vim.cmd("packadd flash.nvim")
-    require("core.configs.flash")
-    require("flash")[action]()
-  end
+  return plugins.with("flash", function() require("flash")[action]() end)
 end
-map({ "n", "x", "o" }, "<leader>j", load_flash("jump"), { desc = "Flash" })
-map({ "n", "x", "o" }, "<leader>J", load_flash("treesitter"), { desc = "Flash Treesitter" })
+if plugins.enabled("flash") then
+  map({ "n", "x", "o" }, "<leader>j", load_flash("jump"), { desc = "Flash" })
+  map({ "n", "x", "o" }, "<leader>J", load_flash("treesitter"), { desc = "Flash Treesitter" })
+end
 
 -- Multicursor (vim-visual-multi) keybindings
-map("n", "<C-k>", "<Plug>(VM-Add-Cursor-Up)", { desc = "add multi cursor up", silent = true })
-map("n", "<C-j>", "<Plug>(VM-Add-Cursor-Down)", { desc = "add multi cursor down", silent = true })
+if plugins.enabled("vim_visual_multi") then
+  map("n", "<C-k>", "<Plug>(VM-Add-Cursor-Up)", { desc = "add multi cursor up", silent = true })
+  map("n", "<C-j>", "<Plug>(VM-Add-Cursor-Down)", { desc = "add multi cursor down", silent = true })
+end
 
 -- Dropbar keybindings
-if group.plugins.dropbar then
+if plugins.enabled("dropbar") then
   map("n", "<C-p>", function() require("dropbar.api").pick() end, { desc = "Pick from dropbar" })
 end

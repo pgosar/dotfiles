@@ -40,7 +40,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     buf_map("n", "grD", vim.lsp.buf.declaration, "Go to Declaration")
     buf_map("n", "grd", vim.lsp.buf.definition, "Go to Definition")
-    buf_map("n", "<leader>grn", function() Snacks.rename.rename_file() end, "Rename files")
+    if group.plugins.snacks and group.plugins.snack_rename then
+      buf_map("n", "<leader>grn", function()
+        if Snacks and Snacks.rename then Snacks.rename.rename_file() end
+      end, "Rename files")
+    end
     buf_map(
       "n",
       "<C-h>",
@@ -48,9 +52,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
       "Toggle Inlay Hints"
     )
 
-    local wd_ok, wd = pcall(require, "workspace-diagnostics")
-    if wd_ok then
-      wd.populate_workspace_diagnostics(client, bufnr)
+    local wd_ok, wd = false, nil
+    if group.plugins.workspace_diagnostics then
+      wd_ok, wd = pcall(require, "workspace-diagnostics")
+    end
+    local populate_workspace_diagnostics = type(wd) == "table"
+      and wd["populate_workspace_diagnostics"]
+    if wd_ok and type(populate_workspace_diagnostics) == "function" then
+      populate_workspace_diagnostics(client, bufnr)
       if bufnr == vim.api.nvim_get_current_buf() then
         vim.cmd([[silent! doautocmd BufLeave]])
         vim.cmd([[silent! doautocmd BufEnter]])
@@ -83,8 +92,14 @@ for server, config_module in pairs(server_specific_configs) do
 end
 
 -- 6. Setup Mason LSPConfig
-local ml_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
-if ml_ok then mason_lspconfig.setup({ automatic_enable = true }) end
+local ml_ok, mason_lspconfig = false, nil
+if group.plugins.mason_lspconfig then
+  ml_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+end
+local mason_lspconfig_setup = type(mason_lspconfig) == "table" and mason_lspconfig["setup"]
+if ml_ok and type(mason_lspconfig_setup) == "function" then
+  mason_lspconfig_setup({ automatic_enable = true })
+end
 
 -- 7. Enable servers
 for server, _ in pairs(server_specific_configs) do
@@ -97,9 +112,13 @@ if group.plugins.none_ls then
   null_ls.setup({
     sources = require("defaults").setup_sources(null_ls.builtins),
   })
-  local mn_ok, mason_null_ls = pcall(require, "mason-null-ls")
-  if mn_ok then
-    mason_null_ls.setup({
+  local mn_ok, mason_null_ls = false, nil
+  if group.plugins.mason_null_ls then
+    mn_ok, mason_null_ls = pcall(require, "mason-null-ls")
+  end
+  local mason_null_ls_setup = type(mason_null_ls) == "table" and mason_null_ls["setup"]
+  if mn_ok and type(mason_null_ls_setup) == "function" then
+    mason_null_ls_setup({
       ensure_installed = require("defaults").ensure_installed.null_ls,
       automatic_installation = true,
     })
@@ -107,5 +126,11 @@ if group.plugins.none_ls then
 end
 
 -- 9. Setup Refactoring
-local ref_ok, refactoring = pcall(require, "refactoring")
-if ref_ok then refactoring.setup({ show_success_message = true }) end
+local ref_ok, refactoring = false, nil
+if group.plugins.refactoring then
+  ref_ok, refactoring = pcall(require, "refactoring")
+end
+local refactoring_setup = type(refactoring) == "table" and refactoring["setup"]
+if ref_ok and type(refactoring_setup) == "function" then
+  refactoring_setup({ show_success_message = true })
+end

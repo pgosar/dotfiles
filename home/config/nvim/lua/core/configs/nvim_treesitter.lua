@@ -1,6 +1,6 @@
 require("nvim-treesitter").setup({
+  ensure_installed = require("defaults").ensure_installed.treesitter,
   highlight = { enable = true },
   indent = { enable = true },
 })
-local parsers = require("defaults").ensure_installed.treesitter
 require("nvim-treesitter.install").update({ with_sync = true })

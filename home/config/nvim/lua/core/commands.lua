@@ -7,99 +7,97 @@ vim.api.nvim_create_user_command(
 )
 
 -- close buffer windows without messing up layout
-vim.api.nvim_create_user_command(
-  "Bd",
-  function() require("snacks").bufdelete() end,
-  { desc = "Delete buffer with Snacks" }
-)
+local M = {}
+local plugins = require("core.utils.plugins")
+
+if plugins.enabled("snacks") and plugins.enabled("snack_bufdelete") then
+  vim.api.nvim_create_user_command(
+    "Bd",
+    function() require("snacks").bufdelete() end,
+    { desc = "Delete buffer with Snacks" }
+  )
+end
 
 -- Lazy loaded plugins stub commands
 
-local M = {}
-
-local function load_neotree()
-  vim.cmd("packadd nui.nvim")
-  vim.cmd("packadd neo-tree.nvim")
-  require("core.configs.neotree")
-end
+local function load_neotree() return plugins.load("neotree") end
 
 M.load_neotree = load_neotree
 
-vim.api.nvim_create_user_command("FzfLua", function(opts)
-  vim.cmd("packadd fzf-lua")
-  require("core.configs.fzf")
-  vim.cmd("FzfLua " .. opts.args)
-end, { nargs = "*", complete = "file" })
+if plugins.enabled("fzf") then
+  vim.api.nvim_create_user_command("FzfLua", function(opts)
+    if not plugins.load("fzf") then return end
+    vim.cmd("FzfLua " .. opts.args)
+  end, { nargs = "*", complete = "file" })
+end
 
-vim.api.nvim_create_user_command("Neotree", function(opts)
-  load_neotree()
-  vim.cmd("Neotree " .. opts.args)
-end, { nargs = "*", complete = "file" })
+if plugins.enabled("neotree") then
+  vim.api.nvim_create_user_command("Neotree", function(opts)
+    if not load_neotree() then return end
+    vim.cmd("Neotree " .. opts.args)
+  end, { nargs = "*", complete = "file" })
+end
 
-vim.api.nvim_create_user_command("Trouble", function(opts)
-  vim.cmd("packadd trouble.nvim")
-  require("core.configs.trouble")
-  vim.cmd("Trouble " .. opts.args)
-end, { nargs = "*", complete = "file" })
+if plugins.enabled("trouble") then
+  vim.api.nvim_create_user_command("Trouble", function(opts)
+    if not plugins.load("trouble") then return end
+    vim.cmd("Trouble " .. opts.args)
+  end, { nargs = "*", complete = "file" })
+end
 
-vim.api.nvim_create_user_command("ToggleVenn", function()
-  vim.cmd("packadd venn.nvim")
-  require("core.configs.venn")
-end, { nargs = 0, desc = "Toggle venn" })
+if plugins.enabled("venn") then
+  vim.api.nvim_create_user_command(
+    "ToggleVenn",
+    function() plugins.load("venn") end,
+    { nargs = 0, desc = "Toggle venn" }
+  )
+end
 
 -- Mason command stub (for direct execution from dashboard)
-vim.api.nvim_create_user_command("Mason", function(opts)
-  vim.cmd("packadd mason.nvim")
-  require("mason").setup()
-  vim.cmd("Mason " .. opts.args)
-end, { nargs = "*" })
+if plugins.enabled("mason") then
+  vim.api.nvim_create_user_command("Mason", function(opts)
+    if not plugins.load("mason") then return end
+    vim.cmd("Mason " .. opts.args)
+  end, { nargs = "*" })
+end
 
 -- Neogen command stub
-vim.api.nvim_create_user_command("Neogen", function(opts)
-  vim.cmd("packadd neogen")
-  require("core.configs.neogen")
-  vim.cmd("Neogen " .. opts.args)
-end, { nargs = "*" })
+if plugins.enabled("neogen") then
+  vim.api.nvim_create_user_command("Neogen", function(opts)
+    if not plugins.load("neogen") then return end
+    vim.cmd("Neogen " .. opts.args)
+  end, { nargs = "*" })
+end
 
 -- Neotest command stub
-vim.api.nvim_create_user_command("Neotest", function(opts)
-  vim.cmd("packadd nvim-nio")
-  vim.cmd("packadd neotest")
-  require("core.configs.neotest")
-  vim.cmd("Neotest " .. opts.args)
-end, { nargs = "*", complete = "file" })
+if plugins.enabled("neotest") then
+  vim.api.nvim_create_user_command("Neotest", function(opts)
+    if not plugins.load("neotest") then return end
+    vim.cmd("Neotest " .. opts.args)
+  end, { nargs = "*", complete = "file" })
+end
 
 -- DAP commands stubs
 local function load_dap_and_run(cmd_name, args)
-  local dap_plugins = {
-    "nvim-nio",
-    "nvim-dap",
-    "nvim-dap-ui",
-    "nvim-dap-virtual-text",
-    "nvim-dap-lldb",
-    "nvim-dap-python",
-    "mason-nvim-dap.nvim",
-  }
-  for _, p in ipairs(dap_plugins) do
-    vim.cmd("packadd " .. p)
-  end
-  require("core.configs.dap")
+  if not plugins.load("dap") then return end
   vim.cmd(cmd_name .. " " .. (args or ""))
 end
 
-for _, cmd in ipairs({
-  "DapContinue",
-  "DapToggleBreakpoint",
-  "DapStepOver",
-  "DapStepInto",
-  "DapStepOut",
-  "DapTerminate",
-}) do
-  vim.api.nvim_create_user_command(
-    cmd,
-    function(opts) load_dap_and_run(cmd, opts.args) end,
-    { nargs = "*" }
-  )
+if plugins.enabled("dap") then
+  for _, cmd in ipairs({
+    "DapContinue",
+    "DapToggleBreakpoint",
+    "DapStepOver",
+    "DapStepInto",
+    "DapStepOut",
+    "DapTerminate",
+  }) do
+    vim.api.nvim_create_user_command(
+      cmd,
+      function(opts) load_dap_and_run(cmd, opts.args) end,
+      { nargs = "*" }
+    )
+  end
 end
 
 return M

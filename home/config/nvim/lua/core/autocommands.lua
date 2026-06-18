@@ -1,6 +1,7 @@
 -- Autocommands
 local augroup = require("core.utils.utils").augroup
 local cmd = vim.api.nvim_create_autocmd
+local plugins = require("core.utils.plugins")
 
 -- Removes any trailing white space when saving a file
 if group.autocommands.trailing_whitespace then
@@ -204,75 +205,55 @@ end
 -- Lazy loading event triggered autocommands
 
 -- 1. LSP stack lazy loading
-vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
-  group = augroup("LazyLoadLSP", { clear = true }),
-  once = true,
-  callback = function()
-    local lsp_plugins = {
-      "nvim-lspconfig",
-      "mason.nvim",
-      "mason-lspconfig.nvim",
-      "none-ls.nvim",
-      "mason-null-ls.nvim",
-      "workspace-diagnostics.nvim",
-      "SchemaStore.nvim",
-      "async.nvim",
-      "refactoring.nvim",
-      "lazydev.nvim",
-    }
-    for _, p in ipairs(lsp_plugins) do
-      vim.cmd("packadd " .. p)
-    end
-    require("core.configs.lazydev")
-    require("core.configs.lsp")
-    -- Re-trigger FileType to attach LSP to the current buffer
-    vim.cmd("silent! doautocmd FileType")
-  end,
-})
+if plugins.enabled("lspconfig") then
+  vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+    group = augroup("LazyLoadLSP", { clear = true }),
+    once = true,
+    callback = function()
+      if not plugins.load("lsp") then return end
+      -- Re-trigger FileType to attach LSP to the current buffer
+      vim.cmd("silent! doautocmd FileType")
+    end,
+  })
+end
 
 -- 2. Blink Completion lazy loading
-vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter" }, {
-  group = augroup("LazyLoadBlink", { clear = true }),
-  once = true,
-  callback = function()
-    vim.cmd("packadd friendly-snippets")
-    vim.cmd("packadd blink.cmp")
-    require("core.configs.blink")
-  end,
-})
+if plugins.enabled("blink") then
+  vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter" }, {
+    group = augroup("LazyLoadBlink", { clear = true }),
+    once = true,
+    callback = function() plugins.load("blink") end,
+  })
+end
 
 -- 3. Markdown rendering lazy loading
-vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("LazyLoadMarkdown", { clear = true }),
-  pattern = "markdown",
-  once = true,
-  callback = function()
-    vim.cmd("packadd markdown.nvim")
-    vim.cmd("packadd markview.nvim")
-    require("core.configs.markdown")
-  end,
-})
+if plugins.enabled("markdown") then
+  vim.api.nvim_create_autocmd("FileType", {
+    group = augroup("LazyLoadMarkdown", { clear = true }),
+    pattern = "markdown",
+    once = true,
+    callback = function() plugins.load("markdown") end,
+  })
+end
 
 -- 4. Todo Comments lazy loading
-vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
-  group = augroup("LazyLoadTodo", { clear = true }),
-  once = true,
-  callback = function()
-    vim.cmd("packadd todo-comments.nvim")
-    require("core.configs.todo")
-  end,
-})
+if plugins.enabled("todo_comments") then
+  vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+    group = augroup("LazyLoadTodo", { clear = true }),
+    once = true,
+    callback = function() plugins.load("todo") end,
+  })
+end
 
 -- 5. Editor editing helper plugins lazy loading (gitsigns, highlight-colors, indent-blankline)
-vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
-  group = augroup("LazyLoadEditHelpers", { clear = true }),
-  once = true,
-  callback = function()
-    vim.cmd("packadd gitsigns.nvim")
-    vim.cmd("packadd nvim-highlight-colors")
-    vim.cmd("packadd indent-blankline.nvim")
-    require("core.configs.gitsigns")
-    require("core.configs.highlight_colors")
-    require("core.configs.indent_blankline")
-  end,
-})
+if
+  plugins.enabled("gitsigns")
+  or plugins.enabled("highlight_colors")
+  or plugins.enabled("indent_blankline")
+then
+  vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+    group = augroup("LazyLoadEditHelpers", { clear = true }),
+    once = true,
+    callback = function() plugins.load("edit_helpers") end,
+  })
+end

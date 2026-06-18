@@ -41,7 +41,7 @@ function M.toggle_terminal(cmd)
 
   -- 6. Open shell or cmd in terminal if not already running
   if vim.bo[s.buf].buftype ~= "terminal" then
-    vim.fn.termopen(cmd == "shell" and vim.o.shell or cmd)
+    vim.fn.jobstart(cmd == "shell" and vim.o.shell or cmd, { term = true })
   end
   vim.cmd("startinsert")
 end
