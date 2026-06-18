@@ -42,7 +42,7 @@ PACMAN_PACKAGES=(
   nvtop usbutils dmidecode
 
   # Desktop & Window Managers
-  hyprland hyprlang hyprgraphics hyprshot hyprpaper quickshell wofi dunst
+  hyprland hyprlang hyprgraphics hyprshot hyprpaper wofi dunst
   xsettingsd cliphist wl-clipboard yazi kitty zsh plasma-desktop
   plasma-login-manager sddm bluedevil blueman kscreen powerdevil kde-gtk-config
   kdialog kinfocenter spectacle gwenview plasma-nm plasma-pa plasma-thunderbolt
@@ -76,9 +76,10 @@ sudo pacman -S --needed --noconfirm "${PACMAN_PACKAGES[@]}"
 # --- AUR HELPERS & PACKAGES ---
 if ! command -v yay &> /dev/null; then
   echo "Bootstrapping yay..."
-  git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
-  (cd /tmp/yay-bin && makepkg -si --noconfirm)
-  rm -rf /tmp/yay-bin
+  YAY_BUILD_DIR="$(mktemp -d)"
+  git clone https://aur.archlinux.org/yay-bin.git "$YAY_BUILD_DIR"
+  (cd "$YAY_BUILD_DIR" && makepkg -si --noconfirm)
+  rm -rf "$YAY_BUILD_DIR"
 fi
 
 AUR_PACKAGES=(
