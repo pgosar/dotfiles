@@ -1,6 +1,8 @@
+import configparser
 import json
-import os
 import re
+import sys
+from pathlib import Path
 
 from paths import (
     CONFIG_DIR,
@@ -14,26 +16,22 @@ from paths import (
 )
 
 
+def write_text(path, content):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content)
+
+
 def load_theme():
-    with open(THEME_JSON, "r") as f:
-        return json.load(f)
+    return json.loads(THEME_JSON.read_text())
 
 
-def hex_to_rgba(hex_color, alpha=1.0):
+def hex_to_rgb_tuple(hex_color):
     hex_color = hex_color.lstrip("#")
-    r = int(hex_color[0:2], 16)
-    g = int(hex_color[2:4], 16)
-    b = int(hex_color[4:6], 16)
-    return f"rgba({r}, {g}, {b}, {alpha})"
+    return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
 
 
 def hex_to_rgb_hypr(hex_color):
     return f"rgb({hex_color.lstrip('#')})"
-
-
-def hex_to_rgba_hypr(hex_color, alpha_hex):
-    # alpha_hex like 'ee' or 'ff'
-    return f"rgba({hex_color.lstrip('#')}{alpha_hex})"
 
 
 def generate_css(colors):
@@ -41,17 +39,13 @@ def generate_css(colors):
     for k, v in colors.items():
         css_content += f"@define-color {k} {v};\n"
         if k in ["surface", "base", "mantle"]:
-            r = int(v[1:3], 16)
-            g = int(v[3:5], 16)
-            b = int(v[5:7], 16)
+            r, g, b = hex_to_rgb_tuple(v)
             css_content += f"@define-color {k}_alpha rgba({r}, {g}, {b}, 0.95);\n"
 
     # Generate CSS files
     target_dirs = ["wofi"]
     for d in target_dirs:
-        os.makedirs(CONFIG_DIR / d, exist_ok=True)
-        with open(CONFIG_DIR / d / "colors.css", "w") as f:
-            f.write(css_content)
+        write_text(CONFIG_DIR / d / "colors.css", css_content)
 
 
 def generate_kitty(colors):
@@ -99,9 +93,7 @@ def generate_kitty(colors):
     for k, v in kitty_colors.items():
         content += f"{k:24} {v}\n"
 
-    os.makedirs(CONFIG_DIR / "kitty", exist_ok=True)
-    with open(CONFIG_DIR / "kitty" / "colors.conf", "w") as f:
-        f.write(content)
+    write_text(CONFIG_DIR / "kitty" / "colors.conf", content)
 
 
 def generate_hyprland(colors):
@@ -111,25 +103,21 @@ def generate_hyprland(colors):
         content += f"${k} = {hex_to_rgb_hypr(v)}\n"
         content += f"${k}Alpha = {v.lstrip('#')}\n"
 
-    os.makedirs(CONFIG_DIR / "hypr", exist_ok=True)
-    with open(CONFIG_DIR / "hypr" / "colors.conf", "w") as f:
-        f.write(content)
+    write_text(CONFIG_DIR / "hypr" / "colors.conf", content)
 
     # Generate colors.lua
     lua_content = "-- Auto-generated hyprland colors\nreturn {\n"
     for k, v in colors.items():
         lua_content += f'  {k} = "{v.lstrip("#")}",\n'
     lua_content += "}\n"
-    with open(CONFIG_DIR / "hypr" / "colors.lua", "w") as f:
-        f.write(lua_content)
+    write_text(CONFIG_DIR / "hypr" / "colors.lua", lua_content)
 
 
 def update_dunstrc(colors):
     dunstrc_path = CONFIG_DIR / "dunst" / "dunstrc"
-    if not os.path.exists(dunstrc_path):
+    if not dunstrc_path.exists():
         return
-    with open(dunstrc_path, "r") as f:
-        content = f.read()
+    content = dunstrc_path.read_text()
 
     content = re.sub(
         r'frame_color = ".*?"(?=\nseparator_color)',
@@ -185,13 +173,11 @@ def update_dunstrc(colors):
         content,
     )
 
-    with open(dunstrc_path, "w") as f:
-        f.write(content)
+    write_text(dunstrc_path, content)
 
 
 def generate_spicetify(colors):
     spicetify_dir = CONFIG_DIR / "spicetify" / "Themes" / "Comfy"
-    os.makedirs(spicetify_dir, exist_ok=True)
 
     # Needs hex codes without the leading #
     s_colors = {k: v.lstrip("#") for k, v in colors.items()}
@@ -213,8 +199,7 @@ notification       = {s_colors['surface']}
 notification-error = {s_colors['red']}
 misc               = {s_colors['blue']}
 """
-    with open(spicetify_dir / "color.ini", "w") as f:
-        f.write(content)
+    write_text(spicetify_dir / "color.ini", content)
 
 
 def generate_nvim(colors):
@@ -224,24 +209,22 @@ def generate_nvim(colors):
     for k, v in colors.items():
         content += f'  {k} = "{v}",\n'
     content += "}\n"
-    os.makedirs(os.path.dirname(nvim_colors_path), exist_ok=True)
-    with open(nvim_colors_path, "w") as f:
-        f.write(content)
+    write_text(nvim_colors_path, content)
 
 
-def generate_firefox(colors):
-    import configparser
-    import sys
-
+def get_firefox_base_dir():
     if sys.platform == "darwin":
-        base_dir = os.path.expanduser("~/Library/Application Support/Firefox")
-    else:
-        base_dir = os.path.expanduser("~/.config/mozilla/firefox")
+        return Path.home() / "Library" / "Application Support" / "Firefox"
 
-    profiles_ini_path = os.path.join(base_dir, "profiles.ini")
-    profile_dir = ""
+    config_base = Path.home() / ".config" / "mozilla" / "firefox"
+    if config_base.exists():
+        return config_base
+    return Path.home() / ".mozilla" / "firefox"
 
-    if os.path.exists(profiles_ini_path):
+
+def find_firefox_profile(base_dir):
+    profiles_ini_path = base_dir / "profiles.ini"
+    if profiles_ini_path.exists():
         config = configparser.ConfigParser()
         config.read(profiles_ini_path)
         for section in config.sections():
@@ -251,27 +234,24 @@ def generate_firefox(colors):
                 path_val = config.get(section, "Path")
                 is_relative = config.get(section, "IsRelative", fallback="1")
                 if is_relative == "1":
-                    profile_dir = os.path.join(base_dir, path_val)
+                    return base_dir / path_val
                 else:
-                    profile_dir = path_val
-                break
+                    return Path(path_val)
 
-    if not profile_dir:
-        import glob
+    return next(base_dir.glob("*.default-release"), None)
 
-        profiles = glob.glob(os.path.join(base_dir, "*.default-release"))
-        if profiles:
-            profile_dir = profiles[0]
 
+def generate_firefox(colors):
+    profile_dir = find_firefox_profile(get_firefox_base_dir())
     if not profile_dir:
         return
 
-    textfox_chrome_dir = os.path.join(profile_dir, "chrome")
+    textfox_chrome_dir = profile_dir / "chrome"
 
-    if not os.path.exists(textfox_chrome_dir):
+    if not textfox_chrome_dir.exists():
         return
 
-    config_path = os.path.join(textfox_chrome_dir, "config.css")
+    config_path = textfox_chrome_dir / "config.css"
 
     css_content = "/* Auto-generated textfox colors */\n"
     css_content += ":root {\n"
@@ -287,8 +267,7 @@ def generate_firefox(colors):
 
     css_content += "}\n"
 
-    with open(config_path, "w") as f:
-        f.write(css_content)
+    write_text(config_path, css_content)
 
 
 def generate_gtk(colors):
@@ -325,13 +304,11 @@ def generate_gtk(colors):
 @define-color warning_color {colors['yellow']};
 @define-color success_color {colors['green']};
 @define-color destructive_color {colors['red']};
-"""
+    """
     # Write to both GTK 3.0 and GTK 4.0
     for gtk_ver in ["gtk-3.0", "gtk-4.0"]:
-        gtk_dir = os.path.expanduser(f"~/.config/{gtk_ver}")
-        os.makedirs(gtk_dir, exist_ok=True)
-        with open(gtk_dir + "/gtk.css", "w") as f:
-            f.write(css_content)
+        gtk_dir = Path.home() / ".config" / gtk_ver
+        write_text(gtk_dir / "gtk.css", css_content)
 
 
 def generate_qt(colors):
@@ -363,19 +340,15 @@ def generate_qt(colors):
     color_str = ", ".join(qt_colors)
     conf_content = f"[ColorScheme]\nactive_colors={color_str}\ndisabled_colors={color_str}\ninactive_colors={color_str}\n"
 
-    import configparser
-
     for qt_ver in ["qt5ct", "qt6ct"]:
-        colors_dir = os.path.expanduser(f"~/.config/{qt_ver}/colors")
-        os.makedirs(colors_dir, exist_ok=True)
-        with open(os.path.join(colors_dir, "pywal.conf"), "w") as f:
-            f.write(conf_content)
+        colors_dir = Path.home() / ".config" / qt_ver / "colors"
+        write_text(colors_dir / "pywal.conf", conf_content)
 
-        qt_conf_path = os.path.expanduser(f"~/.config/{qt_ver}/{qt_ver}.conf")
+        qt_conf_path = Path.home() / ".config" / qt_ver / f"{qt_ver}.conf"
         config = configparser.ConfigParser()
         config.optionxform = str
 
-        if os.path.exists(qt_conf_path):
+        if qt_conf_path.exists():
             config.read(qt_conf_path)
 
         if not config.has_section("Appearance"):
@@ -384,11 +357,12 @@ def generate_qt(colors):
         config.set(
             "Appearance",
             "color_scheme_path",
-            os.path.expanduser(f"~/.config/{qt_ver}/colors/pywal.conf"),
+            str(colors_dir / "pywal.conf"),
         )
         config.set("Appearance", "custom_palette", "true")
         config.set("Appearance", "style", "Fusion")
 
+        qt_conf_path.parent.mkdir(parents=True, exist_ok=True)
         with open(qt_conf_path, "w") as f:
             config.write(f)
 
@@ -418,10 +392,7 @@ def generate_quickshell(colors):
     content += "    }\n"
     content += "}\n"
 
-    quickshell_dir = CONFIG_DIR / "quickshell"
-    os.makedirs(quickshell_dir, exist_ok=True)
-    with open(QUICKSHELL_COLORS, "w") as f:
-        f.write(content)
+    write_text(QUICKSHELL_COLORS, content)
 
 
 def generate_quickshell_paths():
@@ -435,9 +406,7 @@ QtObject {{
 }}
 """
 
-    os.makedirs(QUICKSHELL_PATHS.parent, exist_ok=True)
-    with open(QUICKSHELL_PATHS, "w") as f:
-        f.write(content)
+    write_text(QUICKSHELL_PATHS, content)
 
 
 def main():
