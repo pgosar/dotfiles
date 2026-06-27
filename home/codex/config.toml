@@ -1,0 +1,26 @@
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+web_search = "cached"
+
+[features]
+memories = true
+
+[sandbox_workspace_write]
+network_access = true
+writable_roots = ["/workspace", "/home/node", "/nas/docker"]
+
+[projects."/Users/chilly"]
+trust_level = "trusted"
+
+[projects."/Users/chilly/code/dotfiles"]
+trust_level = "trusted"
+
+[projects."/workspace"]
+trust_level = "trusted"
+
+[projects."/nas/docker"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4

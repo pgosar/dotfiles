@@ -116,6 +116,7 @@ SHARED_LINKS=(
   "$DOTFILES_CONFIG_DIR/starship.toml|$CONFIG_HOME/starship.toml"
   "$DOTFILES_CONFIG_DIR/topgrade.toml|$CONFIG_HOME/topgrade.toml"
   "$DOTFILES_HOME_DIR/tmux.conf|$HOME/.tmux.conf"
+  "$DOTFILES_HOME_DIR/codex/config.toml|$HOME/.codex/config.toml"
   "$DOTFILES_CONFIG_DIR/spicetify/config-xpui.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/color.ini|$CONFIG_HOME/spicetify/Themes/Comfy/color.ini"
 )
@@ -149,6 +150,7 @@ install_pipx_tools
 # ---- Shared Symlinks -------------------------------------------------------
 
 link_entries "${SHARED_LINKS[@]}"
+chmod 600 "$DOTFILES_HOME_DIR/codex/config.toml"
 
 # ---- Firefox Shared Setup --------------------------------------------------
 
