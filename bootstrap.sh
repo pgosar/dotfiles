@@ -169,6 +169,7 @@ sudo systemctl enable --now libvirtd
 sudo systemctl enable --now ufw
 sudo systemctl enable --now avahi-daemon
 sudo systemctl enable --now systemd-resolved
+sudo systemctl enable --now sshd
 echo "Configuring systemd-resolved DNS resolver stub link..."
 sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 sudo systemctl enable --now systemd-timesyncd
