@@ -7,6 +7,14 @@ source "$SCRIPT_DIR/home/scripts/paths.sh"
 
 CONFIG_HOME="$HOME/.config"
 
+warn() {
+  printf 'warning: %s\n' "$*" >&2
+}
+
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 link_path() {
   local src="$1"
   local dest="$2"
@@ -23,6 +31,80 @@ link_entries() {
     IFS="|" read -r src dest <<< "$entry"
     link_path "$src" "$dest"
   done
+}
+
+install_oh_my_zsh() {
+  if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    if command_exists curl; then
+      echo "Installing Oh My Zsh..."
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    else
+      warn "curl is not installed; skipping Oh My Zsh install"
+      return 0
+    fi
+  fi
+
+  local zsh_custom
+  zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+  mkdir -p "$zsh_custom/plugins"
+
+  if [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]; then
+    echo "Installing zsh-autosuggestions..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions"
+  fi
+
+  if [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]; then
+    echo "Installing zsh-syntax-highlighting..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting"
+  fi
+}
+
+install_cargo_tools() {
+  if ! command_exists cargo; then
+    warn "cargo is not installed; skipping dotfiles cargo tools"
+    return 0
+  fi
+
+  local entry crate command
+  local cargo_tools=(
+    "bat|bat"
+    "cargo-cache|cargo-cache"
+    "cargo-update|cargo-install-update"
+    "eza|eza"
+    "kondo|kondo"
+    "procs|procs"
+    "rm-improved|rip"
+    "starship|starship"
+    "tokei|tokei"
+    "topgrade|topgrade"
+    "zoxide|zoxide"
+  )
+
+  for entry in "${cargo_tools[@]}"; do
+    IFS="|" read -r crate command <<< "$entry"
+    if command_exists "$command"; then
+      continue
+    fi
+    echo "Installing cargo tool: $crate"
+    cargo install --locked "$crate"
+  done
+}
+
+install_pipx_tools() {
+  if ! command_exists pipx; then
+    warn "pipx is not installed; skipping dotfiles pipx tools"
+    return 0
+  fi
+
+  if ! command_exists register-python-argcomplete; then
+    echo "Installing pipx application: argcomplete"
+    pipx install --include-deps argcomplete
+  fi
+
+  if ! command_exists bpython; then
+    echo "Installing pipx application: bpython"
+    pipx install --include-deps bpython
+  fi
 }
 
 SHARED_LINKS=(
@@ -58,6 +140,12 @@ DARWIN_LINKS=(
   "$DOTFILES_CONFIG_DIR/borders|$CONFIG_HOME/borders"
 )
 
+# ---- Dotfiles-Dependent User Tools ----------------------------------------
+
+install_oh_my_zsh
+install_cargo_tools
+install_pipx_tools
+
 # ---- Shared Symlinks -------------------------------------------------------
 
 link_entries "${SHARED_LINKS[@]}"
@@ -86,12 +174,12 @@ if [ -n "$FIREFOX_BASE" ]; then
   if [ -n "$FIREFOX_PROFILE" ]; then
     if [ ! -f "$FIREFOX_PROFILE/user.js" ] || [ ! -d "$FIREFOX_PROFILE/chrome" ]; then
       echo "Installing Textfox theme to Firefox profile..."
-      /bin/rm -rf /tmp/textfox_clone
-      git clone https://github.com/adriankarlen/textfox /tmp/textfox_clone || true
+      TEXTFOX_CLONE="$(mktemp -d)"
+      git clone https://github.com/adriankarlen/textfox "$TEXTFOX_CLONE" || true
       mkdir -p "$FIREFOX_PROFILE/chrome"
-      cp -r /tmp/textfox_clone/chrome/* "$FIREFOX_PROFILE/chrome/"
-      cp -r /tmp/textfox_clone/user.js "$FIREFOX_PROFILE/user.js"
-      /bin/rm -rf /tmp/textfox_clone
+      cp -r "$TEXTFOX_CLONE/chrome/"* "$FIREFOX_PROFILE/chrome/"
+      cp -r "$TEXTFOX_CLONE/user.js" "$FIREFOX_PROFILE/user.js"
+      /bin/rm -rf "$TEXTFOX_CLONE"
     fi
   fi
 fi
