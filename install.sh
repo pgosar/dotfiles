@@ -168,7 +168,7 @@ if [ -n "$FIREFOX_BASE" ]; then
   if [ -n "$FIREFOX_PROFILE_PATH" ]; then
     FIREFOX_PROFILE="$FIREFOX_BASE/$FIREFOX_PROFILE_PATH"
   else
-    FIREFOX_PROFILE=$(ls -d "$FIREFOX_BASE"/*.default-release 2> /dev/null | head -n 1)
+    FIREFOX_PROFILE=$(find "$FIREFOX_BASE" -maxdepth 1 -type d -name "*.default-release" -print -quit 2> /dev/null)
   fi
 
   if [ -n "$FIREFOX_PROFILE" ]; then

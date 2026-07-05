@@ -15,7 +15,7 @@ OS="$(uname)"
 
 # ---- Environment Variables -------------------------------------------------
 
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
 export DOTFILES_DIR="${DOTFILES_DIR:-${${(%):-%x}:A:h:h}}"
