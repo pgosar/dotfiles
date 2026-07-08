@@ -1,5 +1,9 @@
 export MAILSYNC_MUTE=1
 
+if [ -z "${LANG:-}" ]; then
+  export LANG=C.utf8
+fi
+
 if [ "$(uname)" = "Darwin" ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi

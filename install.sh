@@ -5,6 +5,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=home/scripts/paths.sh
 source "$SCRIPT_DIR/home/scripts/paths.sh"
 
+if [ -z "${LANG:-}" ] || [ "${LANG:-}" = "POSIX" ]; then
+  export LANG=C.utf8
+fi
+
 CONFIG_HOME="$HOME/.config"
 
 warn() {
@@ -76,6 +80,10 @@ ensure_linux_packages() {
 
   if ! command_exists fzf; then
     packages+=(fzf)
+  fi
+
+  if ! infocmp xterm-kitty >/dev/null 2>&1; then
+    packages+=(kitty-terminfo)
   fi
 
   if ! command_exists node; then

@@ -13,6 +13,10 @@
 
 OS="$(uname)"
 
+if [ -z "${LANG:-}" ] || [ "${LANG:-}" = "POSIX" ]; then
+  export LANG=C.utf8
+fi
+
 # ---- Environment Variables -------------------------------------------------
 
 export PATH="$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
@@ -71,7 +75,6 @@ plugins=(
   safe-paste
   zsh-interactive-cd
   zsh-autosuggestions
-  zsh-syntax-highlighting
   vi-mode
 )
 
@@ -152,3 +155,12 @@ if [ "$OS" = "Linux" ]; then
 elif [ "$OS" = "Darwin" ]; then
   ulimit -Sn unlimited && ulimit -Sl unlimited
 fi
+
+ZSH_SYNTAX_HIGHLIGHTING="${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if [ -f "$ZSH_SYNTAX_HIGHLIGHTING" ]; then
+  # shellcheck source=/dev/null
+  source "$ZSH_SYNTAX_HIGHLIGHTING"
+fi
+
+# Added by Antigravity IDE
+export PATH="/Users/chilly/.antigravity-ide/antigravity-ide/bin:$PATH"
