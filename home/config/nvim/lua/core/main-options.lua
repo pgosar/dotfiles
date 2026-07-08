@@ -1,3 +1,37 @@
+-- Custom OSC 52 clipboard provider (only used if no working system clipboard tool is found)
+local function has_working_clipboard()
+  if vim.fn.executable("pbcopy") == 1 then
+    return true
+  end
+  if vim.fn.executable("wl-copy") == 1 and vim.env.WAYLAND_DISPLAY ~= nil and vim.env.WAYLAND_DISPLAY ~= "" then
+    return true
+  end
+  if (vim.fn.executable("xclip") == 1 or vim.fn.executable("xsel") == 1) and vim.env.DISPLAY ~= nil and vim.env.DISPLAY ~= "" then
+    return true
+  end
+  if vim.fn.executable("clip.exe") == 1 then
+    return true
+  end
+  if vim.fn.executable("termux-clipboard-set") == 1 then
+    return true
+  end
+  return false
+end
+
+if not has_working_clipboard() then
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
+end
+
 -- Global editor options
 local vim_opts = require("core.utils.utils").vim_opts
 vim.opt.shortmess:append("sIW")
