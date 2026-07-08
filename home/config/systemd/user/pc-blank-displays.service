@@ -1,0 +1,10 @@
+[Unit]
+Description=Blank displays after unattended Wake-on-LAN boot
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/pc-blank-displays
+
+[Install]
+WantedBy=default.target

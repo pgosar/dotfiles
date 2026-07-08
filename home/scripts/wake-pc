@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PC_HOST="${PC_HOST:-pc}"
+PC_IP="${PC_IP:-192.168.1.197}"
+PC_MAC="${PC_MAC:-9c:6b:00:a8:f9:d8}"
+WOL_BROADCAST="${WOL_BROADCAST:-192.168.1.255}"
+LOG_FILE="${LOG_FILE:-$HOME/wake-pc.log}"
+SSH_USER="${SSH_USER:-chilly}"
+SSH_TARGET="${SSH_TARGET:-$PC_HOST}"
+SSH_FALLBACK_TARGET="${SSH_FALLBACK_TARGET:-$SSH_USER@$PC_IP}"
+SSH_OPTS=(
+  -o BatchMode=yes
+  -o ConnectTimeout=5
+  -o StrictHostKeyChecking=accept-new
+)
+
+log() {
+  printf '%s %s\n' "$(date -Is)" "$*" >>"$LOG_FILE"
+}
+
+send_wol() {
+  if command -v etherwake >/dev/null 2>&1; then
+    log "sending WOL with etherwake to $PC_MAC"
+    etherwake "$PC_MAC"
+    return
+  fi
+  if command -v wol >/dev/null 2>&1; then
+    log "sending WOL with wol to $PC_MAC via $WOL_BROADCAST"
+    wol --host="$WOL_BROADCAST" "$PC_MAC"
+    return
+  fi
+  log "ERROR: neither etherwake nor wol is installed"
+  return 127
+}
+
+pc_display_off_script() {
+  cat <<'REMOTE'
+set -u
+
+log_remote() {
+  printf '%s\n' "$*" >&2
+}
+
+display_off_success=0
+uid="$(id -u)"
+runtime_dir="/run/user/$uid"
+
+if command -v hyprctl >/dev/null 2>&1 && pgrep -u "$USER" -x Hyprland >/dev/null 2>&1; then
+  hypr_pid="$(pgrep -u "$USER" -x Hyprland | head -n1)"
+  hypr_sig="$(tr '\0' '\n' <"/proc/$hypr_pid/environ" 2>/dev/null | sed -n 's/^HYPRLAND_INSTANCE_SIGNATURE=//p' | head -n1)"
+  if [ -n "$hypr_sig" ]; then
+    XDG_RUNTIME_DIR="$runtime_dir" HYPRLAND_INSTANCE_SIGNATURE="$hypr_sig" hyprctl dispatch dpms off >/dev/null 2>&1 \
+      && { display_off_success=1; log_remote "hyprctl dpms off without disabling outputs"; } \
+      || log_remote "hyprctl dpms off failed"
+  fi
+fi
+
+if command -v kscreen-doctor >/dev/null 2>&1 && pgrep -u "$USER" -x kwin_wayland >/dev/null 2>&1; then
+  XDG_RUNTIME_DIR="$runtime_dir" WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}" kscreen-doctor --dpms off >/dev/null 2>&1 \
+    && { display_off_success=1; log_remote "kscreen dpms off without disabling outputs"; } \
+    || log_remote "kscreen dpms off failed"
+fi
+
+if command -v kscreen-doctor >/dev/null 2>&1 && id plasmalogin >/dev/null 2>&1 && pgrep -u plasmalogin -x kwin_wayland >/dev/null 2>&1; then
+  login_uid="$(id -u plasmalogin)"
+  sudo -n -u plasmalogin XDG_RUNTIME_DIR="/run/user/$login_uid" WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}" \
+    kscreen-doctor --dpms off >/dev/null 2>&1 \
+    && { display_off_success=1; log_remote "plasmalogin kscreen dpms off without disabling outputs"; } \
+    || log_remote "plasmalogin kscreen dpms off failed"
+fi
+
+if command -v xset >/dev/null 2>&1; then
+  display="$(tr '\0' '\n' </proc/"$(pgrep -u "$USER" -x Xorg 2>/dev/null | head -n1)"/environ 2>/dev/null | sed -n 's/^DISPLAY=//p' | head -n1)"
+  if [ -n "$display" ]; then
+    XDG_RUNTIME_DIR="$runtime_dir" DISPLAY="$display" xset dpms force off >/dev/null 2>&1 \
+      && { display_off_success=1; log_remote "xset dpms off without disabling outputs"; } \
+      || log_remote "xset dpms off failed"
+  fi
+fi
+
+if [ "$display_off_success" -ne 1 ]; then
+  log_remote "no display session accepted dpms off yet"
+  exit 75
+fi
+REMOTE
+}
+
+turn_displays_off_when_ssh_is_ready() {
+  (
+    for _ in $(seq 1 120); do
+      if ssh "${SSH_OPTS[@]}" "$SSH_TARGET" "$(pc_display_off_script)" >>"$LOG_FILE" 2>&1; then
+        log "display-off command completed through $SSH_TARGET"
+        exit 0
+      fi
+      if ssh "${SSH_OPTS[@]}" "$SSH_FALLBACK_TARGET" "$(pc_display_off_script)" >>"$LOG_FILE" 2>&1; then
+        log "display-off command completed through $SSH_FALLBACK_TARGET"
+        exit 0
+      fi
+      sleep 5
+    done
+    log "ERROR: PC did not become reachable over SSH before display-off timeout"
+  ) >/dev/null 2>&1 &
+}
+
+send_wol
+turn_displays_off_when_ssh_is_ready
+log "wake-pc dispatched"
+printf 'wake-pc dispatched for %s (%s); display-off helper is running in the background\n' "$PC_HOST" "$PC_MAC"

@@ -205,6 +205,7 @@ SHARED_LINKS=(
   "$DOTFILES_HOME_DIR/codex/config.toml|$HOME/.codex/config.toml"
   "$DOTFILES_CONFIG_DIR/spicetify/config-xpui.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/color.ini|$CONFIG_HOME/spicetify/Themes/Comfy/color.ini"
+  "$DOTFILES_SCRIPTS_DIR|$CONFIG_HOME/dotfiles-scripts"
 )
 
 LINUX_LINKS=(
@@ -216,7 +217,6 @@ LINUX_LINKS=(
   "$DOTFILES_CONFIG_DIR/quickshell|$CONFIG_HOME/quickshell"
   "$DOTFILES_CONFIG_DIR/fontconfig|$CONFIG_HOME/fontconfig"
   "$DOTFILES_CONFIG_DIR/systemd|$CONFIG_HOME/systemd"
-  "$DOTFILES_SCRIPTS_DIR|$CONFIG_HOME/dotfiles-scripts"
 )
 
 DARWIN_LINKS=(
