@@ -15,6 +15,85 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+ensure_cargo() {
+  if command_exists cargo; then
+    return 0
+  fi
+
+  if [ -f "$HOME/.cargo/env" ]; then
+    # shellcheck source=/dev/null
+    . "$HOME/.cargo/env"
+  fi
+
+  if command_exists cargo; then
+    return 0
+  fi
+
+  if ! command_exists curl; then
+    warn "curl is not installed; cannot bootstrap rustup"
+    return 1
+  fi
+
+  echo "Installing rustup..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+
+  if [ -f "$HOME/.cargo/env" ]; then
+    # shellcheck source=/dev/null
+    . "$HOME/.cargo/env"
+  fi
+
+  if ! command_exists cargo; then
+    warn "cargo is still not available after rustup install"
+    return 1
+  fi
+}
+
+ensure_pipx() {
+  if command_exists pipx; then
+    return 0
+  fi
+
+  if [ "$OS" = "Linux" ] && command_exists pacman; then
+    echo "Installing python-pipx..."
+    sudo pacman -S --needed --noconfirm python-pipx
+  else
+    warn "pipx is not installed; skipping dotfiles pipx tools"
+    return 1
+  fi
+
+  if ! command_exists pipx; then
+    warn "pipx is still not available after package install"
+    return 1
+  fi
+}
+
+ensure_linux_packages() {
+  if [ "$OS" != "Linux" ] || ! command_exists pacman; then
+    return 0
+  fi
+
+  local packages=()
+
+  if ! command_exists fzf; then
+    packages+=(fzf)
+  fi
+
+  if ! command_exists node; then
+    packages+=(nodejs)
+  fi
+
+  if ! command_exists npm; then
+    packages+=(npm)
+  fi
+
+  if [ "${#packages[@]}" -eq 0 ]; then
+    return 0
+  fi
+
+  echo "Installing Linux packages: ${packages[*]}"
+  sudo pacman -S --needed --noconfirm "${packages[@]}"
+}
+
 link_path() {
   local src="$1"
   local dest="$2"
@@ -60,8 +139,7 @@ install_oh_my_zsh() {
 }
 
 install_cargo_tools() {
-  if ! command_exists cargo; then
-    warn "cargo is not installed; skipping dotfiles cargo tools"
+  if ! ensure_cargo; then
     return 0
   fi
 
@@ -74,6 +152,7 @@ install_cargo_tools() {
     "kondo|kondo"
     "procs|procs"
     "rm-improved|rip"
+    "vivid|vivid"
     "starship|starship"
     "tokei|tokei"
     "topgrade|topgrade"
@@ -91,8 +170,7 @@ install_cargo_tools() {
 }
 
 install_pipx_tools() {
-  if ! command_exists pipx; then
-    warn "pipx is not installed; skipping dotfiles pipx tools"
+  if ! ensure_pipx; then
     return 0
   fi
 
@@ -143,6 +221,7 @@ DARWIN_LINKS=(
 
 # ---- Dotfiles-Dependent User Tools ----------------------------------------
 
+ensure_linux_packages
 install_oh_my_zsh
 install_cargo_tools
 install_pipx_tools
