@@ -93,10 +93,8 @@ if [ -f "$loadpath/commands.sh" ]; then # load commands
   source "$loadpath/commands.sh"
 fi
 
-if [ -f ~/.fzf.zsh ]; then
-  # shellcheck source=/dev/null
-  source ~/.fzf.zsh # load fzf
-fi
+autoload -U compinit
+compinit
 
 # ---- Keybindings -----------------------------------------------------------
 
@@ -114,11 +112,13 @@ eval "$(starship init zsh)"
 
 eval "$(register-python-argcomplete pipx)"
 
+if [ -f ~/.fzf.zsh ]; then
+  # shellcheck source=/dev/null
+  source ~/.fzf.zsh # load fzf
+fi
+
 # shellcheck disable=SC1090
 source <(fzf --zsh)
-
-autoload -U compinit
-compinit
 
 # Miniconda
 if [ -f /opt/miniconda3/etc/profile.d/conda.sh ]; then
