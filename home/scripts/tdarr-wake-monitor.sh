@@ -21,6 +21,7 @@ BLOCK_REMOTE_USER_SESSIONS="${BLOCK_REMOTE_USER_SESSIONS:-true}"
 IMMICH_LAST_REQUEST_FILE="${IMMICH_LAST_REQUEST_FILE:-/data/docker/appdata/nightly-orchestrator/immich-ml-last-request}"
 IMMICH_ACTIVE_REQUESTS_FILE="${IMMICH_ACTIVE_REQUESTS_FILE:-/data/docker/appdata/nightly-orchestrator/immich-ml-active-requests}"
 IMMICH_IDLE_SECONDS="${IMMICH_IDLE_SECONDS:-1800}"
+AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
 
 log() {
   mkdir -p "$(dirname "$LOG_FILE")"
@@ -97,9 +98,19 @@ has_work() {
   [ "${count:-0}" -gt 0 ]
 }
 
-pc_job_was_triggered() {
-  ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
-    "[ -f /dev/shm/pc-worker-job-triggered ]"
+pc_wake_is_automatic() {
+  local expected_boot_id current_boot_id
+  [ -f "$AUTO_WAKE_BOOT_ID_FILE" ] || return 1
+  expected_boot_id="$(tr -dc '0-9a-fA-F-' <"$AUTO_WAKE_BOOT_ID_FILE")"
+  current_boot_id="$(ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
+    'cat /proc/sys/kernel/random/boot_id' 2>/dev/null || true)"
+  if [ -n "$expected_boot_id" ] && [ "$current_boot_id" = "$expected_boot_id" ]; then
+    return 0
+  fi
+
+  log "PC boot does not match automatic wake ownership; leaving it powered on"
+  rm -f "$AUTO_WAKE_BOOT_ID_FILE"
+  return 1
 }
 
 immich_recent_or_active() {
@@ -166,7 +177,7 @@ cleanup_idle_pc() {
   if ! pc_reachable; then
     return 0
   fi
-  if ! pc_job_was_triggered; then
+  if ! pc_wake_is_automatic; then
     return 0
   fi
   if immich_recent_or_active; then
@@ -182,8 +193,12 @@ cleanup_idle_pc() {
   fi
   if [ "$POWEROFF_PC_WHEN_IDLE" = "true" ]; then
     log "Tdarr and Immich workers are idle; powering off PC"
-    ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
-      "$PC_POWEROFF_COMMAND" >/dev/null 2>&1 || log "failed to power off PC"
+    if ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
+      "$PC_POWEROFF_COMMAND" >/dev/null 2>&1; then
+      rm -f "$AUTO_WAKE_BOOT_ID_FILE"
+    else
+      log "failed to power off PC"
+    fi
   fi
 }
 

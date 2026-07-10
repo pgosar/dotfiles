@@ -7,6 +7,7 @@ WINDOW_START="${WINDOW_START:-04:00}"
 WINDOW_END="${WINDOW_END:-10:00}"
 LOG_FILE="${LOG_FILE:-/data/docker/appdata/nightly-orchestrator/nightly-pc-jobs.log}"
 STOP_OUTSIDE_WINDOW="${STOP_OUTSIDE_WINDOW:-true}"
+AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
 
 log() {
   mkdir -p "$(dirname "$LOG_FILE")"
@@ -47,6 +48,22 @@ pc_idle() {
   '
 }
 
+record_auto_wake_boot_id() {
+  local boot_id temp_file
+  boot_id="$(ssh -o BatchMode=yes -o ConnectTimeout=5 "$PC_HOST" \
+    'cat /proc/sys/kernel/random/boot_id')"
+  if [[ ! "$boot_id" =~ ^[0-9a-fA-F-]{36}$ ]]; then
+    log "warning: PC returned an invalid boot ID; automatic shutdown will remain disabled"
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$AUTO_WAKE_BOOT_ID_FILE")"
+  temp_file="${AUTO_WAKE_BOOT_ID_FILE}.tmp.$$"
+  printf '%s\n' "$boot_id" >"$temp_file"
+  mv -f "$temp_file" "$AUTO_WAKE_BOOT_ID_FILE"
+  log "recorded automatic wake ownership for the current PC boot"
+}
+
 if ! in_window; then
   if [ "$STOP_OUTSIDE_WINDOW" = "true" ] && pc_reachable; then
     log "outside nightly window $WINDOW_START-$WINDOW_END; stopping PC workers"
@@ -56,6 +73,7 @@ if ! in_window; then
   exit 0
 fi
 
+pc_was_woken=false
 if ! pc_reachable; then
   log "PC is not reachable; waking it"
   "$HOME/.config/dotfiles-scripts/wake-pc"
@@ -63,11 +81,16 @@ if ! pc_reachable; then
     pc_reachable && break
     sleep 10
   done
+  pc_was_woken=true
 fi
 
 if ! pc_reachable; then
   log "PC did not become reachable; skipping"
   exit 0
+fi
+
+if [ "$pc_was_woken" = "true" ]; then
+  record_auto_wake_boot_id || true
 fi
 
 if ! pc_idle; then
@@ -76,4 +99,4 @@ if ! pc_idle; then
 fi
 
 log "starting PC workers"
-ssh -o BatchMode=yes "$PC_HOST" 'touch /dev/shm/pc-worker-job-triggered && cd ~/docker/pc-workers && docker compose up -d'
+ssh -o BatchMode=yes "$PC_HOST" 'cd ~/docker/pc-workers && docker compose up -d'

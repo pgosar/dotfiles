@@ -9,6 +9,7 @@ WAKE_SCRIPT="${WAKE_SCRIPT:-$HOME/.config/dotfiles-scripts/wake-pc}"
 SSH_CONNECT_TIMEOUT="${SSH_CONNECT_TIMEOUT:-5}"
 SSH_WAIT_SECONDS="${SSH_WAIT_SECONDS:-300}"
 SERVICE_WAIT_SECONDS="${SERVICE_WAIT_SECONDS:-180}"
+AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
 CHECK_TDARR="${CHECK_TDARR:-false}"
 CHECK_IMMICH_ML="${CHECK_IMMICH_ML:-false}"
 IMMICH_ML_URL="${IMMICH_ML_URL:-http://$PC_IP:3003}"
@@ -23,6 +24,22 @@ log() {
 
 pc_reachable() {
   ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" 'true' >/dev/null 2>&1
+}
+
+record_auto_wake_boot_id() {
+  local boot_id temp_file
+  boot_id="$(ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
+    'cat /proc/sys/kernel/random/boot_id')"
+  if [[ ! "$boot_id" =~ ^[0-9a-fA-F-]{36}$ ]]; then
+    log "warning: PC returned an invalid boot ID; automatic shutdown will remain disabled"
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$AUTO_WAKE_BOOT_ID_FILE")"
+  temp_file="${AUTO_WAKE_BOOT_ID_FILE}.tmp.$$"
+  printf '%s\n' "$boot_id" >"$temp_file"
+  mv -f "$temp_file" "$AUTO_WAKE_BOOT_ID_FILE"
+  log "Recorded automatic wake ownership for the current PC boot"
 }
 
 minutes_since_midnight() {
@@ -100,18 +117,25 @@ if [ "$NIGHT_ONLY" = "true" ] && ! in_night_window; then
   exit 0
 fi
 
+pc_was_woken=false
 if ! pc_reachable; then
   log "PC is not reachable; dispatching Wake-on-LAN"
-  "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1 || true
+  wake_dispatched=false
+  if "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1; then
+    wake_dispatched=true
+  else
+    log "Wake-on-LAN dispatch reported an error; automatic shutdown will remain disabled"
+  fi
   if ! wait_for_pc; then
     log "PC did not become reachable within ${SSH_WAIT_SECONDS}s"
     exit 1
   fi
+  pc_was_woken="$wake_dispatched"
 fi
 
-# Mark that a job was triggered during this boot session
-ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
-  "touch /dev/shm/pc-worker-job-triggered" || log "warning: failed to touch job-triggered marker"
+if [ "$pc_was_woken" = "true" ]; then
+  record_auto_wake_boot_id || true
+fi
 
 if [ "$CHECK_TDARR" = "true" ]; then
   if pc_container_running tdarr-node-pc; then
