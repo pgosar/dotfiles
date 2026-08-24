@@ -3,11 +3,13 @@ set -euo pipefail
 
 PC_HOST="${PC_HOST:-pc}"
 PC_IP="${PC_IP:-192.168.1.197}"
+PC_TAILSCALE_IP="${PC_TAILSCALE_IP:-100.91.239.107}"
 PC_MAC="${PC_MAC:-9c:6b:00:a8:f9:d8}"
 WOL_BROADCAST="${WOL_BROADCAST:-192.168.1.255}"
 LOG_FILE="${LOG_FILE:-$HOME/wake-pc.log}"
 SSH_USER="${SSH_USER:-chilly}"
 SSH_TARGET="${SSH_TARGET:-$PC_HOST}"
+SSH_TAILSCALE_TARGET="${SSH_TAILSCALE_TARGET:-$SSH_USER@$PC_TAILSCALE_IP}"
 SSH_FALLBACK_TARGET="${SSH_FALLBACK_TARGET:-$SSH_USER@$PC_IP}"
 SSH_OPTS=(
   -o BatchMode=yes
@@ -88,15 +90,14 @@ REMOTE
 
 turn_displays_off_when_ssh_is_ready() {
   (
+    ssh_targets=("$SSH_TARGET" "$SSH_TAILSCALE_TARGET" "$SSH_FALLBACK_TARGET")
     for _ in $(seq 1 120); do
-      if ssh "${SSH_OPTS[@]}" "$SSH_TARGET" "$(pc_display_off_script)" >>"$LOG_FILE" 2>&1; then
-        log "display-off command completed through $SSH_TARGET"
-        exit 0
-      fi
-      if ssh "${SSH_OPTS[@]}" "$SSH_FALLBACK_TARGET" "$(pc_display_off_script)" >>"$LOG_FILE" 2>&1; then
-        log "display-off command completed through $SSH_FALLBACK_TARGET"
-        exit 0
-      fi
+      for ssh_target in "${ssh_targets[@]}"; do
+        if ssh "${SSH_OPTS[@]}" "$ssh_target" "$(pc_display_off_script)" >>"$LOG_FILE" 2>&1; then
+          log "display-off command completed through $ssh_target"
+          exit 0
+        fi
+      done
       sleep 5
     done
     log "ERROR: PC did not become reachable over SSH before display-off timeout"
