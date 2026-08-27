@@ -193,6 +193,18 @@ install_pipx_tools() {
   fi
 }
 
+install_npm_tools() {
+  if ! command_exists npm; then
+    warn "npm is not installed; skipping the Immich CLI"
+    return 0
+  fi
+
+  if ! command_exists immich; then
+    echo "Installing npm application: @immich/cli"
+    npm install --global --prefix "$HOME/.local" @immich/cli
+  fi
+}
+
 SHARED_LINKS=(
   "$DOTFILES_CONFIG_DIR/nvim|$CONFIG_HOME/nvim"
   "$DOTFILES_CONFIG_DIR/kitty|$CONFIG_HOME/kitty"
@@ -233,6 +245,7 @@ ensure_linux_packages
 install_oh_my_zsh
 install_cargo_tools
 install_pipx_tools
+install_npm_tools
 
 # ---- Shared Symlinks -------------------------------------------------------
 
