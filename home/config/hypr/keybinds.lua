@@ -81,9 +81,14 @@ hl.bind(mainMod .. " + SHIFT + bracketright", hl.dsp.layout("colresize 1.0"))
 
 -- Graceful exit (SUPER + M) via hl.timer
 hl.bind(mainMod .. " + M", function()
-  hl.exec_cmd("killall -15 firefox")
-  hl.exec_cmd("hyprctl dispatch closewindow all")
-  hl.timer(function() hl.dispatch(hl.dsp.exit()) end, { timeout = 1500, type = "oneshot" })
+  -- Stop the session daemon while the windows still exist. Its SIGTERM
+  -- handler writes the final snapshot before applications are closed.
+  hl.exec_cmd("pkill -TERM -x hypr-persist")
+  hl.timer(function()
+    hl.exec_cmd("killall -15 firefox")
+    hl.exec_cmd("hyprctl dispatch closewindow all")
+  end, { timeout = 750, type = "oneshot" })
+  hl.timer(function() hl.dispatch(hl.dsp.exit()) end, { timeout = 2250, type = "oneshot" })
 end)
 
 -- Workspace page switcher & window mover native Lua logic

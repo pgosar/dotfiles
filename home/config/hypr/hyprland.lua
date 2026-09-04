@@ -26,6 +26,7 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("nm-applet")
   hl.exec_cmd("blueman-applet")
   hl.exec_cmd("wl-gammarelay-rs")
+  hl.exec_cmd("hypr-persist")
 end)
 
 -- ---------------------

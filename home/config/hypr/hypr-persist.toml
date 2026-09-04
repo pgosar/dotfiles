@@ -1,0 +1,29 @@
+# Save and restore Hyprland application windows, workspaces, and layout.
+
+[general]
+save_interval = 120
+session_dir = "~/.local/share/hypr-persist"
+restore_on_start = true
+
+# Browsers restore all of their own windows from a single launch. Starting one
+# process per saved browser window can therefore produce duplicates.
+per_window_launch = false
+
+restore_geometry = true
+restore_layout = true
+
+[rules]
+exclude = [
+    "^xdg-desktop-portal.*",
+    "^org\\.kde\\.polkit.*",
+    "^hyprpolkitagent$",
+    "^quickshell$",
+    "^waybar$",
+    "^wofi$",
+    "^steam.*",
+    "^gamescope$",
+]
+
+[overrides]
+
+[experimental]
