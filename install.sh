@@ -205,6 +205,64 @@ install_npm_tools() {
   fi
 }
 
+configure_kde() {
+  if [ "$OS" != "Linux" ] || ! command_exists kpackagetool6 || ! command_exists kwriteconfig6; then
+    return 0
+  fi
+
+  # shellcheck source=home/config/kde/settings.sh
+  source "$DOTFILES_CONFIG_DIR/kde/settings.sh"
+
+  local metadata_path installed_version temp_dir package_path actual_commit
+  metadata_path="${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/$KDE_KWIN_SCRIPT_ID/metadata.json"
+  installed_version=""
+  if [ -f "$metadata_path" ]; then
+    installed_version=$(sed -n 's/.*"Version": "\([^"]*\)".*/\1/p' "$metadata_path")
+  fi
+
+  if [ "$installed_version" != "$KDE_KWIN_SCRIPT_VERSION" ]; then
+    if ! command_exists git || ! command_exists zip; then
+      warn "git and zip are required to install the KDE window-position script"
+      return 0
+    fi
+
+    echo "Installing KDE window-position script v$KDE_KWIN_SCRIPT_VERSION..."
+    temp_dir=$(mktemp -d)
+    if ! git clone --depth 1 --branch "v$KDE_KWIN_SCRIPT_VERSION" \
+      "$KDE_KWIN_SCRIPT_REPOSITORY" "$temp_dir/repo"; then
+      warn "failed to download the KDE window-position script"
+      /bin/rm -rf "$temp_dir"
+      return 0
+    fi
+
+    actual_commit=$(git -C "$temp_dir/repo" rev-parse HEAD)
+    if [ "$actual_commit" != "$KDE_KWIN_SCRIPT_COMMIT" ]; then
+      warn "KDE window-position script revision did not match the pinned commit"
+      /bin/rm -rf "$temp_dir"
+      return 0
+    fi
+
+    package_path="$temp_dir/$KDE_KWIN_SCRIPT_ID.kwinscript"
+    (cd "$temp_dir/repo" && zip -rq "$package_path" src)
+    if [ -f "$metadata_path" ]; then
+      kpackagetool6 --type=KWin/Script --upgrade "$package_path"
+    else
+      kpackagetool6 --type=KWin/Script --install "$package_path"
+    fi
+    /bin/rm -rf "$temp_dir"
+  fi
+
+  local setting file group key value
+  for setting in "${KDE_CONFIG_SETTINGS[@]}"; do
+    IFS="|" read -r file group key value <<< "$setting"
+    kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"
+  done
+
+  if command_exists qdbus6; then
+    qdbus6 org.kde.KWin /KWin org.kde.KWin.reconfigure >/dev/null 2>&1 || true
+  fi
+}
+
 SHARED_LINKS=(
   "$DOTFILES_CONFIG_DIR/nvim|$CONFIG_HOME/nvim"
   "$DOTFILES_CONFIG_DIR/kitty|$CONFIG_HOME/kitty"
@@ -290,6 +348,8 @@ fi
 
 if [ "$OS" = "Linux" ]; then
   link_entries "${LINUX_LINKS[@]}"
+
+  configure_kde
 
   # Initialize Firefox and Spicetify dynamic themes.
   python3 "$APPLY_THEME_SCRIPT"
