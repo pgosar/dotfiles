@@ -31,7 +31,9 @@ if f then
           -- split by comma
           local parts = {}
           for part in monitor_args:gmatch("[^,]+") do
-            table.insert(parts, part:gsub("^%s+", ""):gsub("%s+$", ""))
+            -- Parentheses keep gsub's replacement count from becoming a
+            -- third argument to table.insert.
+            table.insert(parts, (part:gsub("^%s+", ""):gsub("%s+$", "")))
           end
 
           if #parts >= 4 then
