@@ -1,0 +1,12 @@
+[Unit]
+Description=Publish Wayland clipboard changes to NAS
+After=default.target
+
+[Service]
+ExecStart=/usr/local/bin/pc-clipboard-watch
+Restart=always
+RestartSec=5
+Environment=XDG_RUNTIME_DIR=%t
+
+[Install]
+WantedBy=default.target

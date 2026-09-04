@@ -1,0 +1,12 @@
+[Unit]
+Description=Pull NAS clipboard handoffs into the Wayland clipboard
+After=default.target
+
+[Service]
+ExecStart=/usr/local/bin/pc-clipboard-pull
+Restart=always
+RestartSec=5
+Environment=XDG_RUNTIME_DIR=%t
+
+[Install]
+WantedBy=default.target
