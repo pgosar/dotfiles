@@ -2,11 +2,12 @@
 set -euo pipefail
 
 PC_HOST="${PC_HOST:-pc}"
-PC_IP="${PC_IP:-192.168.1.214}"
+PC_IP="${PC_IP:-192.168.1.223}"
 PC_TAILSCALE_IP="${PC_TAILSCALE_IP:-100.91.239.107}"
 PC_MAC="${PC_MAC:-9c:6b:00:a8:f9:d8}"
 WOL_BROADCAST="${WOL_BROADCAST:-192.168.1.255}"
 LOG_FILE="${LOG_FILE:-$HOME/wake-pc.log}"
+WAKE_SOURCE="${WAKE_SOURCE:-unspecified}"
 SSH_USER="${SSH_USER:-chilly}"
 SSH_TARGET="${SSH_TARGET:-$PC_HOST}"
 SSH_TAILSCALE_TARGET="${SSH_TAILSCALE_TARGET:-$SSH_USER@$PC_TAILSCALE_IP}"
@@ -104,7 +105,8 @@ turn_displays_off_when_ssh_is_ready() {
   ) >/dev/null 2>&1 &
 }
 
+log "wake requested source=$WAKE_SOURCE"
 send_wol
 turn_displays_off_when_ssh_is_ready
-log "wake-pc dispatched"
+log "wake-pc dispatched source=$WAKE_SOURCE"
 printf 'wake-pc dispatched for %s (%s); display-off helper is running in the background\n' "$PC_HOST" "$PC_MAC"

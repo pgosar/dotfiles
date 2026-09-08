@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PC_HOST="${PC_HOST:-pc}"
-PC_IP="${PC_IP:-pc}"
+PC_IP="${PC_IP:-192.168.1.223}"
 PC_WORKER_DIR="${PC_WORKER_DIR:-~/docker/pc-workers}"
 LOG_FILE="${LOG_FILE:-/data/docker/appdata/nightly-orchestrator/pc-worker-ensure.log}"
 WAKE_SCRIPT="${WAKE_SCRIPT:-$HOME/.config/dotfiles-scripts/wake-pc}"
@@ -12,6 +12,7 @@ SERVICE_WAIT_SECONDS="${SERVICE_WAIT_SECONDS:-180}"
 AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
 CHECK_TDARR="${CHECK_TDARR:-false}"
 CHECK_IMMICH_ML="${CHECK_IMMICH_ML:-false}"
+WAKE_SOURCE="${WAKE_SOURCE:-unspecified}"
 IMMICH_ML_URL="${IMMICH_ML_URL:-http://$PC_IP:3003}"
 NIGHT_ONLY="${NIGHT_ONLY:-true}"
 NIGHT_START="${NIGHT_START:-04:00}"
@@ -119,9 +120,9 @@ fi
 
 pc_was_woken=false
 if ! pc_reachable; then
-  log "PC is not reachable; dispatching Wake-on-LAN"
+  log "PC is not reachable; source=$WAKE_SOURCE; dispatching Wake-on-LAN"
   wake_dispatched=false
-  if "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1; then
+  if WAKE_SOURCE="$WAKE_SOURCE" "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1; then
     wake_dispatched=true
   else
     log "Wake-on-LAN dispatch reported an error; automatic shutdown will remain disabled"

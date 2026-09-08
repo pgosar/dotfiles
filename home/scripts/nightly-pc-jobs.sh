@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PC_HOST="${PC_HOST:-pc}"
-PC_IP="${PC_IP:-192.168.1.197}"
+PC_IP="${PC_IP:-192.168.1.223}"
 WINDOW_START="${WINDOW_START:-04:00}"
 WINDOW_END="${WINDOW_END:-10:00}"
 LOG_FILE="${LOG_FILE:-/data/docker/appdata/nightly-orchestrator/nightly-pc-jobs.log}"
@@ -76,7 +76,7 @@ fi
 pc_was_woken=false
 if ! pc_reachable; then
   log "PC is not reachable; waking it"
-  "$HOME/.config/dotfiles-scripts/wake-pc"
+  WAKE_SOURCE="nightly-pc-jobs" "$HOME/.config/dotfiles-scripts/wake-pc"
   for _ in $(seq 1 60); do
     pc_reachable && break
     sleep 10

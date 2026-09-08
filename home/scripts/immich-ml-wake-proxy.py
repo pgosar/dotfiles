@@ -90,7 +90,7 @@ def in_night_window() -> bool:
     return now >= start or now < end
 
 
-def ensure_pc_ml() -> bool:
+def ensure_pc_ml(wake_source: str) -> bool:
     if not in_night_window():
         return False
     if healthcheck(PC_ML_URL):
@@ -98,11 +98,16 @@ def ensure_pc_ml() -> bool:
     with _ensure_lock:
         if healthcheck(PC_ML_URL):
             return True
-        log("PC Immich ML endpoint unavailable; running pc-worker-ensure")
+        log(f"PC Immich ML endpoint unavailable; source={wake_source}; running pc-worker-ensure")
         try:
             subprocess.run(
                 [ENSURE_SCRIPT],
-                env={**os.environ, "CHECK_IMMICH_ML": "true", "IMMICH_ML_URL": PC_ML_URL},
+                env={
+                    **os.environ,
+                    "CHECK_IMMICH_ML": "true",
+                    "IMMICH_ML_URL": PC_ML_URL,
+                    "WAKE_SOURCE": wake_source,
+                },
                 timeout=ENSURE_TIMEOUT,
                 check=False,
             )
@@ -163,9 +168,12 @@ def should_use_pc_ml() -> bool:
                 f"{BULK_REQUEST_THRESHOLD} in {BULK_WINDOW_SECONDS}s bulk window"
             )
             return False
-        log("Local Immich ML unavailable for real request; ensuring PC ML")
-        return ensure_pc_ml()
-    return ensure_pc_ml()
+        source = f"immich-ml-local-unavailable request_count={request_count}"
+        log(f"Local Immich ML unavailable for real request; source={source}; ensuring PC ML")
+        return ensure_pc_ml(source)
+    return ensure_pc_ml(
+        f"immich-ml-bulk request_count={request_count} threshold={BULK_REQUEST_THRESHOLD}"
+    )
 
 
 def is_healthcheck_path(path: str) -> bool:

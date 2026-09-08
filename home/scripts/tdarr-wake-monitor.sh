@@ -226,7 +226,7 @@ fi
 if has_work; then
   tdarr_state="busy"
   log "Tdarr has queued/staged work; ensuring PC worker stack"
-  CHECK_TDARR=true "$ENSURE_SCRIPT" >>"$LOG_FILE" 2>&1 || log "pc-worker-ensure failed"
+  WAKE_SOURCE="tdarr-queued-work" CHECK_TDARR=true "$ENSURE_SCRIPT" >>"$LOG_FILE" 2>&1 || log "pc-worker-ensure failed"
 else
   case "$?" in
     0)
