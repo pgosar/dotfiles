@@ -10,6 +10,9 @@ SSH_CONNECT_TIMEOUT="${SSH_CONNECT_TIMEOUT:-5}"
 SSH_WAIT_SECONDS="${SSH_WAIT_SECONDS:-300}"
 SERVICE_WAIT_SECONDS="${SERVICE_WAIT_SECONDS:-180}"
 AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
+AUTO_WAKE_SOURCE_FILE="${AUTO_WAKE_SOURCE_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-source}"
+LOCK_FILE="${LOCK_FILE:-/data/docker/appdata/nightly-orchestrator/pc-worker-ensure.lock}"
+LOCK_WAIT_SECONDS="${LOCK_WAIT_SECONDS:-480}"
 CHECK_TDARR="${CHECK_TDARR:-false}"
 CHECK_IMMICH_ML="${CHECK_IMMICH_ML:-false}"
 WAKE_SOURCE="${WAKE_SOURCE:-direct-or-legacy}"
@@ -29,7 +32,7 @@ pc_reachable() {
 }
 
 record_auto_wake_boot_id() {
-  local boot_id temp_file
+  local boot_id boot_temp source_temp
   boot_id="$(ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
     'cat /proc/sys/kernel/random/boot_id')"
   if [[ ! "$boot_id" =~ ^[0-9a-fA-F-]{36}$ ]]; then
@@ -38,9 +41,12 @@ record_auto_wake_boot_id() {
   fi
 
   mkdir -p "$(dirname "$AUTO_WAKE_BOOT_ID_FILE")"
-  temp_file="${AUTO_WAKE_BOOT_ID_FILE}.tmp.$$"
-  printf '%s\n' "$boot_id" >"$temp_file"
-  mv -f "$temp_file" "$AUTO_WAKE_BOOT_ID_FILE"
+  boot_temp="${AUTO_WAKE_BOOT_ID_FILE}.tmp.$$"
+  source_temp="${AUTO_WAKE_SOURCE_FILE}.tmp.$$"
+  printf '%s\n' "$boot_id" >"$boot_temp"
+  printf '%s\n' "$WAKE_SOURCE" | tr '\r\n' '  ' >"$source_temp"
+  mv -f "$boot_temp" "$AUTO_WAKE_BOOT_ID_FILE"
+  mv -f "$source_temp" "$AUTO_WAKE_SOURCE_FILE"
   log "Recorded automatic wake ownership for the current PC boot; source=$WAKE_SOURCE"
 }
 
@@ -115,6 +121,17 @@ wait_for_tdarr_node() {
 }
 
 log "Worker ensure requested; source=$WAKE_SOURCE; tdarr=$CHECK_TDARR; immich_ml=$CHECK_IMMICH_ML"
+
+mkdir -p "$(dirname "$LOCK_FILE")"
+exec 9>"$LOCK_FILE"
+if ! flock -n 9; then
+  log "Another worker ensure run holds the lock; source=$WAKE_SOURCE; waiting up to ${LOCK_WAIT_SECONDS}s"
+  if ! flock -w "$LOCK_WAIT_SECONDS" 9; then
+    log "Timed out waiting for worker ensure lock; source=$WAKE_SOURCE"
+    exit 1
+  fi
+  log "Worker ensure lock acquired after waiting; source=$WAKE_SOURCE"
+fi
 
 if [ "$NIGHT_ONLY" = "true" ] && ! in_night_window; then
   log "Outside worker window ${NIGHT_START}-${NIGHT_END}; source=$WAKE_SOURCE; not waking or starting PC workers"

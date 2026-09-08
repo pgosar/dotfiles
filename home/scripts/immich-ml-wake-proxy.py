@@ -37,12 +37,24 @@ ACTIVE_REQUESTS_FILE = os.environ.get(
 _ensure_lock = threading.Lock()
 _request_lock = threading.Lock()
 _active_lock = threading.Lock()
+_decision_log_lock = threading.Lock()
 _request_times = []
 _active_requests = 0
+_last_decision_logs = {}
 
 
 def log(message: str) -> None:
     print(message, file=sys.stderr, flush=True)
+
+
+def log_throttled(key: str, message: str, interval: int = 300) -> None:
+    now = time()
+    with _decision_log_lock:
+        previous = _last_decision_logs.get(key, 0)
+        if now - previous < interval:
+            return
+        _last_decision_logs[key] = now
+    log(message)
 
 
 def split_target(url: str):
@@ -92,6 +104,10 @@ def in_night_window() -> bool:
 
 def ensure_pc_ml(wake_source: str) -> bool:
     if not in_night_window():
+        log_throttled(
+            "outside-night-window",
+            f"PC ML ensure skipped outside {NIGHT_START}-{NIGHT_END}; source={wake_source}",
+        )
         return False
     if healthcheck(PC_ML_URL):
         return True
@@ -131,10 +147,14 @@ def touch_last_request() -> None:
 
 
 def write_active_requests() -> None:
+    temp_file = (
+        f"{ACTIVE_REQUESTS_FILE}.tmp.{os.getpid()}.{threading.get_ident()}"
+    )
     try:
         os.makedirs(os.path.dirname(ACTIVE_REQUESTS_FILE), exist_ok=True)
-        with open(ACTIVE_REQUESTS_FILE, "w", encoding="utf-8") as handle:
+        with open(temp_file, "w", encoding="utf-8") as handle:
             handle.write(f"{_active_requests}\n")
+        os.replace(temp_file, ACTIVE_REQUESTS_FILE)
     except Exception as exc:
         log(f"failed to update active request marker: {exc}")
 
@@ -288,6 +308,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    write_active_requests()
     server = ThreadingHTTPServer((LISTEN_HOST, LISTEN_PORT), ProxyHandler)
-    log(f"Immich ML wake proxy listening on {LISTEN_HOST}:{LISTEN_PORT}")
+    log(
+        f"Immich ML wake proxy listening on {LISTEN_HOST}:{LISTEN_PORT}; "
+        f"night_window={NIGHT_START}-{NIGHT_END}; "
+        f"bulk_threshold={BULK_REQUEST_THRESHOLD}/{BULK_WINDOW_SECONDS}s; "
+        f"fallback_to_local={FALLBACK_TO_LOCAL}"
+    )
     server.serve_forever()

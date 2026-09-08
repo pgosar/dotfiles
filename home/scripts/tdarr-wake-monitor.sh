@@ -22,6 +22,7 @@ IMMICH_LAST_REQUEST_FILE="${IMMICH_LAST_REQUEST_FILE:-/data/docker/appdata/night
 IMMICH_ACTIVE_REQUESTS_FILE="${IMMICH_ACTIVE_REQUESTS_FILE:-/data/docker/appdata/nightly-orchestrator/immich-ml-active-requests}"
 IMMICH_IDLE_SECONDS="${IMMICH_IDLE_SECONDS:-1800}"
 AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
+AUTO_WAKE_SOURCE_FILE="${AUTO_WAKE_SOURCE_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-source}"
 
 log() {
   mkdir -p "$(dirname "$LOG_FILE")"
@@ -92,8 +93,29 @@ stop_pc_workers() {
     "cd $PC_WORKER_DIR && docker compose stop tdarr-node immich-machine-learning-pc >/dev/null 2>&1"
 }
 
+pc_workers_running() {
+  ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
+    'for container in tdarr-node-pc immich_machine_learning_pc; do
+       docker inspect -f "{{.State.Running}}" "$container" 2>/dev/null || true
+     done' | grep -qx true
+}
+
+automatic_wake_source() {
+  local source="unknown"
+  if [ -f "$AUTO_WAKE_SOURCE_FILE" ]; then
+    IFS= read -r source <"$AUTO_WAKE_SOURCE_FILE" || true
+  fi
+  source="${source//$'\r'/ }"
+  source="${source//$'\n'/ }"
+  printf '%s\n' "${source:-unknown}"
+}
+
+clear_auto_wake_ownership() {
+  rm -f "$AUTO_WAKE_BOOT_ID_FILE" "$AUTO_WAKE_SOURCE_FILE"
+}
+
 pc_wake_is_automatic() {
-  local expected_boot_id current_boot_id
+  local expected_boot_id current_boot_id wake_source
   [ -f "$AUTO_WAKE_BOOT_ID_FILE" ] || return 1
   expected_boot_id="$(tr -dc '0-9a-fA-F-' <"$AUTO_WAKE_BOOT_ID_FILE")"
   current_boot_id="$(ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
@@ -102,8 +124,9 @@ pc_wake_is_automatic() {
     return 0
   fi
 
-  log "PC boot does not match automatic wake ownership; leaving it powered on"
-  rm -f "$AUTO_WAKE_BOOT_ID_FILE"
+  wake_source="$(automatic_wake_source)"
+  log "PC boot does not match automatic wake ownership; wake_source=$wake_source; leaving it powered on"
+  clear_auto_wake_ownership
   return 1
 }
 
@@ -163,7 +186,7 @@ REMOTE
 }
 
 cleanup_idle_pc() {
-  local tdarr_state="$1"
+  local tdarr_state="$1" wake_source
 
   if [ "$tdarr_state" != "idle" ]; then
     return 0
@@ -174,6 +197,7 @@ cleanup_idle_pc() {
   if ! pc_wake_is_automatic; then
     return 0
   fi
+  wake_source="$(automatic_wake_source)"
   if immich_recent_or_active; then
     return 0
   fi
@@ -183,15 +207,21 @@ cleanup_idle_pc() {
   fi
 
   if [ "$STOP_WORKERS_WHEN_IDLE" = "true" ]; then
-    stop_pc_workers || log "failed to stop idle PC worker containers"
+    if stop_pc_workers; then
+      log "Stopped idle PC worker containers; wake_source=$wake_source"
+    else
+      log "Failed to stop idle PC worker containers; wake_source=$wake_source"
+      return 1
+    fi
   fi
   if [ "$POWEROFF_PC_WHEN_IDLE" = "true" ]; then
-    log "Tdarr and Immich workers are idle; powering off PC"
+    log "Tdarr and Immich workers are idle; wake_source=$wake_source; requesting PC poweroff"
     if ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
       "$PC_POWEROFF_COMMAND" >/dev/null 2>&1; then
-      rm -f "$AUTO_WAKE_BOOT_ID_FILE"
+      log "PC poweroff command accepted; wake_source=$wake_source"
+      clear_auto_wake_ownership
     else
-      log "failed to power off PC"
+      log "Failed to request PC poweroff; wake_source=$wake_source"
     fi
   fi
 }
@@ -209,8 +239,12 @@ fi
 tdarr_state="unknown"
 
 if ! in_night_window; then
-  if [ "$STOP_WORKERS_OUTSIDE_WINDOW" = "true" ] && pc_reachable; then
-    stop_pc_workers || log "failed to stop PC worker containers outside ${NIGHT_START}-${NIGHT_END}"
+  if [ "$STOP_WORKERS_OUTSIDE_WINDOW" = "true" ] && pc_reachable && pc_workers_running; then
+    if stop_pc_workers; then
+      log "Stopped running PC workers outside ${NIGHT_START}-${NIGHT_END}"
+    else
+      log "Failed to stop PC worker containers outside ${NIGHT_START}-${NIGHT_END}"
+    fi
   fi
   tdarr_state="idle"
   cleanup_idle_pc "$tdarr_state"
