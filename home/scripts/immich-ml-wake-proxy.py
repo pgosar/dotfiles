@@ -100,7 +100,7 @@ def ensure_pc_ml(wake_source: str) -> bool:
             return True
         log(f"PC Immich ML endpoint unavailable; source={wake_source}; running pc-worker-ensure")
         try:
-            subprocess.run(
+            result = subprocess.run(
                 [ENSURE_SCRIPT],
                 env={
                     **os.environ,
@@ -111,8 +111,13 @@ def ensure_pc_ml(wake_source: str) -> bool:
                 timeout=ENSURE_TIMEOUT,
                 check=False,
             )
+            if result.returncode != 0:
+                log(
+                    "pc-worker-ensure exited "
+                    f"status={result.returncode}; source={wake_source}"
+                )
         except Exception as exc:
-            log(f"pc-worker-ensure failed: {exc}")
+            log(f"pc-worker-ensure failed; source={wake_source}; error={exc}")
         return healthcheck(PC_ML_URL)
 
 

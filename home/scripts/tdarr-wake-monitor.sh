@@ -92,12 +92,6 @@ stop_pc_workers() {
     "cd $PC_WORKER_DIR && docker compose stop tdarr-node immich-machine-learning-pc >/dev/null 2>&1"
 }
 
-has_work() {
-  local count
-  count="$(tdarr_work_count)" || return 2
-  [ "${count:-0}" -gt 0 ]
-}
-
 pc_wake_is_automatic() {
   local expected_boot_id current_boot_id
   [ -f "$AUTO_WAKE_BOOT_ID_FILE" ] || return 1
@@ -223,22 +217,18 @@ if ! in_night_window; then
   exit 0
 fi
 
-if has_work; then
-  tdarr_state="busy"
-  log "Tdarr has queued/staged work; ensuring PC worker stack"
-  WAKE_SOURCE="tdarr-queued-work" CHECK_TDARR=true "$ENSURE_SCRIPT" >>"$LOG_FILE" 2>&1 || log "pc-worker-ensure failed"
+if tdarr_count="$(tdarr_work_count)"; then
+  if [ "${tdarr_count:-0}" -gt 0 ]; then
+    tdarr_state="busy"
+    log "Tdarr has queued/staged work_count=$tdarr_count; ensuring PC worker stack"
+    WAKE_SOURCE="tdarr-queued-work work_count=$tdarr_count" CHECK_TDARR=true \
+      "$ENSURE_SCRIPT" >>"$LOG_FILE" 2>&1 || \
+      log "pc-worker-ensure failed; source=tdarr-queued-work; work_count=$tdarr_count"
+  else
+    tdarr_state="idle"
+  fi
 else
-  case "$?" in
-    0)
-      tdarr_state="idle"
-      ;;
-    1)
-      tdarr_state="idle"
-      ;;
-    *)
-      tdarr_state="unknown"
-      ;;
-  esac
+  tdarr_state="unknown"
 fi
 
 cleanup_idle_pc "$tdarr_state"

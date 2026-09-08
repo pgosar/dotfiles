@@ -12,7 +12,8 @@ SERVICE_WAIT_SECONDS="${SERVICE_WAIT_SECONDS:-180}"
 AUTO_WAKE_BOOT_ID_FILE="${AUTO_WAKE_BOOT_ID_FILE:-/data/docker/appdata/nightly-orchestrator/pc-auto-wake-boot-id}"
 CHECK_TDARR="${CHECK_TDARR:-false}"
 CHECK_IMMICH_ML="${CHECK_IMMICH_ML:-false}"
-WAKE_SOURCE="${WAKE_SOURCE:-unspecified}"
+WAKE_SOURCE="${WAKE_SOURCE:-direct-or-legacy}"
+WAKE_RUN_ID="${WAKE_RUN_ID:-$(date +%s)-$$}"
 IMMICH_ML_URL="${IMMICH_ML_URL:-http://$PC_IP:3003}"
 NIGHT_ONLY="${NIGHT_ONLY:-true}"
 NIGHT_START="${NIGHT_START:-04:00}"
@@ -20,7 +21,7 @@ NIGHT_END="${NIGHT_END:-10:00}"
 
 log() {
   mkdir -p "$(dirname "$LOG_FILE")"
-  printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$LOG_FILE"
+  printf '%s run_id=%s %s\n' "$(date -Is)" "$WAKE_RUN_ID" "$*" | tee -a "$LOG_FILE"
 }
 
 pc_reachable() {
@@ -40,7 +41,7 @@ record_auto_wake_boot_id() {
   temp_file="${AUTO_WAKE_BOOT_ID_FILE}.tmp.$$"
   printf '%s\n' "$boot_id" >"$temp_file"
   mv -f "$temp_file" "$AUTO_WAKE_BOOT_ID_FILE"
-  log "Recorded automatic wake ownership for the current PC boot"
+  log "Recorded automatic wake ownership for the current PC boot; source=$WAKE_SOURCE"
 }
 
 minutes_since_midnight() {
@@ -113,25 +114,32 @@ wait_for_tdarr_node() {
   return 1
 }
 
+log "Worker ensure requested; source=$WAKE_SOURCE; tdarr=$CHECK_TDARR; immich_ml=$CHECK_IMMICH_ML"
+
 if [ "$NIGHT_ONLY" = "true" ] && ! in_night_window; then
-  log "Outside worker window ${NIGHT_START}-${NIGHT_END}; not waking or starting PC workers"
+  log "Outside worker window ${NIGHT_START}-${NIGHT_END}; source=$WAKE_SOURCE; not waking or starting PC workers"
   exit 0
 fi
 
 pc_was_woken=false
 if ! pc_reachable; then
+  wake_started="$SECONDS"
   log "PC is not reachable; source=$WAKE_SOURCE; dispatching Wake-on-LAN"
   wake_dispatched=false
-  if WAKE_SOURCE="$WAKE_SOURCE" "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1; then
+  if WAKE_SOURCE="$WAKE_SOURCE" WAKE_RUN_ID="$WAKE_RUN_ID" \
+    "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1; then
     wake_dispatched=true
   else
-    log "Wake-on-LAN dispatch reported an error; automatic shutdown will remain disabled"
+    log "Wake-on-LAN dispatch reported an error; source=$WAKE_SOURCE; automatic shutdown will remain disabled"
   fi
   if ! wait_for_pc; then
-    log "PC did not become reachable within ${SSH_WAIT_SECONDS}s"
+    log "PC did not become reachable within ${SSH_WAIT_SECONDS}s; source=$WAKE_SOURCE"
     exit 1
   fi
+  log "PC became reachable after Wake-on-LAN; source=$WAKE_SOURCE; elapsed_seconds=$((SECONDS - wake_started))"
   pc_was_woken="$wake_dispatched"
+else
+  log "PC is already reachable; source=$WAKE_SOURCE; Wake-on-LAN not needed"
 fi
 
 if [ "$pc_was_woken" = "true" ]; then
@@ -180,4 +188,4 @@ if [ "$CHECK_IMMICH_ML" = "true" ]; then
   fi
 fi
 
-log "PC worker ensure complete"
+log "PC worker ensure complete; source=$WAKE_SOURCE"
