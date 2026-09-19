@@ -76,7 +76,7 @@ fi
 pc_was_woken=false
 if ! pc_reachable; then
   log "PC is not reachable; waking it"
-  WAKE_SOURCE="nightly-pc-jobs" "$HOME/.config/dotfiles-scripts/wake-pc"
+  WAKE_SOURCE="nightly-pc-jobs" "$HOME/.config/dotfiles-scripts/wake-pc.sh"
   for _ in $(seq 1 60); do
     pc_reachable && break
     sleep 10

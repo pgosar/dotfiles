@@ -6,9 +6,9 @@ tool aligned with the installed kernel and supports every KEY_* and BTN_* code,
 including media keys, function keys, mouse buttons, and gamepad buttons.
 
 Examples:
-  remote-input KEY_A
-  printf 'tap KEY_ENTER\ndown KEY_LEFT\nup KEY_LEFT\n' | remote-input
-  remote-input --list | rg '^KEY_F'
+  remote-input.py KEY_A
+  printf 'tap KEY_ENTER\ndown KEY_LEFT\nup KEY_LEFT\n' | remote-input.py
+  remote-input.py --list | rg '^KEY_F'
 """
 
 from __future__ import annotations
