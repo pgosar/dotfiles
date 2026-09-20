@@ -1,17 +1,23 @@
 #!/usr/bin/env sh
 
-sudo yabai --load-sa
-yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+# Do not stall startup when the scripting-addition sudoers rule has not been
+# installed yet.  With it installed, this loads automatically on login/Dock restart.
+sudo -n yabai --load-sa 2>/dev/null || true
+yabai -m signal --add event=dock_did_restart action="sudo -n yabai --load-sa 2>/dev/null || true"
 
 # auto float non-resizable windows
 yabai -m signal --add event=window_created action='
   yabai -m query --windows --window $yabai_window_id | jq -er ".\"can-resize\" or .\"is-floating\"" || \
- yabai -m window $yabai_window_id --toggle float --layer above --grid 4:4:1:1:2:2
+ yabai -m window $yabai_window_id --toggle float --sub-layer above --grid 4:4:1:1:2:2
 '
 
-yabai -m rule --add app="^({|Transmission|Messages|Preview|ProtonVPN|QuickTime Player|Activity Monitor|App Store|Calculator|Spotify|System Preferences|System Settings|zoom.us|Steam|Raycast|Settings|Spotlight|mpv)$" manage=off
-yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
-yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+# Keep dialogs and deliberately floating apps out of the BSP tree.  `sub-layer=above`
+# makes these windows stay above tiled windows (requires the yabai scripting addition).
+yabai -m rule --add label="dialogs" role="^AXDialog$" manage=off sub-layer=above
+yabai -m rule --add label="floating-apps" app="^({|Transmission|Messages|Preview|ProtonVPN|QuickTime Player|Activity Monitor|App Store|Calculator|Spotify|System Preferences|System Settings|zoom.us|Steam|Raycast|Settings|Spotlight|mpv)$" manage=off sub-layer=above
+yabai -m rule --add label="Finder" app="^Finder$" manage=off sub-layer=above
+yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off sub-layer=above
+yabai -m rule --apply
 
 yabai -m config external_bar all:40:0 \
 	mouse_follows_focus on \
@@ -20,7 +26,6 @@ yabai -m config external_bar all:40:0 \
 	window_placement second_child \
 	window_shadow float \
 	window_opacity off \
-	window_topmost on \
 	window_opacity_duration 0.2 \
 	active_window_opacity 1.0 \
 	insert_feedback_color 0xff9dd274 \
