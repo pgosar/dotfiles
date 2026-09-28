@@ -4,11 +4,13 @@ FONT_FACE="JetBrainsMono Nerd Font"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins-desktop"
 PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/colors.sh"
+
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
 sketchybar --bar \
   height=32 \
-  color=0x66494d64 \
+  color=$BAR_BG_DIM \
   margin=0 \
   sticky=on \
   padding_left=0 \
@@ -17,11 +19,11 @@ sketchybar --bar \
 
 sketchybar --default \
   background.height=32 \
-  icon.color=0xff24273a \
+  icon.color=$DARK \
   icon.font="$FONT_FACE:Medium:20.0" \
   icon.padding_left=5 \
   icon.padding_right=5 \
-  label.color=0xff24273a \
+  label.color=$DARK \
   label.font="$FONT_FACE:Bold:14.0" \
   label.y_offset=1 \
   label.padding_left=0 \
@@ -29,14 +31,14 @@ sketchybar --default \
 
 sketchybar --add item current_space left \
   --set current_space \
-  background.color=0xfff5a97f \
+  background.color=$PEACH \
   label.drawing=off \
   script="$PLUGIN_SHARED_DIR/current_space.sh" \
   --subscribe current_space space_change mouse.clicked
 
 sketchybar --add item front_app left \
   --set front_app \
-  background.color=0xffa6da95 \
+  background.color=$GREEN \
   background.padding_left=0 \
   background.padding_right=0 \
   icon.y_offset=1 \
@@ -46,7 +48,7 @@ sketchybar --add item front_app left \
   --set front_app.separator \
   background.color=0x00000000 \
   icon= \
-  icon.color=0xffa6da95 \
+  icon.color=$GREEN \
   icon.font="$FONT_FACE:Bold:23.0" \
   icon.padding_left=0 \
   icon.padding_right=0 \
@@ -57,7 +59,7 @@ sketchybar --add item front_app left \
   background.color=0x00000000 \
   icon.drawing=off \
   label.font="$FONT_FACE:Bold:16.0" \
-  label.color=0xffcad3f5 \
+  label.color=$TEXT \
   label.padding_left=5
 
 sketchybar --add bracket front_app_bracket \
@@ -69,7 +71,7 @@ sketchybar --add bracket front_app_bracket \
 sketchybar --add item clock right \
   --set clock \
   icon=󰃰 \
-  background.color=0xffed8796 \
+  background.color=$RED \
   update_freq=10 \
   script="$PLUGIN_SHARED_DIR/clock.sh"
 

@@ -1,0 +1,10 @@
+# Auto-generated sketchybar colors - do not edit, run apply_theme.py
+BAR_BG="0xff141619"
+BAR_BG_DIM="0x66272a2f"
+TEXT="0xffddbcb3"
+DARK="0xff141619"
+GREEN="0xffc98288"
+BLUE="0xffe36d75"
+RED="0xff8296c9"
+PEACH="0xffddbcb3"
+PURPLE="0xffa5c982"

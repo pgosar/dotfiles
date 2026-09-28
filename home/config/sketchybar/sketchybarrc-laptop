@@ -5,11 +5,13 @@ FONT_FACE="JetBrainsMono Nerd Font"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins-laptop"
 PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/colors.sh"
+
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
 sketchybar --bar \
   height=32 \
-  color=0xFF000000 \
+  color=$BAR_BG \
   margin=0 \
   sticky=on \
   padding_left=23 \
@@ -25,7 +27,7 @@ sketchybar --default \
   icon.padding_left=5 \
   icon.padding_right=5 \
   label.font="$FONT_FACE:Medium:12.0" \
-  label.color=0xffcad3f5 \
+  label.color=$TEXT \
   label.y_offset=0 \
   label.padding_left=0 \
   label.padding_right=5
@@ -43,11 +45,11 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT \
 
 sketchybar --add item front_app left \
   --set front_app \
-  background.color=0xffa6da95 \
+  background.color=$GREEN \
   background.padding_left=0 \
   background.padding_right=0 \
   icon.y_offset=1 \
-  icon.color=0xff24273a \
+  icon.color=$DARK \
   label.drawing=no \
   script="$PLUGIN_SHARED_DIR/front_app.sh" \
   --add item front_app.separator left \
@@ -55,7 +57,7 @@ sketchybar --add item front_app left \
   background.color=0x00000000 \
   background.padding_left=-3 \
   icon= \
-  icon.color=0xffa6da95 \
+  icon.color=$GREEN \
   icon.font="$FONT_FACE:Bold:20.0" \
   icon.padding_left=0 \
   icon.padding_right=0 \
@@ -88,7 +90,7 @@ sketchybar -m \
 sketchybar --add item focus q \
   --set focus \
   icon=🌙 \
-  icon.color=0xffcba6f7 \
+  icon.color=$PURPLE \
   icon.font="$FONT_FACE:Bold:15.0" \
   label="Focus" \
   update_freq=30 \
@@ -104,21 +106,21 @@ sketchybar --add bracket front_app_bracket \
 sketchybar --add item clock right \
   --set clock \
   icon=󰃰 \
-  icon.color=0xffed8796 \
+  icon.color=$RED \
   update_freq=10 \
   script="$PLUGIN_SHARED_DIR/clock.sh"
 
 sketchybar --add item cpu right \
   --set cpu \
   icon= \
-  icon.color=0xff8aadf4 \
+  icon.color=$BLUE \
   update_freq=10 \
   script="$PLUGIN_SHARED_DIR/cpu.sh"
 
 sketchybar --add item temp right \
   --set temp \
   icon= \
-  icon.color=0xff8aadf4 \
+  icon.color=$BLUE \
   update_freq=10 \
   script="$PLUGIN_SHARED_DIR/temp.sh"
 
@@ -129,7 +131,7 @@ sketchybar --add item battery right \
 
 sketchybar --add item volume right \
   --set volume \
-  icon.color=0xff8aadf4 \
+  icon.color=$BLUE \
   label.drawing=true \
   script="$PLUGIN_SHARED_DIR/volume.sh" \
   --subscribe volume volume_change system_woke
