@@ -1,19 +1,62 @@
+import argparse
 import subprocess
+import glob
 import json
 import os
 import sys
 import colorsys
+import shutil
 
-from paths import APPLY_THEME_SCRIPT, THEME_JSON
+from paths import APPLY_THEME_SCRIPT, THEME_JSON, THEME_MACOS_JSON
 
-if len(sys.argv) < 2:
-    print("Usage: python3 auto_theme.py <path-to-wallpaper>")
-    sys.exit(1)
+parser = argparse.ArgumentParser(
+    description="Generate a curated theme.json from a wallpaper via pywal"
+)
+parser.add_argument(
+    "--out",
+    default=None,
+    help="Where to write the theme (default: theme-macos.json on macOS, theme.json elsewhere)",
+)
+parser.add_argument("wallpaper", help="Path to wallpaper image")
+args = parser.parse_args()
 
-wallpaper_path = sys.argv[1]
+if args.out:
+    theme_out = args.out
+elif sys.platform == "darwin":
+    theme_out = str(THEME_MACOS_JSON)
+else:
+    theme_out = str(THEME_JSON)
+
+wallpaper_path = args.wallpaper
+
+
+def wal_binary():
+    # pywal user installs (pip --user) are not on PATH on macOS, and the
+    # python running this script may differ from the one pywal was installed with
+    found = shutil.which("wal")
+    if found:
+        return found
+    candidates = []
+    try:
+        user_base = subprocess.run(
+            [sys.executable, "-m", "site", "--user-base"],
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        candidates.append(os.path.join(user_base, "bin", "wal"))
+    except Exception:
+        pass
+    # macOS framework python user installs: ~/Library/Python/X.Y/bin
+    candidates.extend(glob.glob(os.path.expanduser("~/Library/Python/*/bin/wal")))
+    candidates.append(os.path.expanduser("~/.local/bin/wal"))
+    for cand in candidates:
+        if cand and os.path.exists(cand):
+            return cand
+    return "wal"
+
 
 # 1. Run pywal and read outputs
-subprocess.run(["wal", "-i", wallpaper_path, "-n", "-s", "-q"])
+subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q"])
 wal_colors_path = os.path.expanduser("~/.cache/wal/colors.json")
 try:
     with open(wal_colors_path, "r") as f:
@@ -37,20 +80,14 @@ def hls_to_hex(h, l, s):
 
 
 def adjust_color(hex_color, target_l, max_s=0.20):
-    """
-    Takes a hex color and returns a new hex with the exact target lightness.
-    We also cap the saturation (max_s) so backgrounds don't become garish.
-    """
+    """Pin lightness, cap saturation so backgrounds don't get garish."""
     h, l, s = hex_to_hls(hex_color)
     s = min(s, max_s)
     return hls_to_hex(h, target_l, s)
 
 
 def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
-    """
-    Ensures foreground colors are bright enough to be readable against dark backgrounds
-    but not overly saturated so they still fit the theme.
-    """
+    """Keep accents bright enough for dark backgrounds without oversaturating."""
     h, l, s = hex_to_hls(hex_color)
     l = max(l, min_l)
     s = max(min_s, min(s, max_s))
@@ -91,7 +128,7 @@ my_theme = {
 }
 
 # 4. Save
-with open(THEME_JSON, "w") as f:
+with open(theme_out, "w") as f:
     json.dump(my_theme, f, indent=2)
 
 print(f"Theme generated from {os.path.basename(wallpaper_path)}!")

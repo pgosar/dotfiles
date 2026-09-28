@@ -1,6 +1,8 @@
 import configparser
 import json
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -8,8 +10,10 @@ from paths import (
     CONFIG_DIR,
     QUICKSHELL_COLORS,
     QUICKSHELL_PATHS,
+    SCRIPTS_DIR,
     SET_WALLPAPER_SCRIPT,
     THEME_JSON,
+    THEME_MACOS_JSON,
     WALLPAPERS_DIR,
     HYPRPAPER_CONFIG,
     file_uri,
@@ -22,7 +26,9 @@ def write_text(path, content):
 
 
 def load_theme():
-    return json.loads(THEME_JSON.read_text())
+    # macOS uses its own wallpaper-derived theme, not the shared Linux one
+    theme_path = THEME_MACOS_JSON if sys.platform == "darwin" else THEME_JSON
+    return json.loads(theme_path.read_text())
 
 
 def hex_to_rgb_tuple(hex_color):
@@ -32,6 +38,10 @@ def hex_to_rgb_tuple(hex_color):
 
 def hex_to_rgb_hypr(hex_color):
     return f"rgb({hex_color.lstrip('#')})"
+
+
+def sketchybar_hex(hex_color, alpha="ff"):
+    return f"0x{alpha}{hex_color.lstrip('#')}"
 
 
 def generate_css(colors):
@@ -409,8 +419,37 @@ QtObject {{
     write_text(QUICKSHELL_PATHS, content)
 
 
+def generate_sketchybar(colors):
+    # macOS only: sourced by sketchybarrc, sketchybar wants 0xAARRGGBB
+    lines = ["# Auto-generated sketchybar colors - do not edit, run apply_theme.py"]
+    lines.append(f'BAR_BG="{sketchybar_hex(colors["mantle"])}"')
+    lines.append(f'BAR_BG_DIM="0x66{colors["surface"].lstrip("#")}"')
+    lines.append(f'TEXT="{sketchybar_hex(colors["text"])}"')
+    lines.append(f'DARK="{sketchybar_hex(colors["mantle"])}"')
+    lines.append(f'GREEN="{sketchybar_hex(colors["green"])}"')
+    lines.append(f'BLUE="{sketchybar_hex(colors["blue"])}"')
+    lines.append(f'RED="{sketchybar_hex(colors["red"])}"')
+    lines.append(f'PEACH="{sketchybar_hex(colors["peach"])}"')
+    lines.append(f'PURPLE="{sketchybar_hex(colors["purple"])}"')
+    write_text(CONFIG_DIR / "sketchybar" / "colors.sh", "\n".join(lines) + "\n")
+
+
+def apply_borders_macos():
+    # JankyBorders only reads colors at launch, so restart it via the wrapper
+    script = SCRIPTS_DIR / "start-borders.sh"
+    subprocess.run([str(script)])
+
+
 def main():
     colors = load_theme()
+    if sys.platform == "darwin":
+        # Only macOS surfaces; shared generated files keep the Linux theme
+        generate_sketchybar(colors)
+        apply_borders_macos()
+        if shutil.which("sketchybar"):
+            subprocess.run(["sketchybar", "--reload"])
+        print("Successfully generated macOS color configs!")
+        return
     generate_css(colors)
     generate_kitty(colors)
     generate_hyprland(colors)
