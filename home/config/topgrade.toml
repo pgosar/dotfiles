@@ -75,7 +75,11 @@ repos = [
 [commands]
 #"Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 #"Custom command using interactive shell (unix)" = "-i vim_upgrade"
-"Update Node.js via nvm" = "source ~/.nvm/nvm.sh && nvm install node --reinstall-packages-from=node"
+# nvm's `install --reinstall-packages-from=node` exits 2 ("Can not reinstall
+# packages from the current version of node.") whenever node is already at the
+# latest version, which made this step fail on every steady-state run. Only
+# migrate global packages when the version actually changed.
+"Update Node.js via nvm" = 'source ~/.nvm/nvm.sh && _old="$(nvm version node)" && nvm install node && _new="$(nvm current)" && case "$_old" in v*) [ "$_old" = "$_new" ] || nvm reinstall-packages "$_old";; esac'
 
 [brew]
 greedy_cask = true
