@@ -1,6 +1,10 @@
 #!/usr/bin/env zsh
 
-case ${INFO} in
+# volume_change passes the new level in $INFO; otherwise read it directly
+# so the label is correct on load, not just after the first change.
+VOLUME=${INFO:-$(osascript -e "output volume of (get volume settings)")}
+
+case ${VOLUME} in
   0)
     ICON=""
     ICON_PADDING_RIGHT=21
@@ -15,4 +19,4 @@ case ${INFO} in
     ;;
 esac
 
-sketchybar --set $NAME icon=$ICON icon.padding_right=5 label="$INFO%"
+sketchybar --set $NAME icon=$ICON icon.padding_right=5 label="${VOLUME}%"
