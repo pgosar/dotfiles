@@ -22,15 +22,18 @@ alt - 8 : yabai -m window --space 8
 alt - 9 : yabai -m window --space 9
 
 # switch focus to different space
-cmd - 1 : yabai -m space --focus 1
-cmd - 2 : yabai -m space --focus 2
-cmd - 3 : yabai -m space --focus 3
-cmd - 4 : yabai -m space --focus 4
-cmd - 5 : yabai -m space --focus 5
-cmd - 6 : yabai -m space --focus 6
-cmd - 7 : yabai -m space --focus 7
-cmd - 8 : yabai -m space --focus 8
-cmd - 9 : yabai -m space --focus 9
+# NOTE: yabai -m space --focus needs the scripting addition, which does not
+# load on macOS 26 (Tahoe). Focusing a space's first window pulls macOS to
+# that space instead. No-op on empty spaces.
+cmd - 1 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 1 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 2 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 2 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 3 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 3 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 4 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 4 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 5 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 5 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 6 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 6 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 7 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 7 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 8 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 8 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
+cmd - 9 : wid=$(/opt/homebrew/bin/yabai -m query --windows --space 9 | /opt/homebrew/bin/jq -r '.[0].id // empty'); [ -n "$wid" ] && /opt/homebrew/bin/yabai -m window --focus $wid
 
 # open applications
 cmd + shift - k : open -n -a "kitty"
