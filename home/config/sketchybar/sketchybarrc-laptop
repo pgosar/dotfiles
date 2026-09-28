@@ -85,14 +85,15 @@ sketchybar -m \
   --subscribe dummy space_change \
   "${spaces[@]}"
 
-sketchybar --add item weather q \
-  --set weather \
-  icon= \
-  icon.color=0xfff5bde6 \
+sketchybar --add item focus q \
+  --set focus \
+  icon=🌙 \
+  icon.color=0xffcba6f7 \
   icon.font="$FONT_FACE:Bold:15.0" \
-  update_freq=1800 \
-  script="$PLUGIN_SHARED_DIR/weather.sh" \
-  --subscribe weather system_woke
+  label="Focus" \
+  update_freq=30 \
+  script="$PLUGIN_SHARED_DIR/focus.sh" \
+  --subscribe focus system_woke
 
 sketchybar --add bracket front_app_bracket \
   front_app \
