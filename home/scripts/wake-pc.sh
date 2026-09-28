@@ -34,7 +34,12 @@ send_wol() {
     wol --host="$WOL_BROADCAST" "$PC_MAC"
     return
   fi
-  log "ERROR: neither etherwake nor wol is installed"
+  if command -v wakeonlan >/dev/null 2>&1; then
+    log "sending WOL with wakeonlan to $PC_MAC via $WOL_BROADCAST"
+    wakeonlan -i "$WOL_BROADCAST" "$PC_MAC"
+    return
+  fi
+  log "ERROR: neither etherwake, wol, nor wakeonlan is installed"
   return 127
 }
 
