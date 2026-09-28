@@ -20,7 +20,7 @@ SSH_OPTS=(
 )
 
 log() {
-  printf '%s run_id=%s %s\n' "$(date -Is)" "$WAKE_RUN_ID" "$*" >>"$LOG_FILE"
+  printf '%s run_id=%s %s\n' "$(date -I)" "$WAKE_RUN_ID" "$*" >>"$LOG_FILE"
 }
 
 send_wol() {
