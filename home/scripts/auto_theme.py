@@ -55,8 +55,13 @@ def wal_binary():
     return "wal"
 
 
-# 1. Run pywal and read outputs
-subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q"])
+# 1. Run pywal and read outputs; abort on failure so we never theme
+# from a stale colors.json left by an earlier successful run
+try:
+    subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q"], check=True)
+except (subprocess.CalledProcessError, FileNotFoundError):
+    print("Pywal failed to generate colors; aborting theme generation.")
+    sys.exit(1)
 wal_colors_path = os.path.expanduser("~/.cache/wal/colors.json")
 try:
     with open(wal_colors_path, "r") as f:
