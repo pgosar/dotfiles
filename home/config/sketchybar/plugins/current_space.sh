@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 update_space() {
-  SPACE_ID=$(echo "$INFO" | jq -r .display-1)
+  SPACE_ID=$(echo "$INFO" | jq -r '."display-1"')
 
   sketchybar --set $NAME \
     icon=$SPACE_ID \

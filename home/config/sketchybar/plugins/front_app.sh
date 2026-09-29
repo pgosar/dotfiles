@@ -4,7 +4,6 @@ ICON_PADDING_RIGHT=5
 
 case $INFO in
   "Arc")
-    ICON_PADDING_RIGHT=5
     ICON=󰞍
     ;;
   "Code")
@@ -19,14 +18,12 @@ case $INFO in
     ICON=
     ;;
   "FaceTime")
-    ICON_PADDING_RIGHT=5
     ICON=
     ;;
   "Finder")
     ICON=󰀶
     ;;
   "Firefox")
-    ICON_PADDING_RIGHT=5
     ICON=''
     ;;
   "Google Chrome")
