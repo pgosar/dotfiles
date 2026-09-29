@@ -105,8 +105,10 @@ bindkey '^k' edit-command-line
 
 # ---- Cross-Platform Tool Setup ---------------------------------------------
 
-LS_COLORS="$(vivid generate catppuccin-mocha)"
-export LS_COLORS
+if command -v vivid >/dev/null 2>&1; then
+  LS_COLORS="$(vivid generate catppuccin-mocha)"
+  export LS_COLORS
+fi
 
 eval "$(zoxide init zsh)"
 
