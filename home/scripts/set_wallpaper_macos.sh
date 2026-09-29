@@ -19,6 +19,9 @@ echo "Setting wallpaper to $WALLPAPER..."
 osascript -e "tell application \"System Events\" to set picture of every desktop to \"$WALLPAPER\""
 
 # auto_theme.py defaults to theme-macos.json on darwin and applies it
-python3 "$SCRIPT_DIR/auto_theme.py" "$WALLPAPER"
+if ! python3 "$SCRIPT_DIR/auto_theme.py" "$WALLPAPER"; then
+  echo "Error: theme generation failed; aborting."
+  exit 1
+fi
 
 echo "Wallpaper and theme have been updated."
