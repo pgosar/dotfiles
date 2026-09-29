@@ -205,7 +205,7 @@ end
 -- Lazy loading event triggered autocommands
 
 -- 1. LSP stack lazy loading
-if plugins.enabled("lspconfig") then
+if plugins.enabled("lsp") then
   vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
     group = augroup("LazyLoadLSP", { clear = true }),
     once = true,

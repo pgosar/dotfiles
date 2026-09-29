@@ -48,9 +48,8 @@ local specs = {
     configs = { { module = "core.configs.fzf", key = "fzf" } },
   },
   lsp = {
-    key = "lspconfig",
+    key = "lsp",
     packages = {
-      { name = "nvim-lspconfig", key = "lspconfig" },
       { name = "mason.nvim", key = "mason" },
       { name = "mason-lspconfig.nvim", key = "mason_lspconfig" },
       { name = "none-ls.nvim", key = "none_ls" },
@@ -63,7 +62,7 @@ local specs = {
     },
     configs = {
       { module = "core.configs.lazydev", key = "lazydev" },
-      { module = "core.configs.lsp", key = "lspconfig" },
+      { module = "core.configs.lsp", key = "lsp" },
     },
   },
   markdown = {

@@ -21,12 +21,6 @@ local plugins = {
   },
   { name = "blink.cmp", key = "blink", url = "https://github.com/saghen/blink.cmp", lazy = true },
   {
-    name = "nvim-lspconfig",
-    key = "lspconfig",
-    url = "https://github.com/neovim/nvim-lspconfig",
-    lazy = true,
-  },
-  {
     name = "mason.nvim",
     key = "mason",
     url = "https://github.com/williamboman/mason.nvim",
