@@ -42,11 +42,6 @@ local plugins = {
     key = "rainbow_delimiters",
     url = "https://github.com/HiPhish/rainbow-delimiters.nvim",
   },
-  {
-    name = "nvim-ts-context-commentstring",
-    key = "nvim_ts_context_commentstring",
-    url = "https://github.com/JoosepAlviste/nvim-ts-context-commentstring",
-  },
   { name = "fzf-lua", key = "fzf", url = "https://github.com/ibhagwan/fzf-lua", lazy = true },
   {
     name = "gitsigns.nvim",

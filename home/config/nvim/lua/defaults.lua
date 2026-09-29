@@ -170,7 +170,6 @@ M.group = {
     nvim_nio = true,
     nvim_treesitter = true,
     nvim_ts_autotag = true,
-    nvim_ts_context_commentstring = true,
     nvim_web_devicons = true,
     autopairs = true,
     plenary = true,
