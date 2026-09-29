@@ -19,4 +19,4 @@ case ${VOLUME} in
     ;;
 esac
 
-sketchybar --set $NAME icon=$ICON icon.padding_right=5 label="${VOLUME}%"
+sketchybar --set $NAME icon=$ICON icon.padding_right=$ICON_PADDING_RIGHT label="${VOLUME}%"

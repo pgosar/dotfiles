@@ -10,6 +10,5 @@ CPUP=$(echo $TOPPROC | sed -nr 's/([^\%]+).*/\1/p')
 
 CPU_PERCENT="$(echo "$CPU_SYS $CPU_USER" | awk '{printf "%.0f\n", ($1 + $2)*100}')"
 
-COLOR=0xffcad3f5
 
 sketchybar --set $NAME icon.padding_right=5 label="$CPU_PERCENT%"

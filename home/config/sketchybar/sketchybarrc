@@ -13,5 +13,4 @@ else
   source "$SKETCHYBAR_CONFIG/sketchybarrc-desktop"
 fi
 
-sketchybar --add event all_monitors
 
