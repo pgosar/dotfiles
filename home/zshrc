@@ -116,7 +116,11 @@ fi
 
 # shellcheck disable=SC1090
 if command -v fzf >/dev/null 2>&1; then
-  source <(fzf --zsh)
+  # fzf restores the restricted  option on load, which errors without a
+  # terminal; its keybindings need one anyway
+  if [[ -t 0 ]]; then
+    source <(fzf --zsh)
+  fi
 fi
 
 # Miniconda
