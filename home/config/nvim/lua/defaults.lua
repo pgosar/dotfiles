@@ -175,7 +175,6 @@ M.group = {
     plenary = true,
     rainbow_delimiters = true,
     refactoring = true,
-    schemastore = true,
     snacks = true,
     surround = true,
     todo_comments = true,
