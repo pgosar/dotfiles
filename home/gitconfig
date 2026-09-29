@@ -1,9 +1,6 @@
 [user]
 	name = pgosar
 	email = pgosarsteam@gmail.com
-[color]
-	# enable colors
-	ui = auto
 [core]
   # default editor
   editor = 'nvim'
@@ -12,12 +9,8 @@
 
 [diff]
   external = difft
-  # more descriptive initials
-  mnemonicPrefix = true
   # Show renames/moves
   renames = true
-  # regex with word diff
-  wordRegex = .
   # show submodule-related information
   submodule = log
 
