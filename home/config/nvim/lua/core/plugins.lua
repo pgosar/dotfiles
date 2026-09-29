@@ -147,12 +147,6 @@ local plugins = {
     url = "https://github.com/windwp/nvim-ts-autotag",
   },
   {
-    name = "SchemaStore.nvim",
-    key = "schemastore",
-    url = "https://github.com/b0o/SchemaStore.nvim",
-    lazy = true,
-  },
-  {
     name = "bufferline.nvim",
     key = "bufferline",
     url = "https://github.com/akinsho/bufferline.nvim",
