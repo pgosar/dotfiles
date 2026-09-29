@@ -1,11 +1,12 @@
 #!/usr/bin/env zsh
+source "$HOME/.config/sketchybar/colors.sh"
 args=()
 active_space=$(yabai -m query --spaces --space | jq '.index')
 while read -r index window; do
   if [ "$index" = "$active_space" ]; then
-    color="0xff8aadf4" # Active space color (blue)
+    color="$PEACH" # Active space accent
   else
-    color="0xff000000" # Inactive space color (translucent white)
+    color="$BAR_BG_DIM" # Inactive space, dimmed
   fi
 
   if [ "$window" = "null" ]; then
