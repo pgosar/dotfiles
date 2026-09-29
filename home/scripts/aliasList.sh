@@ -7,7 +7,6 @@ alias \
   lsa="eza -F --icons --color=auto --group-directories-first -a" \
   grep="grep --color=auto" \
   cat="bat" \
-  py="bpython" \
   cd="cd -P" \
   v="nvim" \
   ps="procs" \
