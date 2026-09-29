@@ -237,7 +237,7 @@ M.colors = {
 
 M.plugin_settings = {
   autosave_delay = 10000, -- 10 seconds
-  virt_column = "100",
+  colorcolumn = "100",
   catppuccin_dim_percentage = 0.1,
   trouble_preview_size = 0.3,
 }
