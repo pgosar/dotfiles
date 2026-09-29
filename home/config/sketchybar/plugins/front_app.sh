@@ -27,7 +27,7 @@ case $INFO in
     ;;
   "Firefox")
     ICON_PADDING_RIGHT=5
-    ICON=$'\uf269'
+    ICON=''
     ;;
   "Google Chrome")
     ICON_PADDING_RIGHT=7
