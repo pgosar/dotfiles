@@ -26,8 +26,6 @@ yabai -m config external_bar all:40:0 \
 	window_placement second_child \
 	window_shadow float \
 	window_opacity off \
-	window_opacity_duration 0.2 \
-	active_window_opacity 1.0 \
 	insert_feedback_color 0xff9dd274 \
 	split_ratio 0.50 \
 	auto_balance off \
