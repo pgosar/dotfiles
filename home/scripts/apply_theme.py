@@ -442,11 +442,13 @@ def generate_sketchybar(colors):
 
 
 def generate_yabai(colors):
-    yabairc = CONFIG_DIR / 'yabai' / 'yabairc'
-    text = yabairc.read_text()
+    # yabairc sources this generated file; never rewrite the tracked yabairc
     accent = '0xff' + colors['peach'].lstrip('#')
-    text = re.sub(r'insert_feedback_color 0x[0-9a-fA-F]+', f'insert_feedback_color {accent}', text)
-    yabairc.write_text(text)
+    lines = [
+        "# Auto-generated yabai colors - do not edit, run apply_theme.py",
+        f'YABAI_INSERT_FEEDBACK_COLOR="{accent}"',
+    ]
+    write_text(CONFIG_DIR / "yabai" / "colors.sh", "\n".join(lines) + "\n")
 
 
 def apply_borders_macos():

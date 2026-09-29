@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+# Theme accent for insert feedback; apply_theme.py writes colors.sh
+# (generated file, do not edit) -- this fallback is only for fresh clones.
+YABAI_INSERT_FEEDBACK_COLOR="0xffddbcb3"
+[ -f "$HOME/.config/yabai/colors.sh" ] && . "$HOME/.config/yabai/colors.sh"
+
 # Do not stall startup when the scripting-addition sudoers rule has not been
 # installed yet.  With it installed, this loads automatically on login/Dock restart.
 sudo -n yabai --load-sa 2>/dev/null || true
@@ -28,7 +33,7 @@ yabai -m config external_bar all:40:0 \
 	window_placement second_child \
 	window_shadow float \
 	window_opacity off \
-	insert_feedback_color 0xffddbcb3 \
+	insert_feedback_color $YABAI_INSERT_FEEDBACK_COLOR \
 	split_ratio 0.50 \
 	auto_balance off \
 	mouse_modifier fn \
