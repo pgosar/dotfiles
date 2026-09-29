@@ -153,5 +153,3 @@ if [ -f "$ZSH_SYNTAX_HIGHLIGHTING" ]; then
   source "$ZSH_SYNTAX_HIGHLIGHTING"
 fi
 
-# Added by Antigravity IDE
-export PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"
