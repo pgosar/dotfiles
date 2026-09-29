@@ -86,12 +86,8 @@ ensure_linux_packages() {
     packages+=(kitty-terminfo)
   fi
 
-  if ! command_exists node; then
-    packages+=(nodejs)
-  fi
-
-  if ! command_exists npm; then
-    packages+=(npm)
+  if ! command_exists fnm; then
+    packages+=(fnm)
   fi
 
   if [ "${#packages[@]}" -eq 0 ]; then
