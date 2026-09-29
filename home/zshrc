@@ -19,7 +19,7 @@ fi
 
 # ---- Environment Variables -------------------------------------------------
 
-export PATH="$HOME/.config/dotfiles-scripts:$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.antigravity/antigravity/bin:$HOME/.spicetify:$PATH"
+export PATH="$HOME/.config/dotfiles-scripts:$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.spicetify:$PATH"
 
 export ZSH="$HOME/.oh-my-zsh"
 export DOTFILES_DIR="${DOTFILES_DIR:-${${(%):-%x}:A:h:h}}"
@@ -35,7 +35,6 @@ if [ "$OS" = "Linux" ]; then
 elif [ "$OS" = "Darwin" ]; then
   export HOMEBREW_NO_AUTO_UPDATE=1
   export HOMEBREW_NO_ENV_HINTS=1
-  export MAGICK_HOME="/opt/local"
   # allow use of gnu tools
   export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 fi
@@ -115,11 +114,6 @@ eval "$(starship init zsh)"
 
 eval "$(register-python-argcomplete pipx)"
 
-if [ -f ~/.fzf.zsh ]; then
-  # shellcheck source=/dev/null
-  source ~/.fzf.zsh # load fzf
-fi
-
 # shellcheck disable=SC1090
 source <(fzf --zsh)
 
@@ -163,4 +157,4 @@ if [ -f "$ZSH_SYNTAX_HIGHLIGHTING" ]; then
 fi
 
 # Added by Antigravity IDE
-export PATH="/Users/chilly/.antigravity-ide/antigravity-ide/bin:$PATH"
+export PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"
