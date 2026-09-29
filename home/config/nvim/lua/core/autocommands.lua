@@ -3,34 +3,6 @@ local augroup = require("core.utils.utils").augroup
 local cmd = vim.api.nvim_create_autocmd
 local plugins = require("core.utils.plugins")
 
--- Detect big files on open and apply minimal options for performance
--- (replaces the old init-time check that never triggered)
-cmd({ "BufReadPre" }, {
-  desc = "apply minimal options for big files",
-  group = augroup("big file detection"),
-  callback = function(args)
-    local utils = require("core.utils.utils")
-    if utils.large_file(args.buf) then
-      utils.vim_opts({
-        opt = {
-          autowrite = true,
-          undofile = true,
-          clipboard = "unnamedplus",
-          cursorline = true,
-          cursorlineopt = "number",
-          ignorecase = true,
-          laststatus = 3,
-          number = true,
-          scrolloff = 5,
-          foldlevel = 99,
-          foldlevelstart = 99,
-          softtabstop = 2,
-        },
-      })
-    end
-  end,
-})
-
 -- Removes any trailing white space when saving a file
 if group.autocommands.trailing_whitespace then
   cmd({ "BufWritePre" }, {
