@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # get temperature
-TEMPERATURE=$($HOME/.local/bin/smctemp -c) # you can use (which smctemp) to replace this path if your install path is different
+TEMPERATURE=$($HOME/.local/bin/smctemp -c)
 
 # check smctemp whether running well
 if [ $? -ne 0 ]; then
