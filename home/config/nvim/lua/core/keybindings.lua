@@ -47,11 +47,27 @@ map(
   { desc = "close all floating windows when in insert mode" }
 )
 
--- Native line moving
-map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move text down" })
-map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move text up" })
-map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move text down" })
-map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move text up" })
+-- Native line moving (bounds-checked: :m errors E16 at buffer edges)
+local function move_line(down)
+  local line, last = vim.fn.line("."), vim.fn.line("$")
+  if down and line < last then vim.cmd("m .+1 | normal! ==") end
+  if not down and line > 1 then vim.cmd("m .-2 | normal! ==") end
+end
+local function move_selection(down)
+  local first, last_sel, last = vim.fn.line("'<"), vim.fn.line("'>"), vim.fn.line("$")
+  if down and last_sel > 0 and last_sel < last then
+    vim.cmd("m '>+1")
+    vim.cmd("normal! gv=gv")
+  end
+  if not down and first > 1 then
+    vim.cmd("m '<-2")
+    vim.cmd("normal! gv=gv")
+  end
+end
+map("n", "<A-j>", function() move_line(true) end, { desc = "Move text down" })
+map("n", "<A-k>", function() move_line(false) end, { desc = "Move text up" })
+map("v", "<A-j>", function() move_selection(true) end, { desc = "Move text down" })
+map("v", "<A-k>", function() move_selection(false) end, { desc = "Move text up" })
 map("v", "<A-h>", "<gv", { desc = "Move text left" })
 map("v", "<A-l>", ">gv", { desc = "Move text right" })
 
