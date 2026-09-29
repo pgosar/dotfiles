@@ -32,6 +32,6 @@ if group.plugins.dap_virtual_text then require("nvim-dap-virtual-text").setup({}
 
 if group.plugins.dap_lldb then
   require("dap-lldb").setup({
-    codelldb_path = "/Users/chilly/.local/share/nvim/mason/bin/codelldb",
+    codelldb_path = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
   })
 end
