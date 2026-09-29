@@ -90,7 +90,7 @@ components.filename = {
 
 components.location = {
   "location",
-  cond = show_width and buffer_not_empty,
+  cond = function() return show_width() and buffer_not_empty() end,
   padding = { left = 0, right = 0 },
   color = { fg = colors.fg },
 }
