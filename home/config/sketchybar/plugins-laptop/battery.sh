@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 source "$HOME/.config/sketchybar/colors.sh"
 
-# Battery is here bcause the ICON_COLOR doesn't play well with all background colors
+# Battery is here because the ICON_COLOR doesn't play well with all background colors
 
 PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
 CHARGING=$(pmset -g batt | grep 'AC Power')
