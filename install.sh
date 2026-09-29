@@ -156,6 +156,7 @@ install_cargo_tools() {
     "bat|bat"
     "cargo-cache|cargo-cache"
     "cargo-update|cargo-install-update"
+    "difftastic|difft"
     "eza|eza"
     "kondo|kondo"
     "procs|procs"
