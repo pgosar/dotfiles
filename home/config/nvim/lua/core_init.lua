@@ -73,44 +73,40 @@ for _, source in ipairs({
   "core.autocommands",
   "core.commands",
 }) do
-  if not big_file then
-    local status_ok, fault = pcall(require, source)
-    if not status_ok then vim.notify("Failed to load " .. source .. "\n\n" .. fault) end
-  end
+  local status_ok, fault = pcall(require, source)
+  if not status_ok then vim.notify("Failed to load " .. source .. "\n\n" .. fault) end
 end
 
 -- Custom rename function
 vim.lsp.buf.rename = require("core.utils.rename").rename
 -- Run plugin configurations
-if not big_file then
-  local plugin_loader = require("core.utils.plugins")
-  -- Load all non-lazy start configs
-  for _, name in ipairs({
-    "catppuccin",
-    "nvim_treesitter",
-    "dropbar",
-    "lualine",
-    "snacks",
-    "surround",
-    "which_key",
-    "mini_ai",
-    "mini_align",
-    "autopairs",
-    "nvim_ts_autotag",
-    "bufferline",
-    "vim_visual_multi",
-  }) do
-    if plugin_loader.enabled(name) then
-      local load_ok, err = pcall(require, "core.configs." .. name)
-      if not load_ok then
-        vim.notify("Failed to load config " .. name .. ": " .. tostring(err), vim.log.levels.ERROR)
-      end
+local plugin_loader = require("core.utils.plugins")
+-- Load all non-lazy start configs
+for _, name in ipairs({
+  "catppuccin",
+  "nvim_treesitter",
+  "dropbar",
+  "lualine",
+  "snacks",
+  "surround",
+  "which_key",
+  "mini_ai",
+  "mini_align",
+  "autopairs",
+  "nvim_ts_autotag",
+  "bufferline",
+  "vim_visual_multi",
+}) do
+  if plugin_loader.enabled(name) then
+    local load_ok, err = pcall(require, "core.configs." .. name)
+    if not load_ok then
+      vim.notify("Failed to load config " .. name .. ": " .. tostring(err), vim.log.levels.ERROR)
     end
   end
 end
 
 -- Immediate load of Neo-tree if opened with a directory
-if not big_file and vim.fn.argc() > 0 then
+if vim.fn.argc() > 0 then
   local arg = vim.fn.argv(0)
   if type(arg) == "string" and arg ~= "" then
     local stats = vim.uv.fs_stat(arg)
