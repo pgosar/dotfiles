@@ -47,33 +47,34 @@ wallpaper {
     fit_mode = cover
 }
 EOF
-fi
 
-# Sync wallpaper to Hyprlock config background path
-sed -i -E 's|^(    path = ).*$|\1'"$WALLPAPER"'|' "$HYPRLOCK_CONFIG"
+  # Sync wallpaper to Hyprlock config background path (Hyprland-only)
+  sed -i -E 's|^(    path = ).*$|\1'"$WALLPAPER"'|' "$HYPRLOCK_CONFIG"
 
-# Function to check if quickshell is an ancestor of this script
-is_ancestor_quickshell() {
-  local pid=$$
-  while [ "$pid" -gt 1 ]; do
-    local comm
-    comm=$(ps -o comm= -p "$pid" 2> /dev/null | tr -d '[:space:]')
-    if [ "$comm" = "quickshell" ]; then
-      return 0
-    fi
-    pid=$(ps -o ppid= -p "$pid" 2> /dev/null | tr -d '[:space:]')
-  done
-  return 1
-}
+  # Quickshell restart (Hyprland-only)
+  is_ancestor_quickshell() {
+    local pid=$$
+    while [ "$pid" -gt 1 ]; do
+      local comm
+      comm=$(ps -o comm= -p "$pid" 2> /dev/null | tr -d '[:space:]')
+      if [ "$comm" = "quickshell" ]; then
+        return 0
+      fi
+      pid=$(ps -o ppid= -p "$pid" 2> /dev/null | tr -d '[:space:]')
+    done
+    return 1
+  }
 
-if is_ancestor_quickshell; then
-  echo "Wallpaper changed from within quickshell; reloading colors dynamically."
-else
-  echo "Restarting quickshell to apply theme..."
-  killall quickshell 2> /dev/null
-  while pgrep -x quickshell > /dev/null; do sleep 0.1; done
-  quickshell &
-  disown
+  if is_ancestor_quickshell; then
+    echo "Wallpaper changed from within quickshell; reloading colors dynamically."
+  else
+    echo "Restarting quickshell to apply theme..."
+    killall quickshell 2> /dev/null
+    while pgrep -x quickshell > /dev/null; do sleep 0.1; done
+    quickshell &
+    disown
+  fi
+
 fi
 
 echo "Wallpaper and theme have been updated."
