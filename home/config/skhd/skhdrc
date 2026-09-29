@@ -34,5 +34,5 @@ cmd - 9 : yabai -m space --focus 9
 
 # open applications
 cmd + shift - k : open -n -a "kitty"
-cmd + shift - b : open -n -a "firefox"
+cmd + shift - b : open -n -a "Firefox"
 cmd + alt - f : yabai -m window --toggle float
