@@ -434,6 +434,14 @@ def generate_sketchybar(colors):
     write_text(CONFIG_DIR / "sketchybar" / "colors.sh", "\n".join(lines) + "\n")
 
 
+def generate_yabai(colors):
+    yabairc = CONFIG_DIR / 'yabai' / 'yabairc'
+    text = yabairc.read_text()
+    accent = '0xff' + colors['peach'].lstrip('#')
+    text = re.sub(r'insert_feedback_color 0x[0-9a-fA-F]+', f'insert_feedback_color {accent}', text)
+    yabairc.write_text(text)
+
+
 def apply_borders_macos():
     # JankyBorders only reads colors at launch, so restart it via the wrapper
     script = SCRIPTS_DIR / "start-borders.sh"
@@ -445,6 +453,7 @@ def main():
     if sys.platform == "darwin":
         # Only macOS surfaces; shared generated files keep the Linux theme
         generate_sketchybar(colors)
+        generate_yabai(colors)
         apply_borders_macos()
         if shutil.which("sketchybar"):
             subprocess.run(["sketchybar", "--reload"])

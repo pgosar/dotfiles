@@ -26,7 +26,7 @@ yabai -m config external_bar all:40:0 \
 	window_placement second_child \
 	window_shadow float \
 	window_opacity off \
-	insert_feedback_color 0xff9dd274 \
+	insert_feedback_color 0xffddbcb3 \
 	split_ratio 0.50 \
 	auto_balance off \
 	mouse_modifier fn \
