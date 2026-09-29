@@ -124,16 +124,6 @@ M.update_all = function()
   })
 end
 
-
---- Whether the currently opening file is very big or not
----@param buf integer: the current buffer to check
----@return boolean is_big: if the file is above configured big-file threshold
-M.large_file = function(buf)
-  local settings = require("defaults").settings
-  local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
-  return settings.bigfile_enable and ok and stats ~= nil and stats.size > settings.bigfile_threshold
-end
-
 --- Set the current working directory to the root of the project
 M.set_root = function()
   -- Get directory path to start search from
