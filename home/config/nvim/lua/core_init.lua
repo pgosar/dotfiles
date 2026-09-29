@@ -15,12 +15,11 @@ vim.g.loaded_tutor_mode_plugin = 1
 local original_notify = vim.notify
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.notify = function(msg, level, opts)
+  -- LSP error codes (-32603, -32802) NOT ignored; they signal real failures
   local ignore_patterns = {
     "Processing file symbols",
     "Diagnosing",
     "left == right",
-    "-32603",
-    "-32802",
   }
   for _, pattern in ipairs(ignore_patterns) do
     if msg and msg:find(pattern, 1, true) then return end
