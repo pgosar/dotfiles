@@ -76,6 +76,10 @@ local function collect_edits(result)
     end
   end
 
+  if files == 0 then
+    return "No changes", modified
+  end
+
   -- Build notification message
   local summary
   if files > 1 then
