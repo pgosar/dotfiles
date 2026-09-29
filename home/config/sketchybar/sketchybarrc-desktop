@@ -15,7 +15,6 @@ sketchybar --bar \
   sticky=on \
   padding_left=0 \
   padding_right=0 \
-  notch_width=188
 
 sketchybar --default \
   background.height=32 \
