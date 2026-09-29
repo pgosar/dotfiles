@@ -103,7 +103,24 @@ link_path() {
   local dest="$2"
 
   mkdir -p "$(dirname "$dest")"
-  rm -rf "$dest"
+  if [ -L "$dest" ]; then
+    # Symlink: replace it, no user data at risk.
+    rm -f "$dest"
+  elif [ -e "$dest" ]; then
+    # Real file/dir: back it up instead of deleting.
+    local bak
+    if [ -d "$dest" ]; then
+      bak="${dest}_bak"
+    else
+      bak="${dest}.bak"
+    fi
+    if [ -e "$bak" ]; then
+      warn "Skipping $dest: backup $bak already exists"
+      return 0
+    fi
+    mv "$dest" "$bak"
+    echo "Backed up $dest to $bak"
+  fi
   ln -s "$src" "$dest"
 }
 
