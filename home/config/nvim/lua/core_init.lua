@@ -31,29 +31,6 @@ end
 local ok, defaults = pcall(require, "defaults")
 if not ok then vim.notify("Failed to load defaults.lua") end
 _G.group = defaults.group
-local big_file = require("core.utils.utils").large_file(vim.api.nvim_get_current_buf())
-
--- set essential options if file is very big
-if big_file then
-  local vim_opts = require("core.utils.utils").vim_opts
-  vim_opts({
-    opt = {
-      autowrite = true,
-      undofile = true,
-      clipboard = "unnamedplus",
-      cursorline = true,
-      cursorlineopt = "number",
-      ignorecase = true,
-      laststatus = 3,
-      number = true,
-      scrolloff = 5,
-      foldlevel = 99,
-      foldlevelstart = 99,
-      softtabstop = 2,
-    },
-  })
-end
-
 -- Native packages bootstrapper
 local start_path = vim.fn.stdpath("config") .. "/pack/plugins/start"
 local opt_path = vim.fn.stdpath("config") .. "/pack/plugins/opt"
