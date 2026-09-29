@@ -89,7 +89,7 @@ M.ensure_installed = {
     "scss",
     "toml",
     "tsx",
-    "verilog",
+    "systemverilog",
     "wgsl",
     "yaml",
   },
