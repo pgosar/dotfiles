@@ -8,9 +8,6 @@ no_self_update = false
 
 [git]
 max_concurrency = 10
-repos = [
-   "~/.local/share/LS_COLORS/"
-]
 
 [brew]
 greedy_cask = true
