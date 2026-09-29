@@ -83,10 +83,6 @@ for _, p in ipairs(plugins) do
   end
 end
 
--- Load only enabled start packages so defaults.lua remains the source of truth.
-for _, plugin in ipairs(plugins) do
-  if not plugin.lazy then vim.cmd("packadd " .. plugin.name) end
-end
 
 if needs_restart then
   vim.notify("All plugins installed! Please restart Neovim.", vim.log.levels.INFO)
