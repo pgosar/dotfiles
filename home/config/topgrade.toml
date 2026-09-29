@@ -1,10 +1,8 @@
 [misc]
 assume_yes = true
-disable = []
-no_retry = true
+ask_retry = false
 pre_sudo = true
 cleanup = true
-no_self_update = false
 
 [git]
 max_concurrency = 10
@@ -12,9 +10,3 @@ max_concurrency = 10
 [brew]
 greedy_cask = true
 autoremove = true
-
-[linux]
-arch_package_manager = "yay"
-
-[windows]
-self_rename = true
