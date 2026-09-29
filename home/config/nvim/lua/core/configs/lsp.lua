@@ -1,8 +1,6 @@
 local group = require("defaults").group
 
--- 1. Setup Mason
-
--- 2. Setup Diagnostics Options
+-- 1. Setup Diagnostics Options
 vim.diagnostic.config({
   signs = {
     text = {
