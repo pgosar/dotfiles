@@ -25,6 +25,10 @@ case $INFO in
   "Finder")
     ICON=󰀶
     ;;
+  "Firefox")
+    ICON_PADDING_RIGHT=5
+    ICON=$'\uf269'
+    ;;
   "Google Chrome")
     ICON_PADDING_RIGHT=7
     ICON=
