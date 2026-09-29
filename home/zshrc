@@ -113,7 +113,9 @@ if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
 
-eval "$(register-python-argcomplete pipx)"
+if command -v register-python-argcomplete >/dev/null 2>&1; then
+  eval "$(register-python-argcomplete pipx)"
+fi
 
 # shellcheck disable=SC1090
 if command -v fzf >/dev/null 2>&1; then
