@@ -126,14 +126,9 @@ elif [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
   source "$HOME/miniconda3/etc/profile.d/conda.sh"
 fi
 
-# NVM (Node Version Manager)
-export NVM_DIR="$HOME/.nvm"
-if [ "$OS" = "Darwin" ] && [ -n "${HOMEBREW_PREFIX:-}" ]; then
-  [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && source "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
-  [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && source "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
-else
-  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+# fnm (Fast Node Manager) -- replaces nvm, near-instant startup
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --use-on-cd)"
 fi
 
 NODE_PATH="${NODE_PATH:-}:$(npm root -g)"
