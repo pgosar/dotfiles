@@ -103,7 +103,13 @@ link_path() {
   local dest="$2"
 
   mkdir -p "$(dirname "$dest")"
-  rm -rf "$dest"
+  # Only replace symlinks; never delete real user data.
+  if [ -L "$dest" ]; then
+    rm -f "$dest"
+  elif [ -e "$dest" ]; then
+    warn "Skipping $dest: exists and is not a symlink"
+    return 0
+  fi
   ln -s "$src" "$dest"
 }
 
