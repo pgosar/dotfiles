@@ -27,10 +27,7 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 
 if [ "$OS" = "Linux" ]; then
-  export QT_QPA_PLATFORMTHEME="qt5ct"
   export QML_XHR_ALLOW_FILE_READ=1
-  export LIBGUESTFS_BACKEND="direct"
-  export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 elif [ "$OS" = "Darwin" ]; then
   export HOMEBREW_NO_AUTO_UPDATE=1
   export HOMEBREW_NO_ENV_HINTS=1
