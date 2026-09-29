@@ -292,7 +292,6 @@ DARWIN_LINKS=(
   "$DOTFILES_CONFIG_DIR/skhd|$CONFIG_HOME/skhd"
   "$DOTFILES_CONFIG_DIR/svim|$CONFIG_HOME/svim"
   "$DOTFILES_CONFIG_DIR/yabai|$CONFIG_HOME/yabai"
-  "$DOTFILES_CONFIG_DIR/borders|$CONFIG_HOME/borders"
 )
 
 # ---- Dotfiles-Dependent User Tools ----------------------------------------
