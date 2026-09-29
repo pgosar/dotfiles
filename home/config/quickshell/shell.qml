@@ -25,9 +25,9 @@ ShellRoot {
         property color base: colorsLoader.item ? colorsLoader.item.base : "#211b1c"
         property color mantle: colorsLoader.item ? colorsLoader.item.mantle : "#191415"
         property color surface: colorsLoader.item ? colorsLoader.item.surface : "#2f2728"
-        property color text: colorsLoader.item ? colorsLoader.item.text : "#c7c2c3"
-        property color muted: colorsLoader.item ? colorsLoader.item.muted : "#7d676c"
-        property color white: colorsLoader.item ? colorsLoader.item.white : "#c7c2c3"
+        property color text: colorsLoader.item ? colorsLoader.item.text : "#b2b9b8"
+        property color muted: colorsLoader.item ? colorsLoader.item.muted : "#707574"
+        property color white: colorsLoader.item ? colorsLoader.item.white : "#b2b9b8"
         property color red: colorsLoader.item ? colorsLoader.item.red : "#82adc9"
         property color green: colorsLoader.item ? colorsLoader.item.green : "#c98282"
         property color yellow: colorsLoader.item ? colorsLoader.item.yellow : "#cc8f7e"
@@ -40,7 +40,7 @@ ShellRoot {
         property color light_blue: colorsLoader.item ? colorsLoader.item.light_blue : "#c99282"
         property color light_purple: colorsLoader.item ? colorsLoader.item.light_purple : "#c99982"
         property color light_cyan: colorsLoader.item ? colorsLoader.item.light_cyan : "#e79872"
-        property color peach: colorsLoader.item ? colorsLoader.item.peach : "#c7c2c3"
+        property color peach: colorsLoader.item ? colorsLoader.item.peach : "#b2b9b8"
 
         function reload() {
             colorsLoader.reload();
