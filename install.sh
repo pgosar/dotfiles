@@ -271,7 +271,6 @@ SHARED_LINKS=(
   "$DOTFILES_HOME_DIR/gitconfig|$HOME/.gitconfig"
   "$DOTFILES_CONFIG_DIR/starship.toml|$CONFIG_HOME/starship.toml"
   "$DOTFILES_CONFIG_DIR/topgrade.toml|$CONFIG_HOME/topgrade.toml"
-  "$DOTFILES_HOME_DIR/tmux.conf|$HOME/.tmux.conf"
   "$DOTFILES_CONFIG_DIR/spicetify/config-xpui.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/color.ini|$CONFIG_HOME/spicetify/Themes/Comfy/color.ini"
   "$DOTFILES_SCRIPTS_DIR|$CONFIG_HOME/dotfiles-scripts"
