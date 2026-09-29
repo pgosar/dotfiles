@@ -285,12 +285,12 @@ SHARED_LINKS=(
   "$DOTFILES_HOME_DIR/gitconfig|$HOME/.gitconfig"
   "$DOTFILES_CONFIG_DIR/starship.toml|$CONFIG_HOME/starship.toml"
   "$DOTFILES_CONFIG_DIR/topgrade.toml|$CONFIG_HOME/topgrade.toml"
-  "$DOTFILES_CONFIG_DIR/spicetify/config-xpui.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/color.ini|$CONFIG_HOME/spicetify/Themes/Comfy/color.ini"
   "$DOTFILES_SCRIPTS_DIR|$CONFIG_HOME/dotfiles-scripts"
 )
 
 LINUX_LINKS=(
+  "$DOTFILES_CONFIG_DIR/spicetify/config-xpui-linux.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/dunst|$CONFIG_HOME/dunst"
   "$DOTFILES_CONFIG_DIR/hypr|$CONFIG_HOME/hypr"
   "$DOTFILES_CONFIG_DIR/wofi|$CONFIG_HOME/wofi"
@@ -301,6 +301,7 @@ LINUX_LINKS=(
 )
 
 DARWIN_LINKS=(
+  "$DOTFILES_CONFIG_DIR/spicetify/config-xpui-macos.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/sketchybar|$CONFIG_HOME/sketchybar"
   "$DOTFILES_CONFIG_DIR/skhd|$CONFIG_HOME/skhd"
   "$DOTFILES_CONFIG_DIR/yabai|$CONFIG_HOME/yabai"
