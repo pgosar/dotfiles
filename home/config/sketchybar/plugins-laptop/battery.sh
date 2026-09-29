@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env zsh
 source "$HOME/.config/sketchybar/colors.sh"
 
 # Battery is here bcause the ICON_COLOR doesn't play well with all background colors
