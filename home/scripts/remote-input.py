@@ -183,7 +183,7 @@ def parse_command(line: str, default_hold_ms: float, keymap: dict[str, int]) -> 
         if len(fields) != 3:
             raise ValueError("move requires horizontal and vertical pixel offsets")
         try:
-            return "move", int(fields[1]), float(int(fields[2]))
+            return "move", int(fields[1]), float(fields[2])
         except ValueError as error:
             raise ValueError("move offsets must be integers") from error
     if fields[0] in {"tap", "down", "up"}:
@@ -213,7 +213,7 @@ def main() -> int:
     if not keymap:
         parser.error("could not read Linux input-event-codes.h")
     if args.list:
-        for name, code in sorted(read_keymap().items(), key=lambda item: (item[1], item[0])):
+        for name, code in sorted(keymap.items(), key=lambda item: (item[1], item[0])):
             print(f"{name:<32} {code}")
         return 0
 

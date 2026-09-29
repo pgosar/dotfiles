@@ -28,7 +28,14 @@ def write_text(path, content):
 def load_theme():
     # macOS uses its own wallpaper-derived theme, not the shared Linux one
     theme_path = THEME_MACOS_JSON if sys.platform == "darwin" else THEME_JSON
-    return json.loads(theme_path.read_text())
+    try:
+        return json.loads(theme_path.read_text())
+    except FileNotFoundError:
+        print(f"Theme file not found: {theme_path}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Theme file is corrupt: {theme_path}: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 def hex_to_rgb_tuple(hex_color):
