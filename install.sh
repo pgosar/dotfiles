@@ -137,14 +137,20 @@ install_oh_my_zsh() {
   zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
   mkdir -p "$zsh_custom/plugins"
 
+  # Pinned for reproducible installs; update the pins to pull newer versions.
+  ZSH_AUTOSUGGESTIONS_PIN="85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5"
+  ZSH_SYNTAX_HIGHLIGHTING_PIN="0bfcb582e71d3abe604ce67bc0fe5a21f377507e"
+
   if [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]; then
     echo "Installing zsh-autosuggestions..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions"
+    git clone -q https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions" \
+      && git -C "$zsh_custom/plugins/zsh-autosuggestions" checkout -q "$ZSH_AUTOSUGGESTIONS_PIN"
   fi
 
   if [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]; then
     echo "Installing zsh-syntax-highlighting..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting"
+    git clone -q https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting" \
+      && git -C "$zsh_custom/plugins/zsh-syntax-highlighting" checkout -q "$ZSH_SYNTAX_HIGHLIGHTING_PIN"
   fi
 }
 
