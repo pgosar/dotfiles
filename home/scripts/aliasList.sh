@@ -8,6 +8,7 @@ alias \
   grep="grep --color=auto" \
   cat="bat" \
   py="bpython" \
+  cd="cd -P" \
   v="nvim" \
   ps="procs" \
   :q="exit"
