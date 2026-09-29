@@ -46,11 +46,11 @@ if plugins.enabled("trouble") then
 end
 
 if plugins.enabled("venn") then
-  vim.api.nvim_create_user_command(
-    "ToggleVenn",
-    function() plugins.load("venn") end,
-    { nargs = 0, desc = "Toggle venn" }
-  )
+  vim.api.nvim_create_user_command("ToggleVenn", function()
+    -- Re-run the toggle script; require alone would return the cached module
+    package.loaded["core.configs.venn"] = nil
+    plugins.load("venn")
+  end, { nargs = 0, desc = "Toggle venn" })
 end
 
 -- Mason command stub (for direct execution from dashboard)
