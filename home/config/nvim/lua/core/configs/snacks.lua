@@ -129,18 +129,10 @@ require("snacks").setup({
 
 if group.plugins.notify then
   local original_notify = vim.notify
+  local notify_utils = require("core.utils.notify")
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.notify = function(msg, level, opts)
-    local ignore_patterns = {
-      "Processing file symbols",
-      "Diagnosing",
-      "left == right",
-      "-32603",
-      "-32802",
-    }
-    for _, pattern in ipairs(ignore_patterns) do
-      if msg and msg:find(pattern, 1, true) then return end
-    end
+    if notify_utils.should_ignore(msg) then return end
     original_notify(msg, level, opts)
   end
 end
