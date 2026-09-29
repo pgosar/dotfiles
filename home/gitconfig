@@ -45,7 +45,6 @@
   decorate = false
 [merge]
   conflictStyle = zdiff3
-	ff = false
 [mergetool]
   # Clean up backup files
   keepBackup = false
