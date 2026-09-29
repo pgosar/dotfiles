@@ -295,7 +295,6 @@ LINUX_LINKS=(
   "$DOTFILES_CONFIG_DIR/hypr|$CONFIG_HOME/hypr"
   "$DOTFILES_CONFIG_DIR/wofi|$CONFIG_HOME/wofi"
   "$DOTFILES_CONFIG_DIR/wireplumber|$CONFIG_HOME/wireplumber"
-  "$DOTFILES_CONFIG_DIR/electron28-flags.conf|$CONFIG_HOME/electron28-flags.conf"
   "$DOTFILES_CONFIG_DIR/quickshell|$CONFIG_HOME/quickshell"
   "$DOTFILES_CONFIG_DIR/fontconfig|$CONFIG_HOME/fontconfig"
   "$DOTFILES_CONFIG_DIR/systemd|$CONFIG_HOME/systemd"
