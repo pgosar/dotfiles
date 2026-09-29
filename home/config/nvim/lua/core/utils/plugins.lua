@@ -55,7 +55,6 @@ local specs = {
       { name = "none-ls.nvim", key = "none_ls" },
       { name = "mason-null-ls.nvim", key = "mason_null_ls" },
       { name = "workspace-diagnostics.nvim", key = "workspace_diagnostics" },
-      { name = "SchemaStore.nvim", key = "schemastore" },
       { name = "async.nvim", key = "async" },
       { name = "refactoring.nvim", key = "refactoring" },
       { name = "lazydev.nvim", key = "lazydev" },
