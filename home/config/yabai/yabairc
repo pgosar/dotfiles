@@ -14,6 +14,8 @@ yabai -m signal --add event=window_created action='
 # Float everything by default -- only Firefox and kitty are tiled.
 # All windows on the below sub-layer: yabai v7 pins floating windows above
 # tiled ones otherwise; same-layer windows stack by focus.
+# Rule order is load-bearing: yabai applies all matching rules in order,
+# later overriding earlier. float-all must come first.
 yabai -m rule --add label="float-all" app=".*" manage=off sub-layer=below
 yabai -m rule --add label="tile-firefox" app="^Firefox$" manage=on sub-layer=below
 yabai -m rule --add label="tile-kitty" app="^kitty$" manage=on sub-layer=below
