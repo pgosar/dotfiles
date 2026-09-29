@@ -73,7 +73,7 @@ require("blink.cmp").setup({
         end
       end,
       "select_prev",
-      "snippet_forward",
+      "snippet_backward",
       "fallback",
     },
   },
