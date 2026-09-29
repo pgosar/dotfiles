@@ -85,7 +85,7 @@ vim_opts({
 
 local defaults = require("defaults")
 if defaults.group.plugins.virt_column then
-  vim.opt.colorcolumn = defaults.plugin_settings.virt_column
+  vim.opt.colorcolumn = defaults.plugin_settings.colorcolumn
 end
 
 -- Ensure spell directory and file exist on fresh install

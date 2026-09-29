@@ -1,7 +1,6 @@
 local group = require("defaults").group
 
 -- 1. Setup Mason
-if group.plugins.mason then require("mason").setup({}) end
 
 -- 2. Setup Diagnostics Options
 vim.diagnostic.config({
@@ -71,7 +70,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- 5. Setup Language Servers configs
 local server_specific_configs = {
   gopls = "language-server-configs.gopls",
-  ts_ls = "language-server-configs.tsserver",
+  ts_ls = "language-server-configs.ts_ls",
   lua_ls = "language-server-configs.lua_ls",
   bashls = "language-server-configs.bashls",
   rust_analyzer = "language-server-configs.rust-analyzer",

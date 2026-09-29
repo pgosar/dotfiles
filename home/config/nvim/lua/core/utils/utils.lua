@@ -124,15 +124,6 @@ M.update_all = function()
   })
 end
 
---- Checks whether the attached LSP server supports formatting
----@return boolean is_supported: whether the server supports formatting
-M.supports_formatting = function()
-  local clients = vim.lsp.get_clients()
-  for _, client in ipairs(clients) do
-    if client:supports_method("textDocument/formatting") then return true end
-  end
-  return false
-end
 
 --- Whether the currently opening file is very big or not
 ---@param buf integer: the current buffer to check
