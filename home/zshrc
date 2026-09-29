@@ -89,7 +89,6 @@ if [ -f "$loadpath/commands.sh" ]; then # load commands
   source "$loadpath/commands.sh"
 fi
 
-autoload -U compinit
 # ---- Keybindings -----------------------------------------------------------
 
 bindkey '^d' autosuggest-accept
