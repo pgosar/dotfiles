@@ -125,9 +125,7 @@ if group.autocommands.autosave then
   local function save_buf(bufnr)
     if vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].modified then
       vim.api.nvim_buf_call(bufnr, function()
-        if group.autocommands.auto_format_on_autosave then
-          pcall(vim.lsp.buf.format, { bufnr = bufnr, async = false })
-        end
+        -- BufWritePre (LspFormatting) handles formatting; don't double-format
         vim.cmd("silent! write")
       end)
     end
