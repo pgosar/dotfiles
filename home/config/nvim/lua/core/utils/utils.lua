@@ -154,7 +154,7 @@ M.set_root = function()
   if root_file == nil then return end
   local root = vim.fs.dirname(root_file)
   -- Set current directory
-  vim.fn.chdir(root)
+  vim.cmd("lcd " .. vim.fn.fnameescape(root))
 end
 
 --- Truncates messages to the last complete line that fits within the max length
