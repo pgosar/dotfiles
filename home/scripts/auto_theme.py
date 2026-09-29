@@ -132,7 +132,7 @@ my_theme = {
     "peach": wal["colors"]["color15"],
 }
 
-# 4. Save
+# 3. Save
 with open(theme_out, "w") as f:
     json.dump(my_theme, f, indent=2)
 
