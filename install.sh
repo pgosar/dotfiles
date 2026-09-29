@@ -330,15 +330,18 @@ if [ -n "$FIREFOX_BASE" ]; then
   fi
 
   if [ -n "$FIREFOX_PROFILE" ]; then
-    if [ ! -f "$FIREFOX_PROFILE/user.js" ] || [ ! -d "$FIREFOX_PROFILE/chrome" ]; then
-      echo "Installing Textfox theme to Firefox profile..."
-      TEXTFOX_CLONE="$(mktemp -d)"
-      git clone https://github.com/adriankarlen/textfox "$TEXTFOX_CLONE" || true
+    # Pinned for reproducible installs; update the pin to pull a newer theme.
+    TEXTFOX_PIN="c0def42d23b08be2d38f55d2ff2795d33674fc10"
+    echo "Syncing Textfox theme to Firefox profile..."
+    TEXTFOX_CLONE="$(mktemp -d)"
+    if git clone -q https://github.com/adriankarlen/textfox "$TEXTFOX_CLONE" && git -C "$TEXTFOX_CLONE" checkout -q "$TEXTFOX_PIN"; then
       mkdir -p "$FIREFOX_PROFILE/chrome"
       cp -r "$TEXTFOX_CLONE/chrome/"* "$FIREFOX_PROFILE/chrome/"
-      cp -r "$TEXTFOX_CLONE/user.js" "$FIREFOX_PROFILE/user.js"
-      /bin/rm -rf "$TEXTFOX_CLONE"
+      cp "$TEXTFOX_CLONE/user.js" "$FIREFOX_PROFILE/user.js"
+    else
+      warn "Textfox install failed; leaving existing theme in place"
     fi
+    /bin/rm -rf "$TEXTFOX_CLONE"
   fi
 fi
 
