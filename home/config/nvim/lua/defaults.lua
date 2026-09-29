@@ -205,7 +205,6 @@ M.group = {
     comment = true,
     syncbackground = true,
     autoroot = true,
-    auto_format_on_autosave = true,
     term_line_numbers = true,
     autoformat = true,
   },
@@ -219,8 +218,6 @@ M.colors = {
     mantle = theme.surface,
     crust = theme.base,
   },
-  scrollbar = theme.surface,
-  terminal = theme.surface,
   lualine = {
     fg = theme.text,
     yellow = theme.yellow,
@@ -264,7 +261,6 @@ _G.icons = {
     config = " ",
     session = " ",
     open_project = " ",
-    lazy = "󰒲 ",
     quit = " ",
   },
   dap = {
