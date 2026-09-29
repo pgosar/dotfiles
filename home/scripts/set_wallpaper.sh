@@ -18,8 +18,12 @@ fi
 
 echo "Setting wallpaper to $WALLPAPER..."
 
-# Generate and apply colors via Pywal
-python3 "$AUTO_THEME_SCRIPT" "$WALLPAPER"
+# Generate and apply colors via Pywal; abort before touching the
+# wallpaper if theme generation fails so they never go out of sync
+if ! python3 "$AUTO_THEME_SCRIPT" "$WALLPAPER"; then
+  echo "Error: theme generation failed; aborting."
+  exit 1
+fi
 
 if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
   echo "Running under KDE, applying wallpaper using plasma-apply-wallpaperimage..."
