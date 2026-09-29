@@ -11,7 +11,10 @@ end
 
 if group.plugins.dap_python then
   local dp_ok, dap_python = pcall(require, "dap-python")
-  if dp_ok then dap_python.setup("~/.conda/debugpy/bin/python") end
+  -- Mason-managed debugpy (was a stale ~/.conda path)
+  if dp_ok then
+    dap_python.setup(vim.fn.expand("~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"))
+  end
 end
 
 local md_ok, mason_nvim_dap = false, nil
