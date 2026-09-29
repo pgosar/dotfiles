@@ -9,7 +9,7 @@ MAX_LENGTH=25
 # Logic starts here, do not modify
 HALF_LENGTH=$(((MAX_LENGTH + 1) / 2))
 
-# Spotify JSON / $INFO comes in malformed, line below sanitizes it
+# $INFO holds the Spotify JSON payload
 SPOTIFY_JSON="$INFO"
 
 update_track() {
