@@ -138,12 +138,7 @@ export NODE_PATH
 
 # ---- OS-Specific Commands --------------------------------------------------
 
-if [ "$OS" = "Linux" ]; then
-  if [ -f /usr/share/doc/pkgfile/command-not-found.zsh ]; then
-    # shellcheck source=/dev/null
-    source /usr/share/doc/pkgfile/command-not-found.zsh
-  fi
-elif [ "$OS" = "Darwin" ]; then
+if [ "$OS" = "Darwin" ]; then
   ulimit -Sn unlimited && ulimit -Sl unlimited
 fi
 
