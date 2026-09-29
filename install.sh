@@ -367,4 +367,7 @@ if [ "$OS" = "Linux" ]; then
   python3 "$APPLY_THEME_SCRIPT"
 elif [ "$OS" = "Darwin" ]; then
   link_entries "${DARWIN_LINKS[@]}"
+
+  # Generate macOS theme colors (sketchybar/yabai) from the seed theme-macos.json
+  python3 "$APPLY_THEME_SCRIPT"
 fi
