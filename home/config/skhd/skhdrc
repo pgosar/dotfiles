@@ -10,7 +10,7 @@ cmd + alt - j : yabai -m window --focus south
 cmd + alt - k : yabai -m window --focus north
 cmd + alt - l : yabai -m window --focus east
 
-# move  window to different space
+# move window to different space
 alt - 1 : yabai -m window --space 1
 alt - 2 : yabai -m window --space 2
 alt - 3 : yabai -m window --space 3
