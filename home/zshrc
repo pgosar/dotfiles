@@ -115,7 +115,7 @@ fi
 
 # shellcheck disable=SC1090
 if command -v fzf >/dev/null 2>&1; then
-  # fzf restores the restricted  option on load, which errors without a
+  # fzf changes the zle option on load, which errors without a
   # terminal; its keybindings need one anyway
   if [[ -t 0 ]]; then
     source <(fzf --zsh)
