@@ -421,7 +421,7 @@ QtObject {{
 
 def generate_sketchybar(colors):
     # macOS only: sourced by sketchybarrc, sketchybar wants 0xAARRGGBB
-    lines = ["# Auto-generated sketchybar colors - do not edit, run apply_theme.py", "# NOTE: color names remapped in theme-macos.json (red=blue, green=pink, blue=red, purple=green)"]
+    lines = ["# Auto-generated sketchybar colors - do not edit, run apply_theme.py", "# NOTE: theme-macos.json is wallpaper-derived; names are approximate (green is dusty rose, purple is sage)"]
     lines.append(f'BAR_BG="{sketchybar_hex(colors["mantle"])}"')
     lines.append(f'BAR_BG_DIM="0x66{colors["surface"].lstrip("#")}"')
     lines.append(f'TEXT="{sketchybar_hex(colors["text"])}"')

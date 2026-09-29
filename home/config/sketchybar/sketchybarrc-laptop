@@ -113,14 +113,14 @@ sketchybar --add item clock right \
 sketchybar --add item cpu right \
   --set cpu \
   icon= \
-  icon.color=$BLUE \
+  icon.color=$RED \
   update_freq=10 \
   script="$PLUGIN_SHARED_DIR/cpu.sh"
 
 sketchybar --add item temp right \
   --set temp \
   icon= \
-  icon.color=$BLUE \
+  icon.color=$RED \
   update_freq=10 \
   script="$PLUGIN_SHARED_DIR/temp.sh"
 
@@ -131,7 +131,7 @@ sketchybar --add item battery right \
 
 sketchybar --add item volume right \
   --set volume \
-  icon.color=$BLUE \
+  icon.color=$RED \
   label.drawing=true \
   script="$PLUGIN_SHARED_DIR/volume.sh" \
   --subscribe volume volume_change system_woke
