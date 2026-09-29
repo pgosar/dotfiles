@@ -2,7 +2,6 @@
 set -euo pipefail
 
 PC_HOST="${PC_HOST:-pc}"
-PC_IP="${PC_IP:-192.168.1.223}"
 WINDOW_START="${WINDOW_START:-04:00}"
 WINDOW_END="${WINDOW_END:-10:00}"
 LOG_FILE="${LOG_FILE:-/data/docker/appdata/nightly-orchestrator/nightly-pc-jobs.log}"

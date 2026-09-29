@@ -258,8 +258,9 @@ class ProxyHandler(BaseHTTPRequestHandler):
             body = self.rfile.read(length) if length else None
             headers = {k: v for k, v in self.headers.items() if k.lower() not in {"host", "connection"}}
 
-            conn = conn_cls(host, port, timeout=300)
+            conn = None
             try:
+                conn = conn_cls(host, port, timeout=300)
                 conn.request(self.command, self.path, body=body, headers=headers)
                 resp = conn.getresponse()
                 data = resp.read()
@@ -277,7 +278,8 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 else:
                     self.send_proxy_error(502, "ML proxy request failed")
             finally:
-                conn.close()
+                if conn is not None:
+                    conn.close()
         finally:
             if tracked_request:
                 end_active_request()
@@ -285,8 +287,9 @@ class ProxyHandler(BaseHTTPRequestHandler):
     def proxy_to_local(self, body, headers):
         scheme, host, port = split_target(LOCAL_ML_URL)
         conn_cls = http.client.HTTPSConnection if scheme == "https" else http.client.HTTPConnection
-        conn = conn_cls(host, port, timeout=300)
+        conn = None
         try:
+            conn = conn_cls(host, port, timeout=300)
             conn.request(self.command, self.path, body=body, headers=headers)
             resp = conn.getresponse()
             data = resp.read()
@@ -301,7 +304,8 @@ class ProxyHandler(BaseHTTPRequestHandler):
             log(f"local ML fallback failed: {exc}")
             self.send_proxy_error(502, "Local ML fallback failed")
         finally:
-            conn.close()
+            if conn is not None:
+                conn.close()
 
     def log_message(self, fmt, *args):
         log("%s - %s" % (self.address_string(), fmt % args))
