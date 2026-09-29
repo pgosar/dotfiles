@@ -1,3 +1,3 @@
 Complete Neovim configuration
 
-Using as sort of a mirror for CyberNvim for complete personal use
+Personal Neovim setup using native vim.pack for plugin management.
