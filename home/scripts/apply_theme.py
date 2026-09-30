@@ -20,7 +20,9 @@ from paths import (
     QUICKSHELL_PATHS,
     SCRIPTS_DIR,
     THEME_JSON,
+    THEME_JSON_SEED,
     THEME_MACOS_JSON,
+    THEME_MACOS_JSON_SEED,
     WALLPAPERS_DIR,
     file_uri,
 )
@@ -34,14 +36,19 @@ def write_text(path, content):
 def load_theme():
     # macOS uses its own wallpaper-derived theme, not the shared Linux one
     theme_path = THEME_MACOS_JSON if sys.platform == "darwin" else THEME_JSON
-    try:
-        return json.loads(theme_path.read_text())
-    except FileNotFoundError:
-        print(f"Theme file not found: {theme_path}", file=sys.stderr)
-        sys.exit(1)
-    except json.JSONDecodeError as e:
-        print(f"Theme file is corrupt: {theme_path}: {e}", file=sys.stderr)
-        sys.exit(1)
+    seed_path = THEME_MACOS_JSON_SEED if sys.platform == "darwin" else THEME_JSON_SEED
+    # The working copy is gitignored wallpaper state; fall back to the
+    # committed seed on fresh clones.
+    for path in (theme_path, seed_path):
+        try:
+            return json.loads(path.read_text())
+        except FileNotFoundError:
+            continue
+        except json.JSONDecodeError as e:
+            print(f"Theme file is corrupt: {path}: {e}", file=sys.stderr)
+            sys.exit(1)
+    print(f"Theme file not found: {theme_path} (seed {seed_path} also missing)", file=sys.stderr)
+    sys.exit(1)
 
 
 def hex_to_rgb_tuple(hex_color):

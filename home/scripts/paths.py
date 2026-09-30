@@ -8,6 +8,8 @@ WALLPAPERS_DIR = HOME_DIR / "walls"
 
 THEME_JSON = SCRIPTS_DIR / "theme.json"
 THEME_MACOS_JSON = SCRIPTS_DIR / "theme-macos.json"
+THEME_JSON_SEED = SCRIPTS_DIR / "theme.json.seed"
+THEME_MACOS_JSON_SEED = SCRIPTS_DIR / "theme-macos.json.seed"
 
 HYPR_DIR = CONFIG_DIR / "hypr"
 HYPRPAPER_CONFIG = HYPR_DIR / "hyprpaper.conf"
