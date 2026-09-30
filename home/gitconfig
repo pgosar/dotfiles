@@ -51,8 +51,6 @@
   # Auto-fetch submodule changes
   recurseSubmodules = on-demand
 [push]
-	# only pushes current branch to target regardless of remote name
-	default = upstream
 	# push tags too
 	followTags = true
 	autoSetupRemote = true
