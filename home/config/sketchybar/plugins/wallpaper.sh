@@ -31,7 +31,7 @@ CARD_H=96
 
 wallpapers() {
   for f in "$WALLS_DIR"/*.png "$WALLS_DIR"/*.jpg \
-           "$WALLS_DIR"/*.jpeg "$WALLS_DIR"/*.webp; do
+    "$WALLS_DIR"/*.jpeg "$WALLS_DIR"/*.webp; do
     [ -f "$f" ] && printf '%s\n' "$f"
   done | LC_ALL=C sort -u
 }
@@ -55,7 +55,7 @@ EOF
 bump_gen() {
   local gen=0
   [ -f "$STATE_DIR/gen" ] && gen=$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)
-  printf '%s' $((gen + 1)) > "$STATE_DIR/gen"
+  printf '%s' $((gen + 1)) >"$STATE_DIR/gen"
 }
 
 # mkdir is atomic: only one click process holds the lock at a time.
@@ -64,7 +64,7 @@ acquire_lock() {
   local lock="$STATE_DIR/lock" i holder
   for i in {1..100}; do
     if mkdir "$lock" 2>/dev/null; then
-      printf '%s' "$$" > "$lock/pid"
+      printf '%s' "$$" >"$lock/pid"
       return 0
     fi
     holder=$(cat "$lock/pid" 2>/dev/null || echo 0)
@@ -92,21 +92,21 @@ render() {
   local n=${#files[@]}
   [ "$n" -eq 0 ] && return 1
   local center=$(cat "$STATE_DIR/idx" 2>/dev/null || echo 1)
-  center=$(( (center - 1) % n + 1 ))
-  (( center < 1 )) && center=$((center + n))
-  printf '%s' "$center" > "$STATE_DIR/idx"
+  center=$(((center - 1) % n + 1))
+  ((center < 1)) && center=$((center + n))
+  printf '%s' "$center" >"$STATE_DIR/idx"
 
   local args=(--animate tanh 12) o s wi f t
   for o in -2 -1 0 1 2; do
     s=$((o + 3))
-    wi=$(( (center - 1 + o) % n + 1 ))
-    (( wi < 1 )) && wi=$((wi + n))
+    wi=$(((center - 1 + o) % n + 1))
+    ((wi < 1)) && wi=$((wi + n))
     f="${files[$wi]}"
     t="$(thumb_for "$f")"
     args+=(--set "wallpaper.slot_$s"
       background.image="${t:-}"
       click_script="$SCRIPT slotclick $o")
-    if (( o == 0 )); then
+    if ((o == 0)); then
       args+=(background.border_width=2 background.border_color=0xffffffff)
     else
       args+=(background.border_width=0)
@@ -168,7 +168,7 @@ show_popup() {
 
   add_arrow r 1
 
-  [ -f "$STATE_DIR/idx" ] || printf '1' > "$STATE_DIR/idx"
+  [ -f "$STATE_DIR/idx" ] || printf '1' >"$STATE_DIR/idx"
   render || return 1
   touch "$STATE_DIR/open"
   sketchybar --set "$PARENT" popup.drawing=on
@@ -181,10 +181,11 @@ HIDE_DELAY=0.6
 
 hide_popup() {
   local mygen=$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)
-  ( sleep "$HIDE_DELAY"
-    [ "$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)" = "$mygen" ] \
-      && close_popup_items
-  ) &!
+  (
+    sleep "$HIDE_DELAY"
+    [ "$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)" = "$mygen" ] &&
+      close_popup_items
+  ) &|
 }
 
 rotate() { # $1 = -1 or 1
@@ -193,11 +194,11 @@ rotate() { # $1 = -1 or 1
   local -a files
   files=("${(@f)$(wallpapers)}")
   local n=${#files[@]}
-  if (( n > 0 )); then
+  if ((n > 0)); then
     local center=$(cat "$STATE_DIR/idx" 2>/dev/null || echo 1)
-    center=$(( (center - 1 + $1) % n + 1 ))
-    (( center < 1 )) && center=$((center + n))
-    printf '%s' "$center" > "$STATE_DIR/idx"
+    center=$(((center - 1 + $1) % n + 1))
+    ((center < 1)) && center=$((center + n))
+    printf '%s' "$center" >"$STATE_DIR/idx"
     bump_gen
     render
   fi
@@ -210,13 +211,13 @@ slotclick() { # $1 = slot offset from center (-2..2); applies that wallpaper
   local -a files
   files=("${(@f)$(wallpapers)}")
   local n=${#files[@]}
-  if (( n > 0 )); then
+  if ((n > 0)); then
     local center=$(cat "$STATE_DIR/idx" 2>/dev/null || echo 1)
-    center=$(( (center - 1) % n + 1 ))
-    (( center < 1 )) && center=$((center + n))
-    local t=$(( (center - 1 + $1) % n + 1 ))
-    (( t < 1 )) && t=$((t + n))
-    printf '%s' "$t" > "$STATE_DIR/idx"
+    center=$(((center - 1) % n + 1))
+    ((center < 1)) && center=$((center + n))
+    local t=$(((center - 1 + $1) % n + 1))
+    ((t < 1)) && t=$((t + n))
+    printf '%s' "$t" >"$STATE_DIR/idx"
     bump_gen
     "$APPLY_THEME" "${files[$t]}" >/tmp/sketchybar-wallpaper.log 2>&1 &
     close_popup_items
@@ -227,17 +228,17 @@ slotclick() { # $1 = slot offset from center (-2..2); applies that wallpaper
 # Sketchybar fires event scripts with $SENDER set and no positional args;
 # click_script lines invoke "$SCRIPT <cmd> ..." with positional args instead.
 case "${1:-}" in
-  rotate) rotate "$2" ;;
-  slotclick) slotclick "$2" ;;
-  *)
-    case "${SENDER:-}" in
-      mouse.entered)
-        case "${NAME:-}" in
-          wallpaper.slot_*|wallpaper.arrow_*) bump_gen ;;
-          *) show_popup ;;
-        esac
-        ;;
-      mouse.exited) hide_popup ;;
+rotate) rotate "$2" ;;
+slotclick) slotclick "$2" ;;
+*)
+  case "${SENDER:-}" in
+  mouse.entered)
+    case "${NAME:-}" in
+    wallpaper.slot_* | wallpaper.arrow_*) bump_gen ;;
+    *) show_popup ;;
     esac
     ;;
+  mouse.exited) hide_popup ;;
+  esac
+  ;;
 esac

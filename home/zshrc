@@ -136,7 +136,6 @@ if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env --use-on-cd)"
 fi
 
-
 # ---- OS-Specific Commands --------------------------------------------------
 
 if [ "$OS" = "Darwin" ]; then
@@ -148,4 +147,3 @@ if [ -f "$ZSH_SYNTAX_HIGHLIGHTING" ]; then
   # shellcheck source=/dev/null
   source "$ZSH_SYNTAX_HIGHLIGHTING"
 fi
-

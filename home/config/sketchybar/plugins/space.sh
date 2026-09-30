@@ -14,5 +14,5 @@ while read -r index window; do
   else
     args+=(--set "space${index}" "icon=${index}°" "background.color=${color}")
   fi
-done <<< "$(yabai -m query --spaces | jq -r '.[] | [.index, .windows[0]] | @sh')"
+done <<<"$(yabai -m query --spaces | jq -r '.[] | [.index, .windows[0]] | @sh')"
 sketchybar -m "${args[@]}"

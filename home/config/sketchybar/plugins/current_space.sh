@@ -10,12 +10,12 @@ update_space() {
 }
 
 case "$SENDER" in
-  "mouse.clicked")
-    # Reload sketchybar
-    sketchybar --remove /.*/
-    source $HOME/.config/sketchybar/sketchybarrc
-    ;;
-  *)
-    update_space
-    ;;
+"mouse.clicked")
+  # Reload sketchybar
+  sketchybar --remove /.*/
+  source $HOME/.config/sketchybar/sketchybarrc
+  ;;
+*)
+  update_space
+  ;;
 esac
