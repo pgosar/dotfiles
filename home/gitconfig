@@ -53,7 +53,7 @@
 [push]
 	# only pushes current branch to target regardless of remote name
 	default = upstream
-	# push tags ttoo
+	# push tags too
 	followTags = true
 	autoSetupRemote = true
 [status]
@@ -62,7 +62,7 @@
   # recursively shows all untracked files
   showUntrackedFiles = all
 [color "branch"]
-  # chang color to cyan
+  # change color to cyan
   upstream = cyan
 [tag]
   # Sort tags as version numbers
