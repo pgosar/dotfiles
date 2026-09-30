@@ -11,9 +11,10 @@ PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
 
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 
+# Solid black bar: the notch vanishes into it, theme can't override.
 sketchybar --bar \
   height=32 \
-  color=$BAR_BG \
+  color=0xff000000 \
   margin=0 \
   sticky=on \
   padding_left=23 \
