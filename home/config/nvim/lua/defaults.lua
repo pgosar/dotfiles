@@ -35,6 +35,15 @@ M.setup_sources = function(b)
     b.diagnostics.checkmake,
     b.diagnostics.cmake_lint,
     b.diagnostics.checkstyle.with({
+      -- Default args scan $ROOT, which falls back to the home directory when
+      -- no project root is found. Scan the project when one is detected,
+      -- otherwise just the current file.
+      args = function(params)
+        local target = params.root
+        local home = os.getenv("HOME")
+        if not target or target == home then target = params.bufname end
+        return { "-f", "sarif", target }
+      end,
       extra_args = { "-c", "/google_checks.xml" },
     }),
     -- cppcheck exits 0 with findings; upstream expects >= 1.
