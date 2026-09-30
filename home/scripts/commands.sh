@@ -8,7 +8,7 @@ waydroid-start() {
   echo "Starting Waydroid container..."
   sudo systemctl start waydroid-container
   echo "Starting Waydroid session..."
-  waydroid session start > /dev/null 2>&1 &
+  waydroid session start >/dev/null 2>&1 &
   sleep 1
   echo "Opening Waydroid UI..."
   waydroid show-full-ui &

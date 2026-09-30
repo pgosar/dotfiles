@@ -128,7 +128,7 @@ link_entries() {
   local entry src dest
 
   for entry in "$@"; do
-    IFS="|" read -r src dest <<< "$entry"
+    IFS="|" read -r src dest <<<"$entry"
     link_path "$src" "$dest"
   done
 }
@@ -182,7 +182,7 @@ install_cargo_tools() {
   )
 
   for entry in "${cargo_tools[@]}"; do
-    IFS="|" read -r crate command <<< "$entry"
+    IFS="|" read -r crate command <<<"$entry"
     if command_exists "$command"; then
       continue
     fi
@@ -268,7 +268,7 @@ configure_kde() {
 
   local setting file group key value
   for setting in "${KDE_CONFIG_SETTINGS[@]}"; do
-    IFS="|" read -r file group key value <<< "$setting"
+    IFS="|" read -r file group key value <<<"$setting"
     kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"
   done
 
@@ -333,11 +333,11 @@ fi
 
 if [ -n "$FIREFOX_BASE" ]; then
   # Read active profile from profiles.ini, otherwise grab the first default-release.
-  FIREFOX_PROFILE_PATH=$(grep "Path=" "$FIREFOX_BASE/profiles.ini" 2> /dev/null | grep "default-release" | cut -d "=" -f 2 | head -n 1)
+  FIREFOX_PROFILE_PATH=$(grep "Path=" "$FIREFOX_BASE/profiles.ini" 2>/dev/null | grep "default-release" | cut -d "=" -f 2 | head -n 1)
   if [ -n "$FIREFOX_PROFILE_PATH" ]; then
     FIREFOX_PROFILE="$FIREFOX_BASE/$FIREFOX_PROFILE_PATH"
   else
-    FIREFOX_PROFILE=$(find "$FIREFOX_BASE" -maxdepth 1 -type d -name "*.default-release" -print -quit 2> /dev/null)
+    FIREFOX_PROFILE=$(find "$FIREFOX_BASE" -maxdepth 1 -type d -name "*.default-release" -print -quit 2>/dev/null)
   fi
 
   if [ -n "$FIREFOX_PROFILE" ]; then
