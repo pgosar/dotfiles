@@ -15,8 +15,8 @@ M.setup_sources = function(b)
       },
     }),
     b.formatting.gofumpt,
-    b.formatting.black,
     b.formatting.cmake_format,
+    b.formatting.mdformat,
     b.formatting.prettierd.with({
       filetypes = {
         "javascript",
@@ -34,8 +34,17 @@ M.setup_sources = function(b)
     b.diagnostics.verilator,
     b.diagnostics.checkmake,
     b.diagnostics.cmake_lint,
-    b.diagnostics.pylint,
+    b.diagnostics.checkstyle.with({
+      extra_args = { "-c", "/google_checks.xml" },
+    }),
+    -- cppcheck exits 0 with findings; upstream expects >= 1.
+    b.diagnostics.cppcheck.with({
+      check_exit_code = function(code) return code <= 1 end,
+    }),
+    b.diagnostics.markdownlint,
+    b.diagnostics.yamllint,
     b.diagnostics.revive,
+    b.diagnostics.selene,
     b.code_actions.gitsigns,
     b.code_actions.gomodifytags,
     b.code_actions.refactoring,
@@ -120,6 +129,13 @@ M.ensure_installed = {
     "mdformat",
     "zls",
     "qmlls",
+    "shellcheck",
+    "selene",
+    "ruff",
+    "taplo",
+    "checkstyle",
+    "markdownlint",
+    "yamllint",
   },
   dap = {
     "python",
