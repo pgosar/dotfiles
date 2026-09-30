@@ -515,6 +515,33 @@ def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
     return hls_to_hex(h, l, s)
 
 
+def match_hue_slots(hex_colors):
+    """Assign each chromatic role the unused color nearest its hue.
+
+    Returns a dict mapping role name to index in hex_colors; the closest
+    (role, color) pair wins each round so role names match actual hues.
+    """
+    roles = (("red", 0.0), ("yellow", 1 / 6), ("green", 2 / 6),
+             ("cyan", 3 / 6), ("blue", 4 / 6), ("purple", 5 / 6))
+    hues = [hex_to_hls(c)[0] for c in hex_colors]
+    free_colors = set(range(len(hex_colors)))
+    free_roles = list(roles)
+    assignment = {}
+    while free_roles:
+        best = None
+        for name, target in free_roles:
+            for i in free_colors:
+                dist = abs(hues[i] - target)
+                dist = min(dist, 1.0 - dist)
+                if best is None or dist < best[0]:
+                    best = (dist, name, i)
+        _, name, i = best
+        assignment[name] = i
+        free_colors.remove(i)
+        free_roles = [r for r in free_roles if r[0] != name]
+    return assignment
+
+
 def generate_theme_from_wallpaper(wallpaper_path):
     """Run pywal on the wallpaper and write the curated theme.json.
     Returns True on success; on failure prints a warning and returns False
@@ -541,6 +568,12 @@ def generate_theme_from_wallpaper(wallpaper_path):
     base = adjust_color(bg_color, target_l=0.12, max_s=0.10)
     surface = adjust_color(bg_color, target_l=0.17, max_s=0.10)
 
+    # Pywal's ANSI slots don't reliably hold their nominal hues, so match
+    # the six chromatic colors to roles by nearest hue instead of position.
+    slots = [wal["colors"][f"color{i}"] for i in range(1, 7)]
+    brights = [wal["colors"][f"color{i}"] for i in range(9, 15)]
+    hue_slot = match_hue_slots(slots)
+
     my_theme = {
         "base": base,
         "mantle": mantle,
@@ -548,18 +581,18 @@ def generate_theme_from_wallpaper(wallpaper_path):
         "text": wal["special"]["foreground"],
         "muted": adjust_color(wal["colors"]["color8"], target_l=0.45, max_s=0.15),
         "white": wal["colors"]["color15"],
-        "red": ensure_readability(wal["colors"]["color1"]),
-        "green": ensure_readability(wal["colors"]["color2"]),
-        "yellow": ensure_readability(wal["colors"]["color3"]),
-        "blue": ensure_readability(wal["colors"]["color4"]),
-        "purple": ensure_readability(wal["colors"]["color5"]),
-        "cyan": ensure_readability(wal["colors"]["color6"]),
-        "rose": ensure_readability(wal["colors"]["color9"]),
-        "light_green": ensure_readability(wal["colors"]["color10"]),
-        "light_peach": ensure_readability(wal["colors"]["color11"]),
-        "light_blue": ensure_readability(wal["colors"]["color12"]),
-        "light_purple": ensure_readability(wal["colors"]["color13"]),
-        "light_cyan": ensure_readability(wal["colors"]["color14"]),
+        "red": ensure_readability(slots[hue_slot["red"]]),
+        "green": ensure_readability(slots[hue_slot["green"]]),
+        "yellow": ensure_readability(slots[hue_slot["yellow"]]),
+        "blue": ensure_readability(slots[hue_slot["blue"]]),
+        "purple": ensure_readability(slots[hue_slot["purple"]]),
+        "cyan": ensure_readability(slots[hue_slot["cyan"]]),
+        "rose": ensure_readability(brights[hue_slot["red"]]),
+        "light_green": ensure_readability(brights[hue_slot["green"]]),
+        "light_peach": ensure_readability(brights[hue_slot["yellow"]]),
+        "light_blue": ensure_readability(brights[hue_slot["blue"]]),
+        "light_purple": ensure_readability(brights[hue_slot["purple"]]),
+        "light_cyan": ensure_readability(brights[hue_slot["cyan"]]),
         "peach": wal["colors"]["color15"],
     }
 
