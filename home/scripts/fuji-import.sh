@@ -46,12 +46,12 @@ trap cleanup EXIT
 
 is_media_file() {
   case "$1" in
-    *.[Jj][Pp][Gg]|*.[Jj][Pp][Ee][Gg]|*.[Rr][Aa][Ff]|*.[Hh][Ee][Ii][Cc]|*.[Hh][Ee][Ii][Ff]|*.[Hh][Ii][Ff]|*.[Mm][Oo][Vv]|*.[Mm][Pp]4|*.[Aa][Vv][Ii]|*.[Mm][Tt][Ss]|*.[Mm]2[Tt][Ss]|*.[Tt][Ii][Ff]|*.[Tt][Ii][Ff][Ff]|*.[Pp][Nn][Gg])
-      return 0
-      ;;
-    *)
-      return 1
-      ;;
+  *.[Jj][Pp][Gg] | *.[Jj][Pp][Ee][Gg] | *.[Rr][Aa][Ff] | *.[Hh][Ee][Ii][Cc] | *.[Hh][Ee][Ii][Ff] | *.[Hh][Ii][Ff] | *.[Mm][Oo][Vv] | *.[Mm][Pp]4 | *.[Aa][Vv][Ii] | *.[Mm][Tt][Ss] | *.[Mm]2[Tt][Ss] | *.[Tt][Ii][Ff] | *.[Tt][Ii][Ff][Ff] | *.[Pp][Nn][Gg])
+    return 0
+    ;;
+  *)
+    return 1
+    ;;
   esac
 }
 
@@ -76,10 +76,10 @@ detect_source() {
     found+=("$path")
   done
 
-  if (( ${#found[@]} == 0 )); then
+  if ((${#found[@]} == 0)); then
     die "no SD-card DCIM folder found; pass its path explicitly"
   fi
-  if (( ${#found[@]} > 1 )); then
+  if ((${#found[@]} > 1)); then
     printf 'Multiple DCIM folders found:\n' >&2
     printf '  %s\n' "${found[@]}" >&2
     die "pass the Fujifilm card path explicitly"
@@ -101,8 +101,8 @@ verify_raf_file_magic() {
 
   command -v file >/dev/null 2>&1 || return 0
   case "$path" in
-    *.[Rr][Aa][Ff]) ;;
-    *) return 0 ;;
+  *.[Rr][Aa][Ff]) ;;
+  *) return 0 ;;
   esac
 
   mime="$(file -b --mime-type -- "$path" 2>/dev/null || true)"
@@ -116,7 +116,7 @@ upload_batch() {
   local -a args=(upload --album-name "$ALBUM_NAME")
   local path
 
-  if (( DRY_RUN )); then
+  if ((DRY_RUN)); then
     args+=(--dry-run)
   fi
   for path in "$@"; do
@@ -125,28 +125,28 @@ upload_batch() {
   immich "${args[@]}"
 }
 
-while (( $# > 0 )); do
+while (($# > 0)); do
   case "$1" in
-    -n|--dry-run) DRY_RUN=1 ;;
-    -a|--all) IMPORT_ALL=1 ;;
-    -y|--yes) ASSUME_YES=1 ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    --)
-      shift
-      if (( $# > 1 )); then
-        die "only one source path may be provided"
-      fi
-      SOURCE="${1:-}"
-      break
-      ;;
-    -*) die "unknown option: $1" ;;
-    *)
-      [[ -z "$SOURCE" ]] || die "only one source path may be provided"
-      SOURCE="$1"
-      ;;
+  -n | --dry-run) DRY_RUN=1 ;;
+  -a | --all) IMPORT_ALL=1 ;;
+  -y | --yes) ASSUME_YES=1 ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  --)
+    shift
+    if (($# > 1)); then
+      die "only one source path may be provided"
+    fi
+    SOURCE="${1:-}"
+    break
+    ;;
+  -*) die "unknown option: $1" ;;
+  *)
+    [[ -z "$SOURCE" ]] || die "only one source path may be provided"
+    SOURCE="$1"
+    ;;
   esac
   shift
 done
@@ -180,18 +180,18 @@ while IFS= read -r -d '' path; do
   fi
   FILES+=("$path")
 done < <(
-  if (( IMPORT_ALL )) || [[ ! -f "$STATE_FILE" ]]; then
+  if ((IMPORT_ALL)) || [[ ! -f "$STATE_FILE" ]]; then
     find "$SOURCE" -type f ! -newer "$RUN_MARKER" -print0
   else
     find "$SOURCE" -type f -newer "$STATE_FILE" ! -newer "$RUN_MARKER" -print0
   fi
 )
 
-(( BAD_RAF == 0 )) || die "fix the mislabeled RAF file(s) on a separate copy, then retry; the checkpoint was not changed"
+((BAD_RAF == 0)) || die "fix the mislabeled RAF file(s) on a separate copy, then retry; the checkpoint was not changed"
 
-if (( ${#FILES[@]} == 0 )); then
+if ((${#FILES[@]} == 0)); then
   printf 'No new supported media found in %s.\n' "$SOURCE"
-  if (( ! DRY_RUN )); then
+  if ((! DRY_RUN)); then
     STATE_TMP="$STATE_FILE.tmp.$$"
     cp -p -- "$RUN_MARKER" "$STATE_TMP"
     mv -f -- "$STATE_TMP" "$STATE_FILE"
@@ -200,32 +200,32 @@ if (( ${#FILES[@]} == 0 )); then
 fi
 
 printf 'Source: %s\nAlbum:  %s\nFiles:  %d\n' "$SOURCE" "$ALBUM_NAME" "${#FILES[@]}"
-if [[ -f "$STATE_FILE" ]] && (( ! IMPORT_ALL )); then
+if [[ -f "$STATE_FILE" ]] && ((! IMPORT_ALL)); then
   printf 'Since:  %s\n' "$(date -r "$STATE_FILE" '+%Y-%m-%d %H:%M:%S' 2>/dev/null || printf 'last successful run')"
 else
   printf 'Since:  beginning of card\n'
 fi
 
-if (( ! ASSUME_YES && ! DRY_RUN )); then
+if ((! ASSUME_YES && ! DRY_RUN)); then
   printf 'Import now? [Y/n] '
   read -r answer
   case "$answer" in
-    ''|[Yy]|[Yy][Ee][Ss]) ;;
-    *)
-      printf 'Cancelled; the checkpoint was not changed.\n'
-      exit 0
-      ;;
+  '' | [Yy] | [Yy][Ee][Ss]) ;;
+  *)
+    printf 'Cancelled; the checkpoint was not changed.\n'
+    exit 0
+    ;;
   esac
 fi
 
 offset=0
-while (( offset < ${#FILES[@]} )); do
+while ((offset < ${#FILES[@]})); do
   batch=("${FILES[@]:offset:BATCH_SIZE}")
   upload_batch "${batch[@]}"
   offset=$((offset + ${#batch[@]}))
 done
 
-if (( DRY_RUN )); then
+if ((DRY_RUN)); then
   printf 'Dry run complete; the checkpoint was not changed.\n'
 else
   STATE_TMP="$STATE_FILE.tmp.$$"

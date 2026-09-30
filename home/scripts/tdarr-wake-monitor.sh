@@ -256,7 +256,7 @@ if tdarr_count="$(tdarr_work_count)"; then
     tdarr_state="busy"
     log "Tdarr has queued/staged work_count=$tdarr_count; ensuring PC worker stack"
     WAKE_SOURCE="tdarr-queued-work work_count=$tdarr_count" CHECK_TDARR=true \
-      "$ENSURE_SCRIPT" >>"$LOG_FILE" 2>&1 || \
+      "$ENSURE_SCRIPT" >>"$LOG_FILE" 2>&1 ||
       log "pc-worker-ensure failed; source=tdarr-queued-work; work_count=$tdarr_count"
   else
     tdarr_state="idle"

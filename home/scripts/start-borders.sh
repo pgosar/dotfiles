@@ -13,7 +13,7 @@ ACTIVE=0xffe1e3e4
 INACTIVE=0xff494d64
 if [ -f "$THEME" ]; then
   # fall back to defaults if the theme JSON fails to parse
-  read -r PARSED_ACTIVE PARSED_INACTIVE <<< "$(python3 -c "
+  read -r PARSED_ACTIVE PARSED_INACTIVE <<<"$(python3 -c "
 import json, sys
 t = json.load(open(sys.argv[1]))
 print('0xff' + t['peach'].lstrip('#'), '0xff' + t['surface'].lstrip('#'))
@@ -22,6 +22,6 @@ print('0xff' + t['peach'].lstrip('#'), '0xff' + t['surface'].lstrip('#'))
   [ -n "$PARSED_INACTIVE" ] && INACTIVE="$PARSED_INACTIVE"
 fi
 
-pkill -x borders 2> /dev/null
+pkill -x borders 2>/dev/null
 # detach stdio so callers over ssh don't hang on the backgrounded process
-"$BORDERS" active_color="$ACTIVE" inactive_color="$INACTIVE" width=5.0 style=round hidpi=off > /dev/null 2>&1 < /dev/null &
+"$BORDERS" active_color="$ACTIVE" inactive_color="$INACTIVE" width=5.0 style=round hidpi=off >/dev/null 2>&1 </dev/null &
