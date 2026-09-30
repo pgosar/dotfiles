@@ -509,8 +509,12 @@ def adjust_color(hex_color, target_l, max_s=0.20):
 
 def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
     """Keep accents bright enough for dark backgrounds without oversaturating."""
-    h, _, s = hex_to_hls(hex_color)
+    h, l, s = hex_to_hls(hex_color)
     l = max(l, min_l)
+    # Near-grayscale in, grayscale out: keep B&W wallpapers from
+    # turning every accent into a forced pastel.
+    if s < 0.12:
+        return hls_to_hex(h, l, s)
     s = max(min_s, min(s, max_s))
     return hls_to_hex(h, l, s)
 
