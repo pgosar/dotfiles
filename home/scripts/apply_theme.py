@@ -546,12 +546,10 @@ def generate_theme_from_wallpaper(wallpaper_path):
     """Run pywal on the wallpaper and write the curated theme.json.
     Returns True on success; on failure prints a warning and returns False
     so the caller can still set the wallpaper."""
-    # Ensure our pidof shim (macOS lacks pidof; pywal needs it for kitty reload) is on PATH
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    env = os.environ.copy()
-    env["PATH"] = script_dir + os.pathsep + env.get("PATH", "")
     try:
-        subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q"], check=True, env=env)
+        # -e skips pywal's reload step (it needs pidof, absent on macOS);
+        # we reload our own surfaces after generating the theme.
+        subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q", "-e"], check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
         print("Warning: pywal failed; theme not regenerated, but wallpaper will still be set.")
         return False
