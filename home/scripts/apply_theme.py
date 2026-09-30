@@ -463,11 +463,6 @@ def apply_borders_macos():
     subprocess.run([str(script)])
 
 
-import argparse
-import colorsys
-import glob
-
-
 def wal_binary():
     # pywal user installs (pip --user) are not on PATH on macOS, and the
     # python running this script may differ from the one pywal was installed with
@@ -506,14 +501,14 @@ def hls_to_hex(h, l, s):
 
 def adjust_color(hex_color, target_l, max_s=0.20):
     """Pin lightness, cap saturation so backgrounds don't get garish."""
-    h, l, s = hex_to_hls(hex_color)
+    h, _, s = hex_to_hls(hex_color)
     s = min(s, max_s)
     return hls_to_hex(h, target_l, s)
 
 
 def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
     """Keep accents bright enough for dark backgrounds without oversaturating."""
-    h, l, s = hex_to_hls(hex_color)
+    h, _, s = hex_to_hls(hex_color)
     l = max(l, min_l)
     s = max(min_s, min(s, max_s))
     return hls_to_hex(h, l, s)
