@@ -5,10 +5,9 @@ import subprocess
 import sys
 import threading
 from datetime import datetime
-from time import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from time import time
 from urllib.parse import urlsplit
-
 
 LISTEN_HOST = os.environ.get("LISTEN_HOST", "127.0.0.1")
 LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "3004"))
@@ -65,7 +64,9 @@ def split_target(url: str):
 
 def healthcheck(url: str) -> bool:
     scheme, host, port = split_target(url)
-    conn_cls = http.client.HTTPSConnection if scheme == "https" else http.client.HTTPConnection
+    conn_cls = (
+        http.client.HTTPSConnection if scheme == "https" else http.client.HTTPConnection
+    )
     try:
         conn = conn_cls(host, port, timeout=PC_CONNECT_TIMEOUT)
         conn.request("GET", "/ping")
@@ -114,7 +115,9 @@ def ensure_pc_ml(wake_source: str) -> bool:
     with _ensure_lock:
         if healthcheck(PC_ML_URL):
             return True
-        log(f"PC Immich ML endpoint unavailable; source={wake_source}; running pc-worker-ensure")
+        log(
+            f"PC Immich ML endpoint unavailable; source={wake_source}; running pc-worker-ensure"
+        )
         try:
             result = subprocess.run(
                 [ENSURE_SCRIPT],
@@ -147,9 +150,7 @@ def touch_last_request() -> None:
 
 
 def write_active_requests() -> None:
-    temp_file = (
-        f"{ACTIVE_REQUESTS_FILE}.tmp.{os.getpid()}.{threading.get_ident()}"
-    )
+    temp_file = f"{ACTIVE_REQUESTS_FILE}.tmp.{os.getpid()}.{threading.get_ident()}"
     try:
         os.makedirs(os.path.dirname(ACTIVE_REQUESTS_FILE), exist_ok=True)
         with open(temp_file, "w", encoding="utf-8") as handle:
@@ -194,7 +195,9 @@ def should_use_pc_ml() -> bool:
             )
             return False
         source = f"immich-ml-local-unavailable request_count={request_count}"
-        log(f"Local Immich ML unavailable for real request; source={source}; ensuring PC ML")
+        log(
+            f"Local Immich ML unavailable for real request; source={source}; ensuring PC ML"
+        )
         return ensure_pc_ml(source)
     return ensure_pc_ml(
         f"immich-ml-bulk request_count={request_count} threshold={BULK_REQUEST_THRESHOLD}"
@@ -253,10 +256,18 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 return
 
             scheme, host, port = split_target(target)
-            conn_cls = http.client.HTTPSConnection if scheme == "https" else http.client.HTTPConnection
+            conn_cls = (
+                http.client.HTTPSConnection
+                if scheme == "https"
+                else http.client.HTTPConnection
+            )
             length = int(self.headers.get("Content-Length", "0") or "0")
             body = self.rfile.read(length) if length else None
-            headers = {k: v for k, v in self.headers.items() if k.lower() not in {"host", "connection"}}
+            headers = {
+                k: v
+                for k, v in self.headers.items()
+                if k.lower() not in {"host", "connection"}
+            }
 
             conn = None
             try:
@@ -266,7 +277,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 data = resp.read()
                 self.send_response(resp.status, resp.reason)
                 for key, value in resp.getheaders():
-                    if key.lower() not in {"transfer-encoding", "connection", "content-length"}:
+                    if key.lower() not in {
+                        "transfer-encoding",
+                        "connection",
+                        "content-length",
+                    }:
                         self.send_header(key, value)
                 self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
@@ -286,7 +301,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
     def proxy_to_local(self, body, headers):
         scheme, host, port = split_target(LOCAL_ML_URL)
-        conn_cls = http.client.HTTPSConnection if scheme == "https" else http.client.HTTPConnection
+        conn_cls = (
+            http.client.HTTPSConnection
+            if scheme == "https"
+            else http.client.HTTPConnection
+        )
         conn = None
         try:
             conn = conn_cls(host, port, timeout=300)
@@ -295,7 +314,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
             data = resp.read()
             self.send_response(resp.status, resp.reason)
             for key, value in resp.getheaders():
-                if key.lower() not in {"transfer-encoding", "connection", "content-length"}:
+                if key.lower() not in {
+                    "transfer-encoding",
+                    "connection",
+                    "content-length",
+                }:
                     self.send_header(key, value)
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
