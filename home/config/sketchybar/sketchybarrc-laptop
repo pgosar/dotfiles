@@ -138,6 +138,28 @@ sketchybar --add item volume right \
   script="$PLUGIN_SHARED_DIR/volume.sh" \
   --subscribe volume volume_change system_woke
 
+# Wallpaper picker: hover the notch to reveal a rotating carousel
+# popup of wallpaper cards; click the centered card to apply it.
+sketchybar --add item wallpaper.notch center \
+  --set wallpaper.notch \
+  width=188 \
+  background.drawing=on \
+  background.color=0x00000000 \
+  background.height=32 \
+  icon.drawing=off \
+  label.drawing=off \
+  popup.drawing=off \
+  popup.blur_radius=30 \
+  popup.background.color=0xd91e1e22 \
+  popup.background.corner_radius=16 \
+  popup.background.border_width=1 \
+  popup.background.border_color=0x2effffff \
+  popup.horizontal=on \
+  popup.align=center \
+  popup.y_offset=10 \
+  script="$PLUGIN_SHARED_DIR/wallpaper.sh" \
+  --subscribe wallpaper.notch mouse.entered mouse.exited
+
 ##### Finalizing Setup #####
 sketchybar --update
 sketchybar --trigger space_change
