@@ -16,7 +16,7 @@ sketchybar --bar \
   margin=0 \
   sticky=on \
   padding_left=0 \
-  padding_right=0 \
+  padding_right=0
 
 sketchybar --default \
   background.height=32 \
@@ -98,4 +98,3 @@ sketchybar --add item focus q \
 ##### Finalizing Setup #####
 sketchybar --update
 sketchybar --trigger space_change
-

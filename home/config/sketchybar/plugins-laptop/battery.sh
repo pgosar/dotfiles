@@ -11,26 +11,26 @@ if [ $PERCENTAGE = "" ]; then
 fi
 
 case ${PERCENTAGE} in
-  [8-9][0-9] | 100)
-    ICON=""
-    ICON_COLOR=$GREEN
-    ;;
-  7[0-9])
-    ICON=""
-    ICON_COLOR=$PEACH
-    ;;
-  [4-6][0-9])
-    ICON=""
-    ICON_COLOR=$PEACH
-    ;;
-  [1-3][0-9])
-    ICON=""
-    ICON_COLOR=$BLUE
-    ;;
-  [0-9])
-    ICON=""
-    ICON_COLOR=$BLUE
-    ;;
+[8-9][0-9] | 100)
+  ICON=""
+  ICON_COLOR=$GREEN
+  ;;
+7[0-9])
+  ICON=""
+  ICON_COLOR=$PEACH
+  ;;
+[4-6][0-9])
+  ICON=""
+  ICON_COLOR=$PEACH
+  ;;
+[1-3][0-9])
+  ICON=""
+  ICON_COLOR=$BLUE
+  ;;
+[0-9])
+  ICON=""
+  ICON_COLOR=$BLUE
+  ;;
 esac
 
 if [[ $CHARGING != "" ]]; then

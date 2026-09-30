@@ -57,10 +57,10 @@ update_track() {
 }
 
 case "$SENDER" in
-  "mouse.clicked")
-    osascript -e 'tell application "Spotify" to playpause'
-    ;;
-  *)
-    update_track
-    ;;
+"mouse.clicked")
+  osascript -e 'tell application "Spotify" to playpause'
+  ;;
+*)
+  update_track
+  ;;
 esac

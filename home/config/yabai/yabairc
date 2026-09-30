@@ -27,25 +27,25 @@ yabai -m rule --add label="tile-kitty" app="^kitty$" manage=on sub-layer=below
 yabai -m rule --apply
 
 yabai -m config external_bar all:40:0 \
-	mouse_follows_focus on \
-	focus_follows_mouse off \
-	window_zoom_persist off \
-	window_placement second_child \
-	window_shadow float \
-	window_opacity off \
-	insert_feedback_color $YABAI_INSERT_FEEDBACK_COLOR \
-	split_ratio 0.50 \
-	auto_balance off \
-	mouse_modifier fn \
-	mouse_action1 move \
-	mouse_action2 resize \
-	mouse_drop_action swap \
-	\
-	top_padding 0 \
-	bottom_padding 8 \
-	left_padding 8 \
-	right_padding 8 \
-	window_gap 8
+  mouse_follows_focus on \
+  focus_follows_mouse off \
+  window_zoom_persist off \
+  window_placement second_child \
+  window_shadow float \
+  window_opacity off \
+  insert_feedback_color $YABAI_INSERT_FEEDBACK_COLOR \
+  split_ratio 0.50 \
+  auto_balance off \
+  mouse_modifier fn \
+  mouse_action1 move \
+  mouse_action2 resize \
+  mouse_drop_action swap \
+  \
+  top_padding 0 \
+  bottom_padding 8 \
+  left_padding 8 \
+  right_padding 8 \
+  window_gap 8
 
 yabai -m config layout bsp
 # window border colors come from the pywal theme, see start-borders.sh
