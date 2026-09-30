@@ -67,19 +67,18 @@ def healthcheck(url: str) -> bool:
     conn_cls = (
         http.client.HTTPSConnection if scheme == "https" else http.client.HTTPConnection
     )
+    conn = None
     try:
         conn = conn_cls(host, port, timeout=PC_CONNECT_TIMEOUT)
         conn.request("GET", "/ping")
         resp = conn.getresponse()
         resp.read()
         return resp.status < 500
-    except Exception:
+    except (OSError, http.client.HTTPException):
         return False
     finally:
-        try:
+        if conn is not None:
             conn.close()
-        except Exception:
-            pass
 
 
 def minutes_since_midnight(value: str) -> int:
@@ -91,7 +90,7 @@ def in_night_window() -> bool:
     if not NIGHT_ONLY:
         return True
 
-    now_dt = datetime.now()
+    now_dt = datetime.now().astimezone()
     now = now_dt.hour * 60 + now_dt.minute
     start = minutes_since_midnight(NIGHT_START)
     end = minutes_since_midnight(NIGHT_END)
@@ -135,7 +134,7 @@ def ensure_pc_ml(wake_source: str) -> bool:
                     "pc-worker-ensure exited "
                     f"status={result.returncode}; source={wake_source}"
                 )
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError) as exc:
             log(f"pc-worker-ensure failed; source={wake_source}; error={exc}")
         return healthcheck(PC_ML_URL)
 
@@ -145,7 +144,7 @@ def touch_last_request() -> None:
         os.makedirs(os.path.dirname(LAST_REQUEST_FILE), exist_ok=True)
         with open(LAST_REQUEST_FILE, "a", encoding="utf-8"):
             os.utime(LAST_REQUEST_FILE, None)
-    except Exception as exc:
+    except OSError as exc:
         log(f"failed to update last request marker: {exc}")
 
 
@@ -156,7 +155,7 @@ def write_active_requests() -> None:
         with open(temp_file, "w", encoding="utf-8") as handle:
             handle.write(f"{_active_requests}\n")
         os.replace(temp_file, ACTIVE_REQUESTS_FILE)
-    except Exception as exc:
+    except OSError as exc:
         log(f"failed to update active request marker: {exc}")
 
 
@@ -286,7 +285,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
                 self.wfile.write(data)
-            except Exception as exc:
+            except (OSError, http.client.HTTPException) as exc:
                 log(f"proxy request failed against {target}: {exc}")
                 if target != LOCAL_ML_URL and FALLBACK_TO_LOCAL:
                     self.proxy_to_local(body, headers)
@@ -323,7 +322,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             self.wfile.write(data)
-        except Exception as exc:
+        except (OSError, http.client.HTTPException) as exc:
             log(f"local ML fallback failed: {exc}")
             self.send_proxy_error(502, "Local ML fallback failed")
         finally:
@@ -331,7 +330,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 conn.close()
 
     def log_message(self, fmt, *args):
-        log("%s - %s" % (self.address_string(), fmt % args))
+        log(f"{self.address_string()} - {fmt % args}")
 
 
 if __name__ == "__main__":
