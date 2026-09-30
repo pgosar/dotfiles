@@ -1,9 +1,11 @@
 import configparser
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from paths import (
@@ -457,6 +459,81 @@ def apply_borders_macos():
     subprocess.run([str(script)])
 
 
+# --- Linux theme application -------------------------------------------------
+# apply_theme.py is the Linux "apply theme": after generating the color files
+# it reloads the running apps so they pick up the new theme without a
+# wallpaper change. (set_wallpaper.sh no longer does this.)
+
+
+def _ancestor_is_quickshell():
+    # set_wallpaper.sh may run from quickshell's WallpaperSwitcher, which
+    # reloads colors dynamically; restarting would kill the caller.
+    pid = os.getpid()
+    while pid > 1:
+        try:
+            comm = Path(f"/proc/{pid}/comm").read_text().strip()
+        except OSError:
+            return False
+        if comm == "quickshell":
+            return True
+        try:
+            # /proc/pid/stat: pid (comm) state ppid ...
+            after_comm = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+            pid = int(after_comm[1])
+        except (OSError, ValueError, IndexError):
+            return False
+    return False
+
+
+def reload_hyprland():
+    if shutil.which("hyprctl"):
+        subprocess.run(["hyprctl", "reload"], capture_output=True)
+
+
+def reload_quickshell():
+    if _ancestor_is_quickshell():
+        print("Wallpaper changed from within quickshell; reloading colors dynamically.")
+        return
+    if not shutil.which("quickshell"):
+        return
+    subprocess.run(["killall", "quickshell"], capture_output=True)
+    for _ in range(50):
+        if subprocess.run(["pgrep", "-x", "quickshell"], capture_output=True).returncode != 0:
+            break
+        time.sleep(0.1)
+    subprocess.Popen(
+        ["quickshell"],
+        start_new_session=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+
+def reload_kitty():
+    # load-config pushes the regenerated colors.conf to running instances.
+    if shutil.which("kitty"):
+        subprocess.run(["kitty", "@", "load-config"], capture_output=True)
+
+
+def reload_dunst():
+    # dunst has no reload; restart it to pick up the rewritten dunstrc.
+    if shutil.which("dunst") and shutil.which("pgrep"):
+        if subprocess.run(["pgrep", "-x", "dunst"], capture_output=True).returncode == 0:
+            subprocess.run(["killall", "dunst"], capture_output=True)
+            subprocess.Popen(
+                ["dunst"],
+                start_new_session=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+
+def reload_spicetify():
+    # Applies color.ini; restarts Spotify if it is running.
+    if shutil.which("spicetify"):
+        subprocess.run(["spicetify", "apply"], capture_output=True)
+
+
 def main():
     colors = load_theme()
     if sys.platform == "darwin":
@@ -479,7 +556,13 @@ def main():
     generate_qt(colors)
     generate_quickshell(colors)
     generate_quickshell_paths()
-    print("Successfully generated color configs!")
+    # Apply to running apps (set_wallpaper.sh only changes the wallpaper)
+    reload_hyprland()
+    reload_quickshell()
+    reload_kitty()
+    reload_dunst()
+    reload_spicetify()
+    print("Successfully generated and applied color configs!")
 
 
 if __name__ == "__main__":
