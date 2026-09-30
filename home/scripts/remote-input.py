@@ -24,7 +24,6 @@ import sys
 import time
 from pathlib import Path
 
-
 EV_SYN = 0x00
 EV_KEY = 0x01
 EV_REL = 0x02
@@ -68,7 +67,9 @@ def read_keymap() -> dict[str, int]:
         if not path.is_file():
             continue
         for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
-            match = re.match(r"\s*#define\s+([A-Z][A-Z0-9_]*)\s+(.+?)\s*(?:/\*.*)?$", line)
+            match = re.match(
+                r"\s*#define\s+([A-Z][A-Z0-9_]*)\s+(.+?)\s*(?:/\*.*)?$", line
+            )
             if not match:
                 continue
             name, value = match.groups()
@@ -108,7 +109,13 @@ def aliases(keymap: dict[str, int]) -> dict[str, int]:
             short = name[4:]
             result.setdefault(short, code)
             result.setdefault(short.lower(), code)
-    result.update({"MOUSE1": keymap.get("BTN_LEFT", -1), "MOUSE2": keymap.get("BTN_RIGHT", -1), "MOUSE3": keymap.get("BTN_MIDDLE", -1)})
+    result.update(
+        {
+            "MOUSE1": keymap.get("BTN_LEFT", -1),
+            "MOUSE2": keymap.get("BTN_RIGHT", -1),
+            "MOUSE3": keymap.get("BTN_MIDDLE", -1),
+        }
+    )
     return {name: code for name, code in result.items() if code >= 0}
 
 
@@ -175,7 +182,9 @@ class UInputKeyboard:
                 self.fd = -1
 
 
-def parse_command(line: str, default_hold_ms: float, keymap: dict[str, int]) -> tuple[str, int, float]:
+def parse_command(
+    line: str, default_hold_ms: float, keymap: dict[str, int]
+) -> tuple[str, int, float]:
     fields = line.split()
     if not fields or fields[0].startswith("#"):
         raise EOFError
@@ -192,21 +201,41 @@ def parse_command(line: str, default_hold_ms: float, keymap: dict[str, int]) -> 
         action = "tap"
     if not fields:
         raise ValueError("missing key name")
-    hold_ms = float(fields[1]) if action == "tap" and len(fields) > 1 else default_hold_ms
+    hold_ms = (
+        float(fields[1]) if action == "tap" and len(fields) > 1 else default_hold_ms
+    )
     if len(fields) > (2 if action == "tap" else 1):
         raise ValueError("too many fields")
     return action, parse_key(fields[0], keymap), hold_ms
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("keys", nargs="*", help="key names or numeric codes to tap")
     parser.add_argument("--device", default="/dev/uinput", help="uinput device path")
-    parser.add_argument("--hold-ms", type=float, default=80, help="tap duration in milliseconds")
-    parser.add_argument("--move", nargs=2, type=int, metavar=("DX", "DY"), help="move the virtual pointer by relative pixel offsets")
-    parser.add_argument("--name", default="remote-input", help="virtual input device name")
-    parser.add_argument("--list", action="store_true", help="list every KEY_* and BTN_* mapping")
-    parser.add_argument("--dry-run", action="store_true", help="validate and print commands without sending them")
+    parser.add_argument(
+        "--hold-ms", type=float, default=80, help="tap duration in milliseconds"
+    )
+    parser.add_argument(
+        "--move",
+        nargs=2,
+        type=int,
+        metavar=("DX", "DY"),
+        help="move the virtual pointer by relative pixel offsets",
+    )
+    parser.add_argument(
+        "--name", default="remote-input", help="virtual input device name"
+    )
+    parser.add_argument(
+        "--list", action="store_true", help="list every KEY_* and BTN_* mapping"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="validate and print commands without sending them",
+    )
     args = parser.parse_args()
 
     keymap = aliases(read_keymap())
@@ -235,7 +264,9 @@ def main() -> int:
             if action == "move":
                 print(f"move {code} {int(hold_ms)}")
             else:
-                print(f"{action} {code}" + (f" {hold_ms:g}ms" if action == "tap" else ""))
+                print(
+                    f"{action} {code}" + (f" {hold_ms:g}ms" if action == "tap" else "")
+                )
         return 0
 
     keyboard = UInputKeyboard(args.device, args.name)

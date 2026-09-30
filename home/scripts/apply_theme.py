@@ -47,7 +47,10 @@ def load_theme():
         except json.JSONDecodeError as e:
             print(f"Theme file is corrupt: {path}: {e}", file=sys.stderr)
             sys.exit(1)
-    print(f"Theme file not found: {theme_path} (seed {seed_path} also missing)", file=sys.stderr)
+    print(
+        f"Theme file not found: {theme_path} (seed {seed_path} also missing)",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 
@@ -213,21 +216,21 @@ def generate_spicetify(colors):
     s_colors = {k: v.lstrip("#") for k, v in colors.items()}
 
     content = f"""[Twilight-Sunset]
-text               = {s_colors['text']}
-subtext            = {s_colors['purple']}
-main               = {s_colors['surface']}
-sidebar            = {s_colors['mantle']}
-player             = {s_colors['mantle']}
-card               = {s_colors['base']}
-shadow             = {s_colors['base']}
-selected-row       = {s_colors['purple']}
-button             = {s_colors['peach']}
-button-active      = {s_colors['peach']}
-button-disabled    = {s_colors['muted']}
-tab-active         = {s_colors['purple']}
-notification       = {s_colors['surface']}
-notification-error = {s_colors['red']}
-misc               = {s_colors['blue']}
+text               = {s_colors["text"]}
+subtext            = {s_colors["purple"]}
+main               = {s_colors["surface"]}
+sidebar            = {s_colors["mantle"]}
+player             = {s_colors["mantle"]}
+card               = {s_colors["base"]}
+shadow             = {s_colors["base"]}
+selected-row       = {s_colors["purple"]}
+button             = {s_colors["peach"]}
+button-active      = {s_colors["peach"]}
+button-disabled    = {s_colors["muted"]}
+tab-active         = {s_colors["purple"]}
+notification       = {s_colors["surface"]}
+notification-error = {s_colors["red"]}
+misc               = {s_colors["blue"]}
 """
     write_text(spicetify_dir / "color.ini", content)
 
@@ -303,37 +306,37 @@ def generate_firefox(colors):
 def generate_gtk(colors):
     # GTK3/4 and Libadwaita standard color overrides
     css_content = f"""/* Auto-generated GTK colors */
-@define-color accent_color {colors['purple']};
-@define-color accent_bg_color {colors['purple']};
-@define-color accent_fg_color {colors['base']};
+@define-color accent_color {colors["purple"]};
+@define-color accent_bg_color {colors["purple"]};
+@define-color accent_fg_color {colors["base"]};
 
-@define-color window_bg_color {colors['base']};
-@define-color window_fg_color {colors['text']};
-@define-color view_bg_color {colors['mantle']};
-@define-color view_fg_color {colors['text']};
+@define-color window_bg_color {colors["base"]};
+@define-color window_fg_color {colors["text"]};
+@define-color view_bg_color {colors["mantle"]};
+@define-color view_fg_color {colors["text"]};
 
-@define-color headerbar_bg_color {colors['surface']};
-@define-color headerbar_fg_color {colors['text']};
-@define-color headerbar_border_color {colors['muted']};
-@define-color headerbar_backdrop_color {colors['base']};
+@define-color headerbar_bg_color {colors["surface"]};
+@define-color headerbar_fg_color {colors["text"]};
+@define-color headerbar_border_color {colors["muted"]};
+@define-color headerbar_backdrop_color {colors["base"]};
 @define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
 
-@define-color popover_bg_color {colors['surface']};
-@define-color popover_fg_color {colors['text']};
-@define-color card_bg_color {colors['surface']};
-@define-color card_fg_color {colors['text']};
-@define-color dialog_bg_color {colors['base']};
-@define-color dialog_fg_color {colors['text']};
+@define-color popover_bg_color {colors["surface"]};
+@define-color popover_fg_color {colors["text"]};
+@define-color card_bg_color {colors["surface"]};
+@define-color card_fg_color {colors["text"]};
+@define-color dialog_bg_color {colors["base"]};
+@define-color dialog_fg_color {colors["text"]};
 
-@define-color theme_bg_color {colors['base']};
-@define-color theme_fg_color {colors['text']};
-@define-color theme_base_color {colors['mantle']};
-@define-color theme_text_color {colors['text']};
+@define-color theme_bg_color {colors["base"]};
+@define-color theme_fg_color {colors["text"]};
+@define-color theme_base_color {colors["mantle"]};
+@define-color theme_text_color {colors["text"]};
 
-@define-color error_color {colors['red']};
-@define-color warning_color {colors['yellow']};
-@define-color success_color {colors['green']};
-@define-color destructive_color {colors['red']};
+@define-color error_color {colors["red"]};
+@define-color warning_color {colors["yellow"]};
+@define-color success_color {colors["green"]};
+@define-color destructive_color {colors["red"]};
     """
     # Write to both GTK 3.0 and GTK 4.0
     for gtk_ver in ["gtk-3.0", "gtk-4.0"]:
@@ -441,7 +444,10 @@ QtObject {{
 
 def generate_sketchybar(colors):
     # macOS only: sourced by sketchybarrc, sketchybar wants 0xAARRGGBB
-    lines = ["# Auto-generated sketchybar colors - do not edit, run apply_theme.py", "# NOTE: theme-macos.json is wallpaper-derived; names are approximate (green is dusty rose, purple is sage)"]
+    lines = [
+        "# Auto-generated sketchybar colors - do not edit, run apply_theme.py",
+        "# NOTE: theme-macos.json is wallpaper-derived; names are approximate (green is dusty rose, purple is sage)",
+    ]
     lines.append(f'BAR_BG="{sketchybar_hex(colors["mantle"])}"')
     lines.append(f'BAR_BG_DIM="0x66{colors["surface"].lstrip("#")}"')
     lines.append(f'TEXT="{sketchybar_hex(colors["text"])}"')
@@ -456,7 +462,7 @@ def generate_sketchybar(colors):
 
 def generate_yabai(colors):
     # yabairc sources this generated file; never rewrite the tracked yabairc
-    accent = '0xff' + colors['peach'].lstrip('#')
+    accent = "0xff" + colors["peach"].lstrip("#")
     lines = [
         "# Auto-generated yabai colors - do not edit, run apply_theme.py",
         f'YABAI_INSERT_FEEDBACK_COLOR="{accent}"',
@@ -532,8 +538,14 @@ def match_hue_slots(hex_colors):
     Returns a dict mapping role name to index in hex_colors; the closest
     (role, color) pair wins each round so role names match actual hues.
     """
-    roles = (("red", 0.0), ("yellow", 1 / 6), ("green", 2 / 6),
-             ("cyan", 3 / 6), ("blue", 4 / 6), ("purple", 5 / 6))
+    roles = (
+        ("red", 0.0),
+        ("yellow", 1 / 6),
+        ("green", 2 / 6),
+        ("cyan", 3 / 6),
+        ("blue", 4 / 6),
+        ("purple", 5 / 6),
+    )
     hues = [hex_to_hls(c)[0] for c in hex_colors]
     free_colors = set(range(len(hex_colors)))
     free_roles = list(roles)
@@ -560,9 +572,13 @@ def generate_theme_from_wallpaper(wallpaper_path):
     try:
         # -e skips pywal's reload step (it needs pidof, absent on macOS);
         # we reload our own surfaces after generating the theme.
-        subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q", "-e"], check=True)
+        subprocess.run(
+            [wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q", "-e"], check=True
+        )
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print("Warning: pywal failed; theme not regenerated, but wallpaper will still be set.")
+        print(
+            "Warning: pywal failed; theme not regenerated, but wallpaper will still be set."
+        )
         return False
     wal_colors_path = os.path.expanduser("~/.cache/wal/colors.json")
     try:
@@ -622,20 +638,28 @@ def set_wallpaper(wallpaper_path):
         # (Finder/System Events AppleScript and NSWorkspace are no-ops.)
         try:
             import plistlib
+
             plist_path = os.path.expanduser(
-                "~/Library/Application Support/com.apple.wallpaper/store/Index.plist")
-            r = subprocess.run(["plutil", "-convert", "xml1", "-o", "-", plist_path],
-                               capture_output=True, check=False)
+                "~/Library/Application Support/com.apple.wallpaper/store/Index.plist"
+            )
+            r = subprocess.run(
+                ["plutil", "-convert", "xml1", "-o", "-", plist_path],
+                capture_output=True,
+                check=False,
+            )
             d = plistlib.loads(r.stdout)
             cfg = plistlib.dumps(
                 {"type": "imageFile", "url": {"relative": "file://" + wallpaper_path}},
-                fmt=plistlib.FMT_BINARY)
+                fmt=plistlib.FMT_BINARY,
+            )
 
             def update(x):
                 if isinstance(x, dict):
                     for ch in x.get("Choices", []):
-                        if isinstance(ch, dict) and ch.get("Provider") == \
-                                "com.apple.wallpaper.choice.image":
+                        if (
+                            isinstance(ch, dict)
+                            and ch.get("Provider") == "com.apple.wallpaper.choice.image"
+                        ):
                             ch["Configuration"] = cfg
                     for v in x.values():
                         update(v)
@@ -648,10 +672,13 @@ def set_wallpaper(wallpaper_path):
             with open(tmp, "wb") as f:
                 f.write(plistlib.dumps(d, fmt=plistlib.FMT_BINARY))
             os.replace(tmp, plist_path)
-            subprocess.run(["killall", "WallpaperAgent"], capture_output=True, check=False)
+            subprocess.run(
+                ["killall", "WallpaperAgent"], capture_output=True, check=False
+            )
         except (OSError, ValueError) as e:
             print(f"Warning: failed to set macOS wallpaper: {e}")
         return
+
 
 # --- Linux theme application -------------------------------------------------
 # apply_theme.py is the Linux "apply theme": after generating the color files
@@ -692,7 +719,12 @@ def reload_quickshell():
         return
     subprocess.run(["killall", "quickshell"], capture_output=True, check=False)
     for _ in range(50):
-        if subprocess.run(["pgrep", "-x", "quickshell"], capture_output=True, check=False).returncode != 0:
+        if (
+            subprocess.run(
+                ["pgrep", "-x", "quickshell"], capture_output=True, check=False
+            ).returncode
+            != 0
+        ):
             break
         time.sleep(0.1)
     subprocess.Popen(
@@ -714,15 +746,18 @@ def reload_dunst():
     if (
         shutil.which("dunst")
         and shutil.which("pgrep")
-        and subprocess.run(["pgrep", "-x", "dunst"], capture_output=True, check=False).returncode == 0
+        and subprocess.run(
+            ["pgrep", "-x", "dunst"], capture_output=True, check=False
+        ).returncode
+        == 0
     ):
-            subprocess.run(["killall", "dunst"], capture_output=True, check=False)
-            subprocess.Popen(
-                ["dunst"],
-                start_new_session=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
+        subprocess.run(["killall", "dunst"], capture_output=True, check=False)
+        subprocess.Popen(
+            ["dunst"],
+            start_new_session=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
 
 def reload_spicetify():
@@ -732,8 +767,12 @@ def reload_spicetify():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate and apply the wallpaper-derived theme")
-    parser.add_argument("wallpaper", nargs="?", help="Wallpaper image to theme from and set")
+    parser = argparse.ArgumentParser(
+        description="Generate and apply the wallpaper-derived theme"
+    )
+    parser.add_argument(
+        "wallpaper", nargs="?", help="Wallpaper image to theme from and set"
+    )
     args = parser.parse_args()
 
     if args.wallpaper:
