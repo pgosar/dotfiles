@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import colorsys
 import configparser
@@ -482,6 +483,8 @@ def wal_binary():
     # macOS framework python user installs: ~/Library/Python/X.Y/bin
     candidates.extend(glob.glob(os.path.expanduser("~/Library/Python/*/bin/wal")))
     candidates.append(os.path.expanduser("~/.local/bin/wal"))
+    candidates.append("/opt/homebrew/bin/wal")
+    candidates.append("/usr/local/bin/wal")
     for cand in candidates:
         if cand and os.path.exists(cand):
             return cand
@@ -515,20 +518,25 @@ def ensure_readability(hex_color, min_l=0.65, min_s=0.40, max_s=0.85):
 
 
 def generate_theme_from_wallpaper(wallpaper_path):
-    """Run pywal on the wallpaper and write the curated theme.json."""
-    # Run pywal; abort on failure so we never theme from a stale colors.json
+    """Run pywal on the wallpaper and write the curated theme.json.
+    Returns True on success; on failure prints a warning and returns False
+    so the caller can still set the wallpaper."""
+    # Ensure our pidof shim (macOS lacks pidof; pywal needs it for kitty reload) is on PATH
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    env = os.environ.copy()
+    env["PATH"] = script_dir + os.pathsep + env.get("PATH", "")
     try:
-        subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q"], check=True)
+        subprocess.run([wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q"], check=True, env=env)
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print("Pywal failed to generate colors; aborting theme generation.")
-        sys.exit(1)
+        print("Warning: pywal failed; theme not regenerated, but wallpaper will still be set.")
+        return False
     wal_colors_path = os.path.expanduser("~/.cache/wal/colors.json")
     try:
         with open(wal_colors_path, "r") as f:
             wal = json.load(f)
     except FileNotFoundError:
-        print("Could not find Pywal colors. Make sure 'wal' is installed and ran successfully.")
-        sys.exit(1)
+        print("Warning: pywal colors not found; theme not regenerated.")
+        return False
 
     bg_color = wal["special"]["background"]
     mantle = adjust_color(bg_color, target_l=0.09, max_s=0.10)
@@ -563,53 +571,47 @@ def generate_theme_from_wallpaper(wallpaper_path):
 
     print(f"Theme generated from {os.path.basename(wallpaper_path)}!")
     print(f"Base BG: {base}, Mantle: {mantle}, Surface: {surface}")
+    return True
 
 
 def set_wallpaper(wallpaper_path):
     """Set the platform wallpaper. Runs after theme generation so they never desync."""
     print(f"Setting wallpaper to {wallpaper_path}...")
     if sys.platform == "darwin":
-        result = subprocess.run(
-            [
-                "osascript",
-                "-e",
-                f'tell application "System Events" to set picture of every desktop to "{wallpaper_path}"',
-            ],
-            capture_output=True,
-        )
-        if result.returncode != 0:
-            print("Warning: failed to set macOS wallpaper.")
+        # macOS 26+: update WallpaperKit plist directly then restart the agent.
+        # (Finder/System Events AppleScript and NSWorkspace are no-ops.)
+        try:
+            import plistlib
+            plist_path = os.path.expanduser(
+                "~/Library/Application Support/com.apple.wallpaper/store/Index.plist")
+            r = subprocess.run(["plutil", "-convert", "xml1", "-o", "-", plist_path],
+                               capture_output=True)
+            d = plistlib.loads(r.stdout)
+            cfg = plistlib.dumps(
+                {"type": "imageFile", "url": {"relative": "file://" + wallpaper_path}},
+                fmt=plistlib.FMT_BINARY)
+
+            def update(x):
+                if isinstance(x, dict):
+                    for ch in x.get("Choices", []):
+                        if isinstance(ch, dict) and ch.get("Provider") == \
+                                "com.apple.wallpaper.choice.image":
+                            ch["Configuration"] = cfg
+                    for v in x.values():
+                        update(v)
+                elif isinstance(x, list):
+                    for v in x:
+                        update(v)
+
+            update(d)
+            tmp = plist_path + ".tmp"
+            with open(tmp, "wb") as f:
+                f.write(plistlib.dumps(d, fmt=plistlib.FMT_BINARY))
+            os.replace(tmp, plist_path)
+            subprocess.run(["killall", "WallpaperAgent"], capture_output=True)
+        except Exception as e:
+            print(f"Warning: failed to set macOS wallpaper: {e}")
         return
-    # Linux
-    if os.environ.get("XDG_CURRENT_DESKTOP") == "KDE":
-        print("Running under KDE, applying wallpaper using plasma-apply-wallpaperimage...")
-        subprocess.run(["plasma-apply-wallpaperimage", wallpaper_path], capture_output=True)
-        return
-    # Hyprland (hyprctl fails gracefully when Hyprland is not running)
-    for args in (
-        ["hyprctl", "hyprpaper", "preload", wallpaper_path],
-        ["hyprctl", "hyprpaper", "wallpaper", f",{wallpaper_path}"],
-        ["hyprctl", "hyprpaper", "unload", "all"],
-    ):
-        subprocess.run(args, capture_output=True)
-    HYPRPAPER_CONFIG.write_text(
-        f"""splash = false
-ipc = on
-
-preload = {wallpaper_path}
-
-wallpaper {{
-    monitor =
-    path = {wallpaper_path}
-    fit_mode = cover
-}}
-"""
-    )
-    # Sync wallpaper to Hyprlock config background path
-    text = HYPRLOCK_CONFIG.read_text()
-    text = re.sub(r"^(    path = ).*$", rf"\g<1>{wallpaper_path}", text, flags=re.MULTILINE)
-    HYPRLOCK_CONFIG.write_text(text)
-
 
 # --- Linux theme application -------------------------------------------------
 # apply_theme.py is the Linux "apply theme": after generating the color files
@@ -696,7 +698,7 @@ def main():
         if not os.path.isfile(wallpaper_path):
             print(f"Error: File {wallpaper_path} not found.")
             sys.exit(1)
-        # Generate theme first; abort before touching the wallpaper on failure
+        # Theme is best-effort; the wallpaper change is the primary intent
         generate_theme_from_wallpaper(wallpaper_path)
 
     colors = load_theme()
@@ -705,6 +707,8 @@ def main():
         generate_sketchybar(colors)
         generate_yabai(colors)
         apply_borders_macos()
+        if args.wallpaper:
+            set_wallpaper(wallpaper_path)
         if shutil.which("sketchybar"):
             subprocess.run(["sketchybar", "--reload"])
         print("Successfully generated macOS color configs!")
