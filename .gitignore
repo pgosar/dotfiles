@@ -11,3 +11,5 @@ home/config/wofi/colors.css
 home/config/quickshell/Colors.qml
 home/config/quickshell/Paths.qml
 home/config/sketchybar/colors.sh
+home/scripts/theme.json
+home/scripts/theme-macos.json
