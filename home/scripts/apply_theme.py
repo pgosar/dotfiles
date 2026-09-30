@@ -15,14 +15,13 @@ from pathlib import Path
 from paths import (
     APPLY_THEME_SCRIPT,
     CONFIG_DIR,
+    HYPRPAPER_CONFIG,
     QUICKSHELL_COLORS,
     QUICKSHELL_PATHS,
     SCRIPTS_DIR,
     THEME_JSON,
     THEME_MACOS_JSON,
     WALLPAPERS_DIR,
-    HYPRPAPER_CONFIG,
-    HYPRLOCK_CONFIG,
     file_uri,
 )
 
@@ -405,7 +404,7 @@ def generate_quickshell(colors):
     content += "            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {\n"
     content += "                try {\n"
     content += "                    var c = JSON.parse(xhr.responseText);\n"
-    for k in colors.keys():
+    for k in colors:
         content += f"                    if (c.{k} !== undefined) {k} = c.{k};\n"
     content += "                } catch (e) {\n"
     content += '                    console.log("Failed to parse theme.json:", e);\n'
@@ -461,7 +460,7 @@ def generate_yabai(colors):
 def apply_borders_macos():
     # JankyBorders only reads colors at launch, so restart it via the wrapper
     script = SCRIPTS_DIR / "start-borders.sh"
-    subprocess.run([str(script)])
+    subprocess.run([str(script)], check=False)
 
 
 import argparse
@@ -476,15 +475,14 @@ def wal_binary():
     if found:
         return found
     candidates = []
-    try:
-        user_base = subprocess.run(
-            [sys.executable, "-m", "site", "--user-base"],
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        candidates.append(os.path.join(user_base, "bin", "wal"))
-    except Exception:
-        pass
+    site_proc = subprocess.run(
+        [sys.executable, "-m", "site", "--user-base"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if site_proc.returncode == 0 and site_proc.stdout.strip():
+        candidates.append(os.path.join(site_proc.stdout.strip(), "bin", "wal"))
     # macOS framework python user installs: ~/Library/Python/X.Y/bin
     candidates.extend(glob.glob(os.path.expanduser("~/Library/Python/*/bin/wal")))
     candidates.append(os.path.expanduser("~/.local/bin/wal"))
@@ -504,7 +502,7 @@ def hex_to_hls(hex_color):
 
 def hls_to_hex(h, l, s):
     r, g, b = colorsys.hls_to_rgb(h, l, s)
-    return "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+    return f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}"
 
 
 def adjust_color(hex_color, target_l, max_s=0.20):
@@ -590,7 +588,7 @@ def set_wallpaper(wallpaper_path):
             plist_path = os.path.expanduser(
                 "~/Library/Application Support/com.apple.wallpaper/store/Index.plist")
             r = subprocess.run(["plutil", "-convert", "xml1", "-o", "-", plist_path],
-                               capture_output=True)
+                               capture_output=True, check=False)
             d = plistlib.loads(r.stdout)
             cfg = plistlib.dumps(
                 {"type": "imageFile", "url": {"relative": "file://" + wallpaper_path}},
@@ -613,8 +611,8 @@ def set_wallpaper(wallpaper_path):
             with open(tmp, "wb") as f:
                 f.write(plistlib.dumps(d, fmt=plistlib.FMT_BINARY))
             os.replace(tmp, plist_path)
-            subprocess.run(["killall", "WallpaperAgent"], capture_output=True)
-        except Exception as e:
+            subprocess.run(["killall", "WallpaperAgent"], capture_output=True, check=False)
+        except (OSError, ValueError) as e:
             print(f"Warning: failed to set macOS wallpaper: {e}")
         return
 
@@ -646,7 +644,7 @@ def _ancestor_is_quickshell():
 
 def reload_hyprland():
     if shutil.which("hyprctl"):
-        subprocess.run(["hyprctl", "reload"], capture_output=True)
+        subprocess.run(["hyprctl", "reload"], capture_output=True, check=False)
 
 
 def reload_quickshell():
@@ -655,9 +653,9 @@ def reload_quickshell():
         return
     if not shutil.which("quickshell"):
         return
-    subprocess.run(["killall", "quickshell"], capture_output=True)
+    subprocess.run(["killall", "quickshell"], capture_output=True, check=False)
     for _ in range(50):
-        if subprocess.run(["pgrep", "-x", "quickshell"], capture_output=True).returncode != 0:
+        if subprocess.run(["pgrep", "-x", "quickshell"], capture_output=True, check=False).returncode != 0:
             break
         time.sleep(0.1)
     subprocess.Popen(
@@ -671,14 +669,17 @@ def reload_quickshell():
 def reload_kitty():
     # load-config pushes the regenerated colors.conf to running instances.
     if shutil.which("kitty"):
-        subprocess.run(["kitty", "@", "load-config"], capture_output=True)
+        subprocess.run(["kitty", "@", "load-config"], capture_output=True, check=False)
 
 
 def reload_dunst():
     # dunst has no reload; restart it to pick up the rewritten dunstrc.
-    if shutil.which("dunst") and shutil.which("pgrep"):
-        if subprocess.run(["pgrep", "-x", "dunst"], capture_output=True).returncode == 0:
-            subprocess.run(["killall", "dunst"], capture_output=True)
+    if (
+        shutil.which("dunst")
+        and shutil.which("pgrep")
+        and subprocess.run(["pgrep", "-x", "dunst"], capture_output=True, check=False).returncode == 0
+    ):
+            subprocess.run(["killall", "dunst"], capture_output=True, check=False)
             subprocess.Popen(
                 ["dunst"],
                 start_new_session=True,
@@ -690,7 +691,7 @@ def reload_dunst():
 def reload_spicetify():
     # Applies color.ini; restarts Spotify if it is running.
     if shutil.which("spicetify"):
-        subprocess.run(["spicetify", "apply"], capture_output=True)
+        subprocess.run(["spicetify", "apply"], capture_output=True, check=False)
 
 
 def main():
@@ -715,7 +716,7 @@ def main():
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
         if shutil.which("sketchybar"):
-            subprocess.run(["sketchybar", "--reload"])
+            subprocess.run(["sketchybar", "--reload"], check=False)
         print("Successfully generated macOS color configs!")
         return
     generate_css(colors)
