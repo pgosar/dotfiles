@@ -53,7 +53,6 @@ for _, p in ipairs(plugins) do
   end
 end
 
-
 if needs_restart then
   vim.notify("All plugins installed! Please restart Neovim.", vim.log.levels.INFO)
 end
