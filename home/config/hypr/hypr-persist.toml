@@ -14,14 +14,14 @@ restore_layout = true
 
 [rules]
 exclude = [
-    "^xdg-desktop-portal.*",
-    "^org\\.kde\\.polkit.*",
-    "^hyprpolkitagent$",
-    "^quickshell$",
-    "^waybar$",
-    "^wofi$",
-    "^steam.*",
-    "^gamescope$",
+  "^xdg-desktop-portal.*",
+  "^org\\.kde\\.polkit.*",
+  "^hyprpolkitagent$",
+  "^quickshell$",
+  "^waybar$",
+  "^wofi$",
+  "^steam.*",
+  "^gamescope$",
 ]
 
 [overrides]
