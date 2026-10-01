@@ -274,10 +274,34 @@ def find_firefox_profile(base_dir):
     return next(base_dir.glob("*.default-release"), None)
 
 
+def _relative_luminance(hex_color):
+    r, g, b = hex_to_rgb_tuple(hex_color)
+
+    def to_linear(c):
+        c /= 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * to_linear(r) + 0.7152 * to_linear(g) + 0.0722 * to_linear(b)
+
+
 def generate_firefox(colors):
     profile_dir = find_firefox_profile(get_firefox_base_dir())
     if not profile_dir:
         return
+
+    # Webpages follow the wallpaper's light/dark mode, not its full palette.
+    dark = _relative_luminance(colors["base"]) < 0.5
+    user_js = profile_dir / "user.js"
+    existing = user_js.read_text() if user_js.exists() else ""
+    lines = [
+        line
+        for line in existing.splitlines()
+        if "prefers-color-scheme.content-override" not in line
+    ]
+    lines.append(
+        f'user_pref("layout.css.prefers-color-scheme.content-override", {0 if dark else 1});'
+    )
+    write_text(user_js, "\n".join(lines) + "\n")
 
     textfox_chrome_dir = profile_dir / "chrome"
 
@@ -790,6 +814,7 @@ def main():
         generate_kitty(colors)
         generate_nvim(colors)
         generate_spicetify(colors)
+        generate_firefox(colors)
         apply_borders_macos()
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
