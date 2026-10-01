@@ -35,17 +35,6 @@ sketchybar --default \
   label.padding_left=0 \
   label.padding_right=5
 
-sketchybar --add event spotify_change $SPOTIFY_EVENT \
-  --add item spotify e \
-  --set spotify \
-  icon= \
-  icon.y_offset=1 \
-  icon.font="$FONT_FACE:Bold:20.0" \
-  label.drawing=off \
-  label.padding_left=3 \
-  script="$PLUGIN_DIR/spotify.sh" \
-  --subscribe spotify spotify_change mouse.clicked system_woke
-
 sketchybar --add item front_app left \
   --set front_app \
   background.color=$GREEN \
@@ -75,7 +64,7 @@ sketchybar --add item front_app left \
   label.drawing=yes
 
 spaces=()
-for i in {1..9}; do
+for i in {1..5}; do
   spaces+=(--add space space$i left
     --set space$i associated_display=1 associated_space=$i icon=$i
     --set space$i label.drawing=off
@@ -89,6 +78,18 @@ sketchybar -m \
   --set dummy drawing=off script="$PLUGIN_SHARED_DIR/space.sh" \
   --subscribe dummy space_change \
   "${spaces[@]}"
+
+sketchybar --add event spotify_change $SPOTIFY_EVENT \
+  --add item spotify left \
+  --set spotify \
+  icon= \
+  icon.y_offset=1 \
+  icon.font="$FONT_FACE:Bold:20.0" \
+  label.drawing=off \
+  label.padding_left=3 \
+  script="$PLUGIN_DIR/spotify.sh" \
+  --subscribe spotify spotify_change mouse.clicked system_woke
+
 
 sketchybar --add item focus q \
   --set focus \
