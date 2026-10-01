@@ -395,6 +395,8 @@ def generate_spicetify(colors):
 
     # Needs hex codes without the leading #
     s_colors = {k: v.lstrip("#") for k, v in colors.items()}
+    # Light scheme accents: same hues, darkened for light surfaces.
+    light = {k: _light_bg_ansi(v).lstrip("#") for k, v in colors.items()}
 
     content = f"""[Twilight-Sunset]
 text               = {s_colors["text"]}
@@ -412,8 +414,34 @@ tab-active         = {s_colors["purple"]}
 notification       = {s_colors["surface"]}
 notification-error = {s_colors["red"]}
 misc               = {s_colors["blue"]}
+
+[Sunrise]
+text               = 161616
+subtext            = {light["purple"]}
+main               = f2f2f2
+sidebar            = e9e9e9
+player             = e9e9e9
+card               = ffffff
+shadow             = ffffff
+selected-row       = {light["purple"]}
+button             = {light["peach"]}
+button-active      = {light["peach"]}
+button-disabled    = {light["muted"]}
+tab-active         = {light["purple"]}
+notification       = f2f2f2
+notification-error = {light["red"]}
+misc               = {light["blue"]}
 """
     write_text(spicetify_dir / "color.ini", content)
+
+    # Follow the system theme, which tracks the wallpaper on macOS.
+    if shutil.which("spicetify"):
+        scheme = "Sunrise" if wallpaper_is_light() else "Twilight-Sunset"
+        subprocess.run(
+            ["spicetify", "config", "color_scheme", scheme],
+            capture_output=True,
+            check=False,
+        )
 
     # macOS: wallpaper behind the Spotify UI via a theme overlay.
     wallpaper = current_wallpaper()
