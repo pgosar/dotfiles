@@ -473,16 +473,6 @@ def find_firefox_profile(base_dir):
     return next(base_dir.glob("*.default-release"), None)
 
 
-def _relative_luminance(hex_color):
-    r, g, b = hex_to_rgb_tuple(hex_color)
-
-    def to_linear(c):
-        c /= 255
-        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
-
-    return 0.2126 * to_linear(r) + 0.7152 * to_linear(g) + 0.0722 * to_linear(b)
-
-
 def generate_firefox(colors):
     profile_dir = find_firefox_profile(get_firefox_base_dir())
     if not profile_dir:
@@ -492,13 +482,9 @@ def generate_firefox(colors):
     wallpaper = current_wallpaper()
     light = wallpaper_is_light()
 
-    # Webpages follow the wallpaper's light/dark mode, not its full palette.
-    # Judge from the image itself: a light-looking wallpaper can have a dark
-    # theme base (manga collage), which left webpages stuck in dark mode.
-    if wallpaper:
-        dark = not light
-    else:
-        dark = _relative_luminance(colors["base"]) < 0.5
+    # Webpages follow the system theme (2 = system; 0 = dark, 1 = light).
+    # The macOS appearance itself is synced to the wallpaper, so pages match
+    # the wallpaper's light/dark (see sync_macos_appearance).
     user_js = profile_dir / "user.js"
     existing = user_js.read_text() if user_js.exists() else ""
     lines = [
@@ -506,9 +492,7 @@ def generate_firefox(colors):
         for line in existing.splitlines()
         if "prefers-color-scheme.content-override" not in line
     ]
-    lines.append(
-        f'user_pref("layout.css.prefers-color-scheme.content-override", {0 if dark else 1});'
-    )
+    lines.append('user_pref("layout.css.prefers-color-scheme.content-override", 2);')
     write_text(user_js, "\n".join(lines) + "\n")
 
     textfox_chrome_dir = profile_dir / "chrome"
@@ -522,7 +506,7 @@ def generate_firefox(colors):
     if wallpaper:
         bg_path = _processed_wallpaper(
             wallpaper,
-            dark=dark,
+            dark=not light,
             out=Path.home() / ".cache" / "dotfiles" / "firefox-wallpaper.png",
         )
 
@@ -966,6 +950,21 @@ def set_wallpaper(wallpaper_path):
             print(f"Warning: failed to set macOS wallpaper: {e}")
         return
 
+def sync_macos_appearance():
+    # Keep the macOS light/dark mode in sync with the wallpaper, so apps
+    # that follow the system theme (including Firefox webpages) match it.
+    if sys.platform != "darwin":
+        return
+    dark = not wallpaper_is_light()
+    script = (
+        'tell application "System Events" to tell appearance preferences '
+        f"to set dark mode to {str(dark).lower()}"
+    )
+    try:
+        subprocess.run(["osascript", "-e", script], check=True, capture_output=True)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(f"Warning: could not sync macOS appearance: {e}")
+
 
 # --- Linux theme application -------------------------------------------------
 # apply_theme.py is the Linux "apply theme": after generating the color files
@@ -1086,6 +1085,7 @@ def main():
         generate_nvim(colors)
         generate_spicetify(colors)
         generate_firefox(colors)
+        sync_macos_appearance()
         apply_borders_macos()
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
