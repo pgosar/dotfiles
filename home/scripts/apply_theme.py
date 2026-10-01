@@ -788,6 +788,7 @@ def main():
         generate_sketchybar(colors)
         generate_yabai(colors)
         generate_kitty(colors)
+        generate_nvim(colors)
         apply_borders_macos()
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
