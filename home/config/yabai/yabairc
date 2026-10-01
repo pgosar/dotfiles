@@ -10,6 +10,9 @@ YABAI_INSERT_FEEDBACK_COLOR="0xffddbcb3"
 sudo -n yabai --load-sa 2>/dev/null || true
 yabai -m signal --add event=dock_did_restart action="sudo -n yabai --load-sa 2>/dev/null || true"
 
+# keep sketchybar space indicators in sync when switching spaces
+yabai -m signal --add event=space_changed action="/opt/homebrew/opt/sketchybar/bin/sketchybar --trigger space_change"
+
 # auto float non-resizable windows
 yabai -m signal --add event=window_created action='
   yabai -m query --windows --window $yabai_window_id | jq -er ".\"can-resize\" or .\"is-floating\"" || \
