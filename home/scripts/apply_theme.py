@@ -402,6 +402,24 @@ misc               = {s_colors["blue"]}
 """
     write_text(spicetify_dir / "color.ini", content)
 
+    # macOS: wallpaper behind the Spotify UI via a theme overlay.
+    wallpaper = current_wallpaper()
+    if wallpaper:
+        css = (
+            "/* Auto-generated wallpaper background - do not edit, run apply_theme.py */\n"
+            ".Root__top-container::before {\n"
+            '  content: "";\n'
+            "  position: absolute;\n"
+            "  inset: 0;\n"
+            f'  background-image: url("{wallpaper_file_url(wallpaper)}");\n'
+            "  background-size: cover;\n"
+            "  background-position: center;\n"
+            "  opacity: 0.3;\n"
+            "  pointer-events: none;\n"
+            "}\n"
+        )
+        write_text(spicetify_dir / "user.css", css)
+
 
 def generate_nvim(colors):
     nvim_colors_path = CONFIG_DIR / "nvim" / "lua" / "theme_colors.lua"
@@ -957,9 +975,16 @@ def reload_dunst():
 
 
 def reload_spicetify():
-    # Applies color.ini; restarts Spotify if it is running.
-    if shutil.which("spicetify"):
-        subprocess.run(["spicetify", "apply"], capture_output=True, check=False)
+    # Applies color.ini; apply restarts a running Spotify, refresh patches
+    # the files without launching it. Failures are printed, not swallowed.
+    if not shutil.which("spicetify"):
+        return
+    running = subprocess.run(["pgrep", "-x", "Spotify"], capture_output=True, check=False).returncode == 0
+    cmd = ["spicetify", "apply"] if running else ["spicetify", "refresh"]
+    result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip()
+        print(f"spicetify {cmd[1]} failed: {detail}", file=sys.stderr)
 
 
 def main():
