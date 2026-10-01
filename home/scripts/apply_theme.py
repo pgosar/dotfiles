@@ -11,6 +11,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 from paths import (
     APPLY_THEME_SCRIPT,
@@ -65,6 +66,19 @@ def hex_to_rgb_hypr(hex_color):
 
 def sketchybar_hex(hex_color, alpha="ff"):
     return f"0x{alpha}{hex_color.lstrip('#')}"
+
+
+def current_wallpaper():
+    # Wallpaper the macOS theme was generated from, if it still exists.
+    try:
+        path = (SCRIPTS_DIR / "wallpaper-macos.txt").read_text().strip()
+    except OSError:
+        return None
+    return path if path and os.path.isfile(path) else None
+
+
+def wallpaper_file_url(path):
+    return "file://" + quote(path, safe="/:")
 
 
 def generate_css(colors):
@@ -648,6 +662,10 @@ def generate_theme_from_wallpaper(wallpaper_path):
     theme_out = THEME_MACOS_JSON if sys.platform == "darwin" else THEME_JSON
     with open(theme_out, "w") as f:
         json.dump(my_theme, f, indent=2)
+
+    if sys.platform == "darwin":
+        # Lets app backgrounds (kitty/spotify/firefox) follow the wallpaper.
+        write_text(SCRIPTS_DIR / "wallpaper-macos.txt", wallpaper_path + "\n")
 
     print(f"Theme generated from {os.path.basename(wallpaper_path)}!")
     print(f"Base BG: {base}, Mantle: {mantle}, Surface: {surface}")
