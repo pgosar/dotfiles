@@ -93,12 +93,11 @@ def _image_mean_luminance(path):
     return ImageStat.Stat(img).mean[0] / 255
 
 
-def _kitty_wallpaper(wallpaper, dark):
+def _processed_wallpaper(wallpaper, dark, out):
     # Blurred, dimmed copy of the wallpaper. Tinting alone can't tame busy
     # wallpapers (a manga collage stays contrasty), so pre-process instead.
     from PIL import Image  # lazy: darwin-only path
 
-    out = _kitty_wallpaper_path()
     img = Image.open(wallpaper).convert("RGB")
     img.thumbnail((1920, 1920), Image.BILINEAR)  # blurred anyway; keep it small
     w, h = img.size
@@ -115,6 +114,20 @@ def _kitty_wallpaper(wallpaper, dark):
     out.parent.mkdir(parents=True, exist_ok=True)
     smooth.save(out)
     return out
+
+
+def _kitty_wallpaper(wallpaper, dark):
+    return _processed_wallpaper(wallpaper, dark, _kitty_wallpaper_path())
+
+
+def _image_mean_hex(path):
+    # Mean color of an image as #rrggbb; light-mode chrome tones derive here.
+    from PIL import Image, ImageStat  # lazy: darwin-only path
+
+    img = Image.open(path).convert("RGB")
+    img.thumbnail((256, 256), Image.BILINEAR)
+    r, g, b = (int(v) for v in ImageStat.Stat(img).mean)
+    return f"#{r:02x}{g:02x}{b:02x}"
 
 
 def wallpaper_is_light():
@@ -475,8 +488,17 @@ def generate_firefox(colors):
     if not profile_dir:
         return
 
+    # Wallpaper drives the chrome image and the light/dark variable set.
+    wallpaper = current_wallpaper()
+    light = wallpaper_is_light()
+
     # Webpages follow the wallpaper's light/dark mode, not its full palette.
-    dark = _relative_luminance(colors["base"]) < 0.5
+    # Judge from the image itself: a light-looking wallpaper can have a dark
+    # theme base (manga collage), which left webpages stuck in dark mode.
+    if wallpaper:
+        dark = not light
+    else:
+        dark = _relative_luminance(colors["base"]) < 0.5
     user_js = profile_dir / "user.js"
     existing = user_js.read_text() if user_js.exists() else ""
     lines = [
@@ -496,22 +518,73 @@ def generate_firefox(colors):
 
     config_path = textfox_chrome_dir / "config.css"
 
+    bg_path = None
+    if wallpaper:
+        bg_path = _processed_wallpaper(
+            wallpaper,
+            dark=dark,
+            out=Path.home() / ".cache" / "dotfiles" / "firefox-wallpaper.png",
+        )
+
+    if light and bg_path and bg_path.is_file():
+        # Light chrome: flat tones from the blurred copy's mean color, so
+        # surfaces without image coverage match its average tone.
+        base = _image_mean_hex(bg_path)
+        tf_bg, tf_accent, tf_border, tf_text = (
+            base,
+            _darken(base, 0.45),
+            _darken(base, 0.72),
+            "#161616",
+        )
+    else:
+        tf_bg, tf_accent, tf_border, tf_text = (
+            colors["base"],
+            colors["purple"],
+            colors["surface"],
+            colors["text"],
+        )
+
     css_content = "/* Auto-generated textfox colors */\n"
     css_content += ":root {\n"
 
     # Textfox mappings
     # Using textfox's expected tf- variables
-    css_content += f"  --tf-bg: {colors['base']};\n"
-    css_content += f"  --tf-accent: {colors['purple']};\n"
-    css_content += f"  --tf-border: {colors['surface']};\n"
-    css_content += f"  --color: {colors['text']};\n"
-    css_content += f"  --identity-icon-color: {colors['text']};\n"
-    css_content += f"  --identity-tab-color: {colors['purple']};\n"
+    css_content += f"  --tf-bg: {tf_bg};\n"
+    css_content += f"  --tf-accent: {tf_accent};\n"
+    css_content += f"  --tf-border: {tf_border};\n"
+    css_content += f"  --color: {tf_text};\n"
+    css_content += f"  --identity-icon-color: {tf_text};\n"
+    css_content += f"  --identity-tab-color: {tf_accent};\n"
 
     css_content += "}\n"
 
-    write_text(config_path, css_content)
+    # macOS: blurred wallpaper behind the browser chrome. Pre-blurred with
+    # PIL: CSS can't blur an element's own background-image. The left strip
+    # is #sidebar-select-box (textfox paints it with the dark theme accent);
+    # #browser shows through the margin around the content. body covers any
+    # other transparent regions.
+    if bg_path and bg_path.is_file():
+        bg_url = wallpaper_file_url(str(bg_path))
+        css_content += (
+            "\n/* Auto-generated wallpaper background */\n"
+            "body, #navigator-toolbox, #sidebar-box, #sidebar-main,\n"
+            "#vertical-tabs, #sidebar-select-box {\n"
+            f'  background-image: url("{bg_url}") !important;\n'
+            "  background-size: cover !important;\n"
+            "  background-position: center !important;\n"
+            "}\n"
+            "/* Textfox repaints these under lightweight themes: the sidebar\n"
+            "   image gets unset, and #browser gets the dark theme accent.\n"
+            "   Re-assert the wallpaper with matching specificity. */\n"
+            ":root[lwtheme] #sidebar-main,\n"
+            ":root[lwtheme] #browser:not(.browser-toolbox-background) {\n"
+            f'  background-image: url("{bg_url}") !important;\n'
+            "  background-size: cover !important;\n"
+            "  background-position: center !important;\n"
+            "}\n"
+        )
 
+    write_text(config_path, css_content)
 
 def generate_gtk(colors):
     # GTK3/4 and Libadwaita standard color overrides
