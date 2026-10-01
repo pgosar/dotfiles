@@ -81,6 +81,119 @@ def wallpaper_file_url(path):
     return "file://" + quote(path, safe="/:")
 
 
+def _kitty_wallpaper_path():
+    return Path.home() / ".cache" / "dotfiles" / "kitty-wallpaper.png"
+
+
+def _image_mean_luminance(path):
+    from PIL import Image, ImageStat  # lazy: darwin-only path
+
+    img = Image.open(path).convert("L")
+    img.thumbnail((256, 256), Image.BILINEAR)
+    return ImageStat.Stat(img).mean[0] / 255
+
+
+def _kitty_wallpaper(wallpaper, dark):
+    # Blurred, dimmed copy of the wallpaper. Tinting alone can't tame busy
+    # wallpapers (a manga collage stays contrasty), so pre-process instead.
+    from PIL import Image  # lazy: darwin-only path
+
+    out = _kitty_wallpaper_path()
+    img = Image.open(wallpaper).convert("RGB")
+    img.thumbnail((1920, 1920), Image.BILINEAR)  # blurred anyway; keep it small
+    w, h = img.size
+    smooth = img.resize((max(w // 8, 1), max(h // 8, 1)), Image.BILINEAR).resize(
+        (w, h), Image.BILINEAR
+    )
+    if dark:
+        smooth = smooth.point(lambda v: int(v * 0.4))
+    else:
+        # Light mode: compress to a narrow bright band. The blurred copy
+        # keeps dark spots where black text gets hard to read; lifting the
+        # floor to 155 keeps worst-case contrast at ~7.6:1 (WCAG AAA).
+        smooth = smooth.point(lambda v: int(v * 0.08 + 155))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    smooth.save(out)
+    return out
+
+
+def wallpaper_is_light():
+    wallpaper = current_wallpaper()
+    return bool(wallpaper) and _image_mean_luminance(wallpaper) > 0.5
+
+
+def _darken(hex_color, factor=0.55):
+    r, g, b = hex_to_rgb_tuple(hex_color)
+    return f"#{int(r * factor):02x}{int(g * factor):02x}{int(b * factor):02x}"
+
+
+def _light_bg_ansi(hex_color):
+    # Readable variant of a pastel ANSI color on a light background: keep the
+    # wallpaper hue, but dark and saturated (body text stays near-black).
+    r, g, b = hex_to_rgb_tuple(hex_color)
+    h, _l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+    r2, g2, b2 = colorsys.hls_to_rgb(h, 0.25, max(s, 0.6))
+    return f"#{int(r2 * 255):02x}{int(g2 * 255):02x}{int(b2 * 255):02x}"
+
+
+# Starship modules whose default styles wash out on light backgrounds, mapped
+# to the theme colors they should be darkened from.
+STARSHIP_LIGHT_STYLES = {
+    "username": {"style_user": "yellow", "style_root": "red"},
+    "hostname": {"style": "green"},
+    "directory": {"style": "cyan"},
+    "git_branch": {"style": "purple"},
+    "git_status": {"style": "red"},
+    "cmd_duration": {"style": "yellow"},
+}
+
+
+def _starship_light_toml(template, colors):
+    def style_lines(module):
+        return "".join(
+            f'{k} = "bold {_darken(colors[ck])}"  # light wallpaper\n'
+            for k, ck in STARSHIP_LIGHT_STYLES[module].items()
+        )
+
+    seen = set()
+    out = []
+    for line in template.splitlines(keepends=True):
+        out.append(line)
+        s = line.strip()
+        if s.startswith("[") and s.endswith("]") and s.count("[") == 1:
+            module = s[1:-1]
+            if module in STARSHIP_LIGHT_STYLES:
+                seen.add(module)
+                out.append(style_lines(module))
+    text = "".join(out)
+    for module in STARSHIP_LIGHT_STYLES:
+        if module not in seen:
+            text += f"\n[{module}]\n{style_lines(module)}"
+    return text
+
+
+def generate_starship(colors):
+    # install.sh symlinks ~/.config/starship.toml at the repo template; for
+    # light wallpapers point it at a generated variant with darkened styles.
+    template_path = CONFIG_DIR / "starship.toml"
+    live_path = Path.home() / ".config" / "starship.toml"
+    if wallpaper_is_light():
+        cache_path = Path.home() / ".cache" / "dotfiles" / "starship-light.toml"
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(
+            _starship_light_toml(template_path.read_text(), colors)
+        )
+        desired = cache_path
+    else:
+        desired = template_path
+    points_at_desired = live_path.is_symlink() and (
+        live_path.parent / os.readlink(live_path)
+    ).resolve() == desired.resolve()
+    if not points_at_desired:
+        live_path.unlink(missing_ok=True)
+        live_path.symlink_to(desired)
+
+
 def generate_css(colors):
     css_content = "/* Auto-generated colors */\n"
     for k, v in colors.items():
@@ -136,9 +249,50 @@ def generate_kitty(colors):
         "color15": colors["white"],
     }
 
+    # A wallpaper can look light even when the theme is dark (manga collage),
+    # so judge light/dark from the image itself, not the theme base.
+    wallpaper = current_wallpaper()
+    light_wallpaper = wallpaper_is_light()
+
+    # Light-looking wallpapers get black text, whatever the theme says.
+    if light_wallpaper:
+        kitty_colors["foreground"] = "#000000"
+        kitty_colors["color7"] = "#111111"
+        kitty_colors["color15"] = "#222222"
+        kitty_colors["inactive_tab_foreground"] = "#000000"
+        kitty_colors["color8"] = "#666666"
+        # Pastel ANSI colors wash out on a light background (e.g. the red
+        # zsh-syntax-highlighting uses for unknown commands came out #c2bcb5,
+        # nearly invisible); keep the hue, darken and saturate.
+        for key in (
+            "color1",
+            "color2",
+            "color3",
+            "color4",
+            "color5",
+            "color6",
+            "color9",
+            "color10",
+            "color11",
+            "color12",
+            "color13",
+            "color14",
+            "url_color",
+        ):
+            kitty_colors[key] = _light_bg_ansi(kitty_colors[key])
+        # Light peach cursor disappears on a light background.
+        kitty_colors["cursor"] = "#1a1a1a"
+        kitty_colors["cursor_text_color"] = "#ffffff"
+
     content = "# Auto-generated kitty colors\n"
     for k, v in kitty_colors.items():
         content += f"{k:24} {v}\n"
+
+    # macOS: blurred, dimmed wallpaper behind the terminal.
+    if wallpaper:
+        bg_path = _kitty_wallpaper(wallpaper, dark=not light_wallpaper)
+        content += f"\nbackground_image {bg_path}\n"
+        content += "background_image_layout cscaled\n"
 
     write_text(CONFIG_DIR / "kitty" / "colors.conf", content)
 
@@ -830,6 +984,7 @@ def main():
         generate_sketchybar(colors)
         generate_yabai(colors)
         generate_kitty(colors)
+        generate_starship(colors)
         generate_nvim(colors)
         generate_spicetify(colors)
         generate_firefox(colors)
@@ -839,6 +994,14 @@ def main():
         if shutil.which("sketchybar"):
             subprocess.run(["sketchybar", "--reload"], check=False)
         reload_kitty()
+        bg_path = _kitty_wallpaper_path()
+        if bg_path.is_file() and shutil.which("kitty"):
+            # load-config does not apply background_image; push the dimmed copy live.
+            subprocess.run(
+                ["kitty", "@", "set-background-image", str(bg_path)],
+                capture_output=True,
+                check=False,
+            )
         reload_spicetify()
         print("Successfully generated macOS color configs!")
         return
