@@ -1118,7 +1118,17 @@ def main():
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
         if shutil.which("sketchybar"):
-            subprocess.run(["sketchybar", "--reload"], check=False)
+            # sketchybar is per-user; a root reload misses the user's
+            # colors.sh and falls back to the seed-default colors.
+            reload_cmd = ["sketchybar", "--reload"]
+            if os.geteuid() == 0:
+                console_user = subprocess.run(
+                    ["stat", "-f", "%Su", "/dev/console"],
+                    capture_output=True, text=True, check=False,
+                ).stdout.strip()
+                if console_user and console_user != "root":
+                    reload_cmd = ["sudo", "-u", console_user, *reload_cmd]
+            subprocess.run(reload_cmd, check=False)
         reload_kitty()
         bg_path = _kitty_wallpaper_path()
         if bg_path.is_file() and shutil.which("kitty"):
