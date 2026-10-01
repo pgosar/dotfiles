@@ -785,14 +785,15 @@ def main():
 
     colors = load_theme()
     if sys.platform == "darwin":
-        # Only macOS surfaces; shared generated files keep the Linux theme
         generate_sketchybar(colors)
         generate_yabai(colors)
+        generate_kitty(colors)
         apply_borders_macos()
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
         if shutil.which("sketchybar"):
             subprocess.run(["sketchybar", "--reload"], check=False)
+        reload_kitty()
         print("Successfully generated macOS color configs!")
         return
     generate_css(colors)
