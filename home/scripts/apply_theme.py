@@ -69,9 +69,11 @@ def sketchybar_hex(hex_color, alpha="ff"):
 
 
 def current_wallpaper():
-    # Wallpaper the macOS theme was generated from, if it still exists.
+    # Wallpaper the theme was generated from, if it still exists.
+    # Platform-specific file so macOS and Linux don't clobber each other.
+    filename = "wallpaper-macos.txt" if sys.platform == "darwin" else "wallpaper-linux.txt"
     try:
-        path = (SCRIPTS_DIR / "wallpaper-macos.txt").read_text().strip()
+        path = (SCRIPTS_DIR / filename).read_text().strip()
     except OSError:
         return None
     return path if path and os.path.isfile(path) else None
@@ -301,7 +303,7 @@ def generate_kitty(colors):
     for k, v in kitty_colors.items():
         content += f"{k:24} {v}\n"
 
-    # macOS: blurred, dimmed wallpaper behind the terminal.
+    # Blurred, dimmed wallpaper behind the terminal.
     if wallpaper:
         bg_path = _kitty_wallpaper(wallpaper, dark=not light_wallpaper)
         content += f"\nbackground_image {bg_path}\n"
@@ -447,7 +449,7 @@ misc               = {light["blue"]}
             check=False,
         )
 
-    # macOS: wallpaper behind the Spotify UI via a theme overlay.
+    # Wallpaper behind the Spotify UI via a theme overlay.
     wallpaper = current_wallpaper()
     if wallpaper:
         # Preserve the Comfy theme's @import; append our wallpaper overlay.
@@ -596,7 +598,7 @@ def generate_firefox(colors):
 
     css_content += "}\n"
 
-    # macOS: blurred wallpaper behind the browser chrome. Pre-blurred with
+    # Blurred wallpaper behind the browser chrome. Pre-blurred with
     # PIL: CSS can't blur an element's own background-image. The left strip
     # is #sidebar-select-box (textfox paints it with the dark theme accent);
     # #browser shows through the margin around the content. body covers any
@@ -973,9 +975,10 @@ def generate_theme_from_wallpaper(wallpaper_path):
     with open(theme_out, "w") as f:
         json.dump(my_theme, f, indent=2)
 
-    if sys.platform == "darwin":
-        # Lets app backgrounds (kitty/spotify/firefox) follow the wallpaper.
-        write_text(SCRIPTS_DIR / "wallpaper-macos.txt", wallpaper_path + "\n")
+    # Lets app backgrounds (kitty/spotify/firefox) follow the wallpaper.
+    # Platform-specific file so macOS and Linux don't clobber each other.
+    filename = "wallpaper-macos.txt" if sys.platform == "darwin" else "wallpaper-linux.txt"
+    write_text(SCRIPTS_DIR / filename, wallpaper_path + "\n")
 
     print(f"Theme generated from {os.path.basename(wallpaper_path)}!")
     print(f"Base BG: {base}, Mantle: {mantle}, Surface: {surface}")
@@ -1140,6 +1143,24 @@ def reload_spicetify():
         print(f"spicetify {cmd[1]} failed: {detail}", file=sys.stderr)
 
 
+def sync_linux_appearance():
+    # Keep the Linux light/dark mode in sync with the wallpaper, so apps
+    # that follow the system theme (including Firefox webpages) match it.
+    if sys.platform == "darwin":
+        return
+    if not shutil.which("gsettings"):
+        return
+    scheme = "prefer-light" if wallpaper_is_light() else "prefer-dark"
+    try:
+        subprocess.run(
+            ["gsettings", "set", "org.gnome.desktop.interface", "color-scheme", scheme],
+            check=True, capture_output=True,
+        )
+        print(f"Linux appearance synced to {scheme}")
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: could not sync Linux appearance: {e}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate and apply the wallpaper-derived theme"
@@ -1221,6 +1242,7 @@ def main():
     generate_spicetify(colors)
     generate_nvim(colors)
     generate_firefox(colors)
+    sync_linux_appearance()
     generate_gtk(colors)
     generate_qt(colors)
     generate_quickshell(colors)
