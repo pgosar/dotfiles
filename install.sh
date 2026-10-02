@@ -124,6 +124,52 @@ link_path() {
   ln -s "$src" "$dest"
 }
 
+# For Spicetify: use a regular file (not symlink) so theme generator
+# writes to the live config without touching the tracked template.
+# Preserves existing symlink contents and regular files on reruns.
+copy_file() {
+  local src="$1"
+  local dest="$2"
+
+  mkdir -p "$(dirname "$dest")"
+  if [ -L "$dest" ]; then
+    # Symlink: preserve its current contents before replacing.
+    local tmp
+    tmp="$(mktemp)"
+    cat "$dest" > "$tmp"
+    rm -f "$dest"
+    cp "$tmp" "$dest"
+    rm -f "$tmp"
+    echo "Replaced symlink $dest with regular file (contents preserved)"
+  elif [ -e "$dest" ]; then
+    # Regular file exists: preserve it on reruns.
+    echo "Preserving existing $dest"
+    return 0
+  else
+    cp "$src" "$dest"
+    echo "Copied $src to $dest"
+  fi
+}
+
+# Generate runtime theme files from seeds if they don't exist yet.
+# The theme generator (apply_theme.py) will overwrite these on next run.
+ensure_generated_theme_files() {
+  local kitty_gen="$CONFIG_HOME/kitty/colors-generated.conf"
+  local kitty_seed="$DOTFILES_CONFIG_DIR/kitty/colors.conf"
+  if [ ! -f "$kitty_gen" ] && [ -f "$kitty_seed" ]; then
+    cp "$kitty_seed" "$kitty_gen"
+    echo "Generated $kitty_gen from seed"
+  fi
+
+  local dunst_out="$CONFIG_HOME/dunst/dunstrc"
+  local dunst_template="$DOTFILES_CONFIG_DIR/dunst/dunstrc.template"
+  if [ ! -f "$dunst_out" ] && [ -f "$dunst_template" ]; then
+    cp "$dunst_template" "$dunst_out"
+    echo "Generated $dunst_out from template"
+  fi
+  # Neovim: seed theme_colors.lua handles fallback via pcall(require).
+}
+
 link_entries() {
   local entry src dest
 
@@ -292,7 +338,6 @@ SHARED_LINKS=(
 )
 
 LINUX_LINKS=(
-  "$DOTFILES_CONFIG_DIR/spicetify/config-xpui-linux.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/dunst|$CONFIG_HOME/dunst"
   "$DOTFILES_CONFIG_DIR/hypr|$CONFIG_HOME/hypr"
   "$DOTFILES_CONFIG_DIR/wofi|$CONFIG_HOME/wofi"
@@ -303,7 +348,6 @@ LINUX_LINKS=(
 )
 
 DARWIN_LINKS=(
-  "$DOTFILES_CONFIG_DIR/spicetify/config-xpui-macos.ini|$CONFIG_HOME/spicetify/config-xpui.ini"
   "$DOTFILES_CONFIG_DIR/sketchybar|$CONFIG_HOME/sketchybar"
   "$DOTFILES_CONFIG_DIR/skhd|$CONFIG_HOME/skhd"
   "$DOTFILES_CONFIG_DIR/yabai|$CONFIG_HOME/yabai"
@@ -362,6 +406,8 @@ fi
 
 if [ "$OS" = "Linux" ]; then
   link_entries "${LINUX_LINKS[@]}"
+  # Spicetify: regular file, not symlink (theme generator writes live config)
+  copy_file "$DOTFILES_CONFIG_DIR/spicetify/config-xpui-linux.ini" "$CONFIG_HOME/spicetify/config-xpui.ini"
 
   configure_kde
 
@@ -369,7 +415,12 @@ if [ "$OS" = "Linux" ]; then
   python3 "$APPLY_THEME_SCRIPT"
 elif [ "$OS" = "Darwin" ]; then
   link_entries "${DARWIN_LINKS[@]}"
+  # Spicetify: regular file, not symlink (theme generator writes live config)
+  copy_file "$DOTFILES_CONFIG_DIR/spicetify/config-xpui-macos.ini" "$CONFIG_HOME/spicetify/config-xpui.ini"
 
   # Generate macOS theme colors (sketchybar/yabai) from the seed theme-macos.json
   python3 "$APPLY_THEME_SCRIPT"
 fi
+
+# Ensure generated runtime files exist (seed fallback for fresh installs)
+ensure_generated_theme_files
