@@ -30,8 +30,11 @@ from paths import (
 
 
 def write_text(path, content):
+    # Atomic write: applications never see a partially written palette.
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(content)
+    tmp.replace(path)
 
 
 def load_theme():
@@ -309,7 +312,7 @@ def generate_kitty(colors):
         content += f"\nbackground_image {bg_path}\n"
         content += "background_image_layout cscaled\n"
 
-    write_text(CONFIG_DIR / "kitty" / "colors.conf", content)
+    write_text(CONFIG_DIR / "kitty" / "colors-generated.conf", content)
 
 
 def generate_hyprland(colors):
@@ -330,10 +333,13 @@ def generate_hyprland(colors):
 
 
 def update_dunstrc(colors):
+    # Always render from the tracked template; never edit the generated file.
+    # Permanent Dunst customizations belong in dunstrc.template.
+    template_path = CONFIG_DIR / "dunst" / "dunstrc.template"
     dunstrc_path = CONFIG_DIR / "dunst" / "dunstrc"
-    if not dunstrc_path.exists():
+    if not template_path.exists():
         return
-    content = dunstrc_path.read_text()
+    content = template_path.read_text()
 
     content = re.sub(
         r'frame_color = ".*?"(?=\nseparator_color)',
@@ -512,28 +518,9 @@ radio-btn-active   = {light["peach"]}
     except Exception as e:
         print(f"Warning: could not set spicetify theme: {e}")
 
-    # Ensure spicetify actually applies the Comfy theme.
-    # If current_theme is empty, `spicetify refresh` silently does nothing.
-    try:
-        import configparser
-        cfg_path = CONFIG_DIR / "spicetify" / "config-xpui.ini"
-        cfg = configparser.ConfigParser()
-        cfg.optionxform = str
-        if cfg_path.exists():
-            cfg.read(cfg_path)
-        if not cfg.has_section("Setting"):
-            cfg.add_section("Setting")
-        if cfg.get("Setting", "current_theme", fallback="").strip() != "Comfy":
-            cfg.set("Setting", "current_theme", "Comfy")
-            with open(cfg_path, "w") as f:
-                cfg.write(f)
-            print("Set spicetify current_theme=Comfy")
-    except Exception as e:
-        print(f"Warning: could not set spicetify theme: {e}")
-
-
 def generate_nvim(colors):
-    nvim_colors_path = CONFIG_DIR / "nvim" / "lua" / "theme_colors.lua"
+    # Generated module (ignored); seed theme_colors.lua is the fallback.
+    nvim_colors_path = CONFIG_DIR / "nvim" / "lua" / "theme_colors_generated.lua"
     content = "-- Auto-generated nvim colors\n"
     content += "return {\n"
     for k, v in colors.items():
