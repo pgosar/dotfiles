@@ -306,11 +306,11 @@ def generate_kitty(colors):
     for k, v in kitty_colors.items():
         content += f"{k:24} {v}\n"
 
-    # Blurred, dimmed wallpaper behind the terminal.
-    if wallpaper:
-        bg_path = _kitty_wallpaper(wallpaper, dark=not light_wallpaper)
-        content += f"\nbackground_image {bg_path}\n"
-        content += "background_image_layout cscaled\n"
+    # Keep Kitty's own background image disabled, but permit a subtle amount
+    # of compositor transparency. Hyprland's existing blur softens the
+    # wallpaper visible through the terminal.
+    if light_wallpaper:
+        content += "\nbackground_opacity 0.97\n"
 
     write_text(CONFIG_DIR / "kitty" / "colors-generated.conf", content)
 
@@ -1488,7 +1488,9 @@ def reload_quickshell():
 
 
 def reload_kitty():
-    # load-config pushes the regenerated colors.conf to running instances.
+    # load-config pushes regenerated colors to running instances. Background
+    # images set through remote control persist across config reloads, so clear
+    # the old wallpaper layer explicitly.
     if shutil.which("kitty"):
         subprocess.run(["kitty", "@", "load-config"], capture_output=True, check=False)
 
@@ -1594,6 +1596,11 @@ def main():
                 if _cu and _cu != "root":
                     _cmd = ["sudo", "-u", _cu] + _cmd
             subprocess.run(_cmd, capture_output=True, check=False)
+        subprocess.run(
+            ["kitty", "@", "set-background-image", "none"],
+            capture_output=True,
+            check=False,
+        )
         except Exception as e:
             print(f"Warning: could not sync macOS appearance: {e}")
         if args.wallpaper:
@@ -1611,14 +1618,6 @@ def main():
                     reload_cmd = ["sudo", "-u", console_user, *reload_cmd]
             subprocess.run(reload_cmd, check=False)
         reload_kitty()
-        bg_path = _kitty_wallpaper_path()
-        if bg_path.is_file() and shutil.which("kitty"):
-            # load-config does not apply background_image; push the dimmed copy live.
-            subprocess.run(
-                ["kitty", "@", "set-background-image", str(bg_path)],
-                capture_output=True,
-                check=False,
-            )
         reload_spicetify()
         print("Successfully generated macOS color configs!")
         return
