@@ -88,7 +88,15 @@ for server, config_module in pairs(server_specific_configs) do
   end
 end
 
--- 6. Setup Mason LSPConfig
+-- 6. Setup Mason (must be before mason-lspconfig)
+if group.plugins.mason then
+  local mason_ok, mason = pcall(require, "mason")
+  if mason_ok then
+    mason.setup()
+  end
+end
+
+-- 6b. Setup Mason LSPConfig
 local ml_ok, mason_lspconfig = false, nil
 if group.plugins.mason_lspconfig then
   ml_ok, mason_lspconfig = pcall(require, "mason-lspconfig")

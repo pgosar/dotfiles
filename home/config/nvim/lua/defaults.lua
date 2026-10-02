@@ -50,10 +50,12 @@ M.setup_sources = function(b)
     b.diagnostics.cppcheck.with({
       check_exit_code = function(code) return code <= 1 end,
     }),
-    b.diagnostics.markdownlint,
-    b.diagnostics.yamllint,
     b.diagnostics.revive,
-    b.diagnostics.selene,
+    b.diagnostics.selene.with({
+      condition = function()
+        return vim.fn.executable("selene") == 1
+      end,
+    }),
     b.code_actions.gitsigns,
     b.code_actions.gomodifytags,
     b.code_actions.refactoring,
