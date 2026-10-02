@@ -1019,6 +1019,46 @@ def match_hue_slots(hex_colors):
     return assignment
 
 
+def vibrant_wallpaper_accents(wallpaper_path):
+    """Extract saturated accent colors when Pywal returns only grays."""
+    from PIL import Image
+
+    image = Image.open(wallpaper_path).convert("RGB")
+    image.thumbnail((512, 512), Image.LANCZOS)
+    quantized = image.quantize(colors=128, method=Image.Quantize.MEDIANCUT)
+    palette = quantized.getpalette()
+    candidates = []
+    for count, index in quantized.getcolors() or []:
+        r, g, b = palette[index * 3 : index * 3 + 3]
+        hue, lightness, saturation = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+        if saturation >= 0.25 and 0.16 <= lightness <= 0.84:
+            candidates.append((count, hue, f"#{r:02x}{g:02x}{b:02x}"))
+    if not candidates:
+        return None
+
+    roles = (
+        ("red", 0.0),
+        ("yellow", 1 / 6),
+        ("green", 2 / 6),
+        ("cyan", 3 / 6),
+        ("blue", 4 / 6),
+        ("purple", 5 / 6),
+    )
+    accents = {}
+    for name, target_hue in roles:
+        # Prefer a matching hue; use frequency only to break ties. Reusing a
+        # color is intentional for wallpapers with only a few vivid hues.
+        _, _, color = min(
+            candidates,
+            key=lambda candidate: (
+                min(abs(candidate[1] - target_hue), 1.0 - abs(candidate[1] - target_hue)),
+                -candidate[0],
+            ),
+        )
+        accents[name] = color
+    return accents
+
+
 def generate_theme_from_wallpaper(wallpaper_path):
     """Run pywal on the wallpaper and write the curated theme.json.
     Returns True on success; on failure prints a warning and returns False
@@ -1083,6 +1123,18 @@ def generate_theme_from_wallpaper(wallpaper_path):
     slots = [wal["colors"][f"color{i}"] for i in range(1, 7)]
     brights = [wal["colors"][f"color{i}"] for i in range(9, 15)]
     hue_slot = match_hue_slots(slots)
+    accents = {name: slots[index] for name, index in hue_slot.items()}
+    bright_accents = {name: brights[index] for name, index in hue_slot.items()}
+
+    # Pywal can select a neutral dark background as every ANSI slot. When the
+    # image has color but the selected palette does not, recover its vivid
+    # accents rather than treating a colorful wallpaper as monochrome.
+    if max(hex_to_hls(color)[2] for color in slots) < 0.12:
+        fallback = vibrant_wallpaper_accents(wallpaper_path)
+        if fallback:
+            accents = fallback
+            bright_accents = fallback
+            print("Pywal returned a grayscale palette; recovered wallpaper accents.")
 
     my_theme = {
         "base": base,
@@ -1091,19 +1143,19 @@ def generate_theme_from_wallpaper(wallpaper_path):
         "text": wal["special"]["foreground"],
         "muted": adjust_color(wal["colors"]["color8"], target_l=0.45, max_s=0.15),
         "white": wal["colors"]["color15"],
-        "red": ensure_readability(slots[hue_slot["red"]]),
-        "green": ensure_readability(slots[hue_slot["green"]]),
-        "yellow": ensure_readability(slots[hue_slot["yellow"]]),
-        "blue": ensure_readability(slots[hue_slot["blue"]]),
-        "purple": ensure_readability(slots[hue_slot["purple"]]),
-        "cyan": ensure_readability(slots[hue_slot["cyan"]]),
-        "rose": ensure_readability(brights[hue_slot["red"]]),
-        "light_green": ensure_readability(brights[hue_slot["green"]]),
-        "light_peach": ensure_readability(brights[hue_slot["yellow"]]),
-        "light_blue": ensure_readability(brights[hue_slot["blue"]]),
-        "light_purple": ensure_readability(brights[hue_slot["purple"]]),
-        "light_cyan": ensure_readability(brights[hue_slot["cyan"]]),
-        "peach": wal["colors"]["color15"],
+        "red": ensure_readability(accents["red"]),
+        "green": ensure_readability(accents["green"]),
+        "yellow": ensure_readability(accents["yellow"]),
+        "blue": ensure_readability(accents["blue"]),
+        "purple": ensure_readability(accents["purple"]),
+        "cyan": ensure_readability(accents["cyan"]),
+        "rose": ensure_readability(bright_accents["red"]),
+        "light_green": ensure_readability(bright_accents["green"]),
+        "light_peach": ensure_readability(bright_accents["yellow"]),
+        "light_blue": ensure_readability(bright_accents["blue"]),
+        "light_purple": ensure_readability(bright_accents["purple"]),
+        "light_cyan": ensure_readability(bright_accents["cyan"]),
+        "peach": ensure_readability(accents["yellow"]),
     }
 
     theme_out = THEME_MACOS_JSON if sys.platform == "darwin" else THEME_JSON
