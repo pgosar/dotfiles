@@ -143,8 +143,10 @@ if ! pc_reachable; then
   wake_started="$SECONDS"
   log "PC is not reachable; source=$WAKE_SOURCE; dispatching Wake-on-LAN"
   wake_dispatched=false
+  # Close the lock fd for the wake script: its background display-off
+  # helper would otherwise inherit fd 9 and hold the lock after we exit.
   if WAKE_SOURCE="$WAKE_SOURCE" WAKE_RUN_ID="$WAKE_RUN_ID" \
-    "$WAKE_SCRIPT" >>"$LOG_FILE" 2>&1; then
+    "$WAKE_SCRIPT" 9>&- >>"$LOG_FILE" 2>&1; then
     wake_dispatched=true
   else
     log "Wake-on-LAN dispatch reported an error; source=$WAKE_SOURCE; automatic shutdown will remain disabled"
