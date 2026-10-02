@@ -400,7 +400,11 @@ def generate_spicetify(colors):
     # Light scheme accents: same hues, darkened for light surfaces.
     light = {k: _light_bg_ansi(v).lstrip("#") for k, v in colors.items()}
 
-    content = f"""[Twilight-Sunset]
+    # Light wallpaper -> Sunrise (light), dark -> Twilight-Sunset (dark).
+    _is_light = _hex_luminance(colors.get("base", "#000000")) > 0.5
+    _scheme = "Sunrise" if _is_light else "Twilight-Sunset"
+
+    content = f"""[{_scheme}]
 text               = {s_colors["text"]}
 subtext            = {s_colors["purple"]}
 main               = {s_colors["surface"]}
@@ -462,6 +466,25 @@ misc               = {light["blue"]}
             "}\n"
         )
         write_text(spicetify_dir / "user.css", css)
+
+    # Ensure spicetify actually applies the Comfy theme.
+    # If current_theme is empty, `spicetify refresh` silently does nothing.
+    try:
+        import configparser
+        cfg_path = CONFIG_DIR / "spicetify" / "config-xpui.ini"
+        cfg = configparser.ConfigParser()
+        cfg.optionxform = str
+        if cfg_path.exists():
+            cfg.read(cfg_path)
+        if not cfg.has_section("Setting"):
+            cfg.add_section("Setting")
+        if cfg.get("Setting", "current_theme", fallback="").strip() != "Comfy":
+            cfg.set("Setting", "current_theme", "Comfy")
+            with open(cfg_path, "w") as f:
+                cfg.write(f)
+            print("Set spicetify current_theme=Comfy")
+    except Exception as e:
+        print(f"Warning: could not set spicetify theme: {e}")
 
 
 def generate_nvim(colors):
@@ -810,6 +833,20 @@ def hls_to_hex(h, l, s):
     return f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}"
 
 
+def _image_mean_luminance(path):
+    from PIL import Image, ImageStat  # lazy import
+
+    img = Image.open(path).convert("L")
+    img.thumbnail((256, 256), Image.BILINEAR)
+    return ImageStat.Stat(img).mean[0] / 255
+
+
+def _hex_luminance(hex_color):
+    hex_color = hex_color.lstrip("#")
+    r, g, b = (int(hex_color[i:i+2], 16) / 255.0 for i in (0, 2, 4))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
 def adjust_color(hex_color, target_l, max_s=0.20):
     """Pin lightness, cap saturation so backgrounds don't get garish."""
     h, _, s = hex_to_hls(hex_color)
@@ -866,12 +903,19 @@ def generate_theme_from_wallpaper(wallpaper_path):
     """Run pywal on the wallpaper and write the curated theme.json.
     Returns True on success; on failure prints a warning and returns False
     so the caller can still set the wallpaper."""
+    # Light wallpaper -> light theme (pywal defaults to dark).
+    # Use _image_mean_luminance if available, else assume dark.
+    try:
+        is_light = _image_mean_luminance(wallpaper_path) > 0.5
+    except Exception:
+        is_light = False
+    wal_cmd = [wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q", "-e"]
+    if is_light:
+        wal_cmd.append("-l")
     try:
         # -e skips pywal's reload step (it needs pidof, absent on macOS);
         # we reload our own surfaces after generating the theme.
-        subprocess.run(
-            [wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q", "-e"], check=True
-        )
+        subprocess.run(wal_cmd, check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
         print(
             "Warning: pywal failed; theme not regenerated, but wallpaper will still be set."
@@ -886,9 +930,15 @@ def generate_theme_from_wallpaper(wallpaper_path):
         return False
 
     bg_color = wal["special"]["background"]
-    mantle = adjust_color(bg_color, target_l=0.09, max_s=0.10)
-    base = adjust_color(bg_color, target_l=0.12, max_s=0.10)
-    surface = adjust_color(bg_color, target_l=0.17, max_s=0.10)
+    bg_lum = _hex_luminance(bg_color)
+    if bg_lum > 0.5:
+        mantle = adjust_color(bg_color, target_l=0.88, max_s=0.10)
+        base = adjust_color(bg_color, target_l=0.92, max_s=0.10)
+        surface = adjust_color(bg_color, target_l=0.96, max_s=0.10)
+    else:
+        mantle = adjust_color(bg_color, target_l=0.09, max_s=0.10)
+        base = adjust_color(bg_color, target_l=0.12, max_s=0.10)
+        surface = adjust_color(bg_color, target_l=0.17, max_s=0.10)
 
     # Pywal's ANSI slots don't reliably hold their nominal hues, so match
     # the six chromatic colors to roles by nearest hue instead of position.
@@ -1136,6 +1186,26 @@ def main():
         generate_firefox(colors)
         sync_macos_appearance()
         apply_borders_macos()
+        generate_spicetify(colors)
+        # Sync macOS light/dark mode to the wallpaper.
+        # Must run as the console user (not root) for System Events.
+        try:
+            from paths import THEME_MACOS_JSON as _TJ
+            import json as _json
+            _t = _json.load(open(_TJ))
+            _light = _hex_luminance(_t.get("base", "#000000")) > 0.5
+            _mode = "false" if _light else "true"
+            _cmd = ["osascript", "-e",
+                    f'tell app "System Events" to tell appearance preferences to set dark mode to {_mode}']
+            if os.geteuid() == 0:
+                _cu = subprocess.run(
+                    ["stat", "-f", "%Su", "/dev/console"],
+                    capture_output=True, text=True, check=False).stdout.strip()
+                if _cu and _cu != "root":
+                    _cmd = ["sudo", "-u", _cu] + _cmd
+            subprocess.run(_cmd, capture_output=True, check=False)
+        except Exception as e:
+            print(f"Warning: could not sync macOS appearance: {e}")
         if args.wallpaper:
             set_wallpaper(wallpaper_path)
         if shutil.which("sketchybar"):
