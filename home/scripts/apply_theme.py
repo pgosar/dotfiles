@@ -907,13 +907,31 @@ def generate_theme_from_wallpaper(wallpaper_path):
     """Run pywal on the wallpaper and write the curated theme.json.
     Returns True on success; on failure prints a warning and returns False
     so the caller can still set the wallpaper."""
+    # Pywal chokes on huge images (e.g. a 95MP collage); downscale a temp
+    # copy for color extraction. The original is still used for the wallpaper.
+    wal_input = wallpaper_path
+    try:
+        from PIL import Image
+
+        with Image.open(wallpaper_path) as img:
+            w, h = img.size
+            if max(w, h) > 3840:
+                scale = 3840 / max(w, h)
+                small = img.convert("RGB").resize(
+                    (int(w * scale), int(h * scale)), Image.LANCZOS
+                )
+                tmp = str(Path.home() / ".cache" / "dotfiles" / "pywal-input.jpg")
+                Path(tmp).parent.mkdir(parents=True, exist_ok=True)
+                small.save(tmp, "JPEG", quality=92)
+                wal_input = tmp
+    except Exception as e:
+        print(f"Warning: could not downscale wallpaper for pywal: {e}")
     # Light wallpaper -> light theme (pywal defaults to dark).
-    # Use _image_mean_luminance if available, else assume dark.
     try:
         is_light = _image_mean_luminance(wallpaper_path) > 0.5
     except Exception:
         is_light = False
-    wal_cmd = [wal_binary(), "-i", wallpaper_path, "-n", "-s", "-q", "-e"]
+    wal_cmd = [wal_binary(), "-i", wal_input, "-n", "-s", "-q", "-e"]
     if is_light:
         wal_cmd.append("-l")
     try:
