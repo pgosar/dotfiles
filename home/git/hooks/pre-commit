@@ -1,0 +1,50 @@
+#!/bin/bash
+# Pre-commit hook: mechanical enforcement of code quality rules.
+# Runs linters on changed files. Blocks commit on errors.
+
+set -e
+
+# Get list of staged files
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+LUA_FILES=$(echo "$STAGED" | grep '\.lua$' || true)
+SHELL_FILES=$(echo "$STAGED" | grep -E '\.(sh|bash)$|/bin/' || true)
+
+FAILED=0
+
+# Lua: luacheck + stylua
+if [ -n "$LUA_FILES" ]; then
+    echo "Checking Lua files..."
+    for f in $LUA_FILES; do
+        if ! luacheck "$f" 2>&1 | tail -1 | grep -q "0 errors"; then
+            echo "FAIL: luacheck errors in $f"
+            luacheck "$f" 2>&1 | tail -5
+            FAILED=1
+        fi
+        if ! stylua --check "$f" 2>&1 | head -1; then
+            echo "FAIL: stylua formatting in $f (run: stylua $f)"
+            FAILED=1
+        fi
+    done
+fi
+
+# Shell: shellcheck
+if [ -n "$SHELL_FILES" ]; then
+    echo "Checking shell files..."
+    for f in $SHELL_FILES; do
+        if [ -f "$f" ]; then
+            if ! shellcheck "$f" 2>&1 | head -1; then
+                echo "FAIL: shellcheck errors in $f"
+                FAILED=1
+            fi
+        fi
+    done
+fi
+
+if [ $FAILED -eq 1 ]; then
+    echo ""
+    echo "Commit blocked: fix the above issues."
+    exit 1
+fi
+
+echo "All checks passed."

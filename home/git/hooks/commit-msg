@@ -1,0 +1,22 @@
+#!/bin/bash
+# Commit-msg hook: enforce conventional commit format.
+# Format: type(scope): description
+# Types: feat, fix, docs, style, refactor, test, chore, revert
+
+MSG_FILE="$1"
+MSG=$(head -1 "$MSG_FILE")
+
+# Allow merge commits
+if echo "$MSG" | grep -q "^Merge "; then
+    exit 0
+fi
+
+# Check conventional format
+if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|revert)(\(.+\))?: .+"; then
+    echo "FAIL: Commit message must follow conventional commits:"
+    echo "  type(scope): description"
+    echo "  Types: feat, fix, docs, style, refactor, test, chore, revert"
+    echo ""
+    echo "Got: $MSG"
+    exit 1
+fi
