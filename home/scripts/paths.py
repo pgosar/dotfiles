@@ -4,7 +4,7 @@ DOTFILES_DIR = Path(__file__).resolve().parents[2]
 HOME_DIR = DOTFILES_DIR / "home"
 CONFIG_DIR = HOME_DIR / "config"
 SCRIPTS_DIR = HOME_DIR / "scripts"
-WALLPAPERS_DIR = HOME_DIR / "walls"
+WALLPAPERS_DIR = Path.home() / "Pictures" / "Wallpapers"
 
 THEME_JSON = SCRIPTS_DIR / "theme.json"
 THEME_MACOS_JSON = SCRIPTS_DIR / "theme-macos.json"
