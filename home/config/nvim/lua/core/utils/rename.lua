@@ -16,21 +16,28 @@ end
 
 -- Format and save a buffer if it is valid and has a name
 local function format_and_save_buffer(bufnr)
-  if not vim.api.nvim_buf_is_valid(bufnr) then return end
+  if not vim.api.nvim_buf_is_valid(bufnr) then return false end
   local name = vim.api.nvim_buf_get_name(bufnr)
-  if name == "" then return end
+  if name == "" then return false end
 
   if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then
     local ok, err = pcall(function()
       vim.api.nvim_buf_call(bufnr, function()
         vim.lsp.buf.format({ bufnr = bufnr, async = false })
-        vim.cmd("silent! write")
+        vim.cmd("write")
       end)
     end)
     if not ok then
-      vim.notify(string.format("Failed to save %s: %s", name, err), vim.log.levels.WARN)
+      vim.notify(string.format("Failed to save %s: %s", name, err), vim.log.levels.ERROR)
+      return false
+    end
+    -- Verify the write actually succeeded (no silent failures)
+    if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then
+      vim.notify(string.format("Failed to save %s: still modified after write", name), vim.log.levels.ERROR)
+      return false
     end
   end
+  return true
 end
 
 -- Collect rename edits and build a notification message
@@ -104,10 +111,10 @@ end
 -- Main rename function
 ---------------------------------------------------------------------
 
-local function do_rename(param, old_name)
+local function do_rename(rename_client, param, old_name)
   local initially_open = get_initially_open_buffers()
 
-  vim.lsp.buf_request(0, "textDocument/rename", param, function(err, result, ctx, config)
+  rename_client.request("textDocument/rename", param, function(err, result, ctx, config)
     if err then
       vim.notify(
         string.format("LSP error during rename: %s", vim.inspect(err)),
@@ -171,13 +178,23 @@ local function do_rename(param, old_name)
     })
 
     vim.schedule(function()
+      local failed = {}
       for _, bufnr in ipairs(modified_buffers) do
         if vim.api.nvim_buf_is_valid(bufnr) then
-          format_and_save_buffer(bufnr)
-          if not initially_open[bufnr] then
+          local saved = format_and_save_buffer(bufnr)
+          if not saved then
+            table.insert(failed, vim.api.nvim_buf_get_name(bufnr))
+          elseif not initially_open[bufnr] then
             pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
           end
         end
+      end
+      if #failed > 0 then
+        vim.notify(
+          "Failed to save: " .. table.concat(failed, ", ") .. " (buffers preserved)",
+          vim.log.levels.ERROR,
+          { title = "[LSP] rename" }
+        )
       end
       pcall(vim.api.nvim_clear_autocmds, { group = group })
     end)
@@ -189,7 +206,6 @@ end
 ---------------------------------------------------------------------
 
 function M.rename()
-  local param = vim.lsp.util.make_position_params(0, "utf-8") --[[@as table]]
   local old_name = vim.fn.expand("<cword>")
 
   local clients = vim.lsp.get_clients({ bufnr = 0 })
@@ -198,18 +214,24 @@ function M.rename()
     return
   end
 
-  local supports_rename = false
+  -- Select a single rename provider and use its negotiated offset encoding.
+  -- Different servers use different encodings (e.g. clangd uses UTF-16);
+  -- hardcoding UTF-8 targets the wrong character after multibyte text.
+  local rename_client = nil
   for _, client in ipairs(clients) do
     if client.server_capabilities.renameProvider then
-      supports_rename = true
+      rename_client = client
       break
     end
   end
 
-  if not supports_rename then
+  if not rename_client then
     vim.notify("No LSP client supports rename", vim.log.levels.ERROR, { title = "[LSP] rename" })
     return
   end
+
+  local offset_encoding = rename_client.offset_encoding or "utf-8"
+  local param = vim.lsp.util.make_position_params(0, offset_encoding) --[[@as table]]
 
   vim.ui.input({ prompt = "rename to> ", default = old_name }, function(input)
     if input == nil then
@@ -227,7 +249,7 @@ function M.rename()
     end
 
     param.newName = input
-    do_rename(param, old_name)
+    do_rename(rename_client, param, old_name)
   end)
 end
 
