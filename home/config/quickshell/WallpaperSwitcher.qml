@@ -109,11 +109,29 @@ PanelWindow {
                 opacity: 0.3
             }
 
-            // Scrollable Horizontal ListView of Wallpapers
-            ListView {
-                id: wallpaperListView
+            // Carousel row: left/right arrows flank the scrollable list
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                spacing: 8
+
+                // Left arrow
+                Text {
+                    text: "\u276e"  // ❮
+                    color: colors.muted
+                    font.pixelSize: 24
+                    Layout.alignment: Qt.AlignVCenter
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: wallpaperListView.flick(-400, 0)
+                    }
+                }
+
+                // Scrollable Horizontal ListView of Wallpapers
+                ListView {
+                    id: wallpaperListView
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                 orientation: ListView.Horizontal
                 spacing: 12
                 clip: true
@@ -211,7 +229,20 @@ PanelWindow {
                     }
                 }
             }
+
+            // Right arrow
+            Text {
+                text: "\u276f"  // ❯
+                color: colors.muted
+                font.pixelSize: 24
+                Layout.alignment: Qt.AlignVCenter
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: wallpaperListView.flick(400, 0)
+                }
+            }
         }
+    }
     }
 
     Timer {
