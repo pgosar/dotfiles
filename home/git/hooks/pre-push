@@ -1,0 +1,48 @@
+#!/bin/bash
+# Pre-push hook: deeper verification that’s too slow for pre-commit.
+# Runs: deep behavioral checks, full luacheck, test plan presence.
+
+export PATH="/opt/homebrew/bin:$PATH"
+
+echo "Running pre-push verification..."
+echo ""
+
+# Get the range being pushed
+while read local_ref local_sha remote_ref remote_sha; do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    continue  # deleting a branch, skip
+  fi
+
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    RANGE="$local_sha"
+  else
+    RANGE="$remote_sha..$local_sha"
+  fi
+
+  FILES=$(git diff --name-only $RANGE --diff-filter=ACM)
+
+  # Deep verification
+  if [ -f "home/git/hooks/verify-deep.sh" ]; then
+    echo "→ Deep behavioral verification..."
+    if ! bash home/git/hooks/verify-deep.sh $FILES; then
+      echo ""
+      echo "Push blocked: deep verification failed."
+      exit 1
+    fi
+  fi
+
+  # Check test plans in commit messages
+  echo "→ Checking test plans..."
+  for sha in $(git rev-list $RANGE); do
+    MSG=$(git log --format=%B -n 1 $sha)
+    SUBJ=$(echo "$MSG" | head -1)
+    if echo "$SUBJ" | grep -q "^Merge "; then continue; fi
+    if ! echo "$MSG" | grep -qi "test plan"; then
+      echo "  WARNING: $sha has no Test plan section"
+      echo "  Subject: $SUBJ"
+    fi
+  done
+done
+
+echo ""
+echo "Pre-push verification passed."

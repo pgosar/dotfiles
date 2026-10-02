@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install luacheck
+        run: sudo apt-get update && sudo apt-get install -y lua-check
+
+      - name: Install stylua
+        run: |
+          curl -L -o /tmp/stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip
+          unzip -o /tmp/stylua.zip -d /tmp/
+          chmod +x /tmp/stylua
+
+      - name: Get changed files
+        id: changed
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.lua
+            **/*.sh
+            **/*.py
+
+      - name: Stylua check (changed files only)
+        if: steps.changed.outputs.any_changed == 'true'
+        run: |
+          echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.lua$' | xargs -r /tmp/stylua --check
+
+      - name: Luacheck (changed files only)
+        if: steps.changed.outputs.any_changed == 'true'
+        run: |
+          echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.lua$' | grep -v "/pack/" | xargs -r luacheck --no-color --config home/.luacheckrc
+
+      - name: Shellcheck (changed files only)
+        if: steps.changed.outputs.any_changed == 'true'
+        run: |
+          echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.sh$' | xargs -r shellcheck -S warning
+
+      - name: Python syntax (changed files only)
+        if: steps.changed.outputs.any_changed == 'true'
+        run: |
+          echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.py$' | xargs -r -I{} python3 -m py_compile {}
+
+  commit-lint:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check conventional commits
+        run: |
+          # Check all commits in the PR
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+          FAILED=0
+          for sha in $(git rev-list $BASE..$HEAD); do
+            MSG=$(git log --format=%s -n 1 $sha)
+            # Skip merge commits
+            if echo "$MSG" | grep -q "^Merge "; then continue; fi
+            if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|revert)(\(.+\))?: .+"; then
+              echo "FAIL: $sha - $MSG"
+              FAILED=1
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo "All commits must follow conventional commits format"
+            exit 1
+          fi
+          echo "All commit messages valid"
