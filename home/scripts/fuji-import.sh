@@ -89,10 +89,22 @@ detect_source() {
 }
 
 card_name_for_source() {
-  local parent name
+  local parent name volid
   parent="$(dirname "$1")"
   name="${parent##*/}"
-  printf '%s' "$name" | tr -c 'A-Za-z0-9._-' '_'
+  # Prefer a stable volume identifier so different cards with the same
+  # mount-point name don't share checkpoints.
+  volid=""
+  if [[ "$(uname)" == "Darwin" ]] && command -v diskutil >/dev/null 2>&1; then
+    volid="$(diskutil info "$parent" 2>/dev/null | awk -F': *' '/Volume UUID/{print $2}' | tr -d ' -')"
+  elif command -v findmnt >/dev/null 2>&1; then
+    volid="$(findmnt -n -o UUID --target "$parent" 2>/dev/null | tr -d ' -')"
+  fi
+  if [[ -n "$volid" ]]; then
+    printf '%s_%s' "$volid" "$(printf '%s' "$name" | tr -c 'A-Za-z0-9._-' '_')"
+  else
+    printf '%s' "$name" | tr -c 'A-Za-z0-9._-' '_'
+  fi
 }
 
 verify_raf_file_magic() {
@@ -172,6 +184,17 @@ touch "$RUN_MARKER"
 
 declare -a FILES=()
 BAD_RAF=0
+FIND_TMP="$(mktemp "${TMPDIR:-/tmp}/fuji-find.XXXXXX")"
+FIND_RC=0
+if ((IMPORT_ALL)) || [[ ! -f "$STATE_FILE" ]]; then
+  find "$SOURCE" -type f ! -newer "$RUN_MARKER" -print0 > "$FIND_TMP" || FIND_RC=$?
+else
+  find "$SOURCE" -type f -newer "$STATE_FILE" ! -newer "$RUN_MARKER" -print0 > "$FIND_TMP" || FIND_RC=$?
+fi
+if ((FIND_RC != 0)); then
+  rm -f "$FIND_TMP"
+  die "card scan failed (find exit $FIND_RC); checkpoint not advanced"
+fi
 while IFS= read -r -d '' path; do
   is_media_file "$path" || continue
   if ! verify_raf_file_magic "$path"; then
@@ -179,13 +202,8 @@ while IFS= read -r -d '' path; do
     continue
   fi
   FILES+=("$path")
-done < <(
-  if ((IMPORT_ALL)) || [[ ! -f "$STATE_FILE" ]]; then
-    find "$SOURCE" -type f ! -newer "$RUN_MARKER" -print0
-  else
-    find "$SOURCE" -type f -newer "$STATE_FILE" ! -newer "$RUN_MARKER" -print0
-  fi
-)
+done < "$FIND_TMP"
+rm -f "$FIND_TMP"
 
 ((BAD_RAF == 0)) || die "fix the mislabeled RAF file(s) on a separate copy, then retry; the checkpoint was not changed"
 
