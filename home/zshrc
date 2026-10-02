@@ -28,7 +28,12 @@ export VISUAL='nvim'
 
 if [ "$OS" = "Linux" ]; then
   export QML_XHR_ALLOW_FILE_READ=1
-elif [ "$OS" = "Darwin" ]; then
+fi
+
+# Theme-generated eza colors
+[ -f "$HOME/.config/shell/eza-colors.sh" ] && source "$HOME/.config/shell/eza-colors.sh"
+
+if [ "$OS" = "Darwin" ]; then
   export HOMEBREW_NO_AUTO_UPDATE=1
   export HOMEBREW_NO_ENV_HINTS=1
   # allow use of gnu tools
