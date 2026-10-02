@@ -1,6 +1,6 @@
 -- Bar background: a shade darker than the lualine bar in light mode
 local theme = require("theme_colors")
-local bar_bg = vim.o.background == "light" and "#d8dade" or theme.surface
+local bar_bg = vim.o.background == "light" and "#e9ebef" or theme.surface
 require("bufferline").setup({
   highlights = {
     fill = { bg = bar_bg },

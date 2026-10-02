@@ -9,6 +9,14 @@ vim.api.nvim_create_user_command(
 -- Toggle between light and dark theme mode
 vim.api.nvim_create_user_command("CyberThemeToggle", function()
   vim.o.background = (vim.o.background == "dark") and "light" or "dark"
+  -- Clear cached theme_colors so it returns the new palette
+  package.loaded["theme_colors"] = nil
+  package.loaded["theme_colors_generated"] = nil
+  -- Reload colorscheme to apply the new palette
+  local colorscheme = vim.g.colors_name
+  if colorscheme then
+    vim.cmd("colorscheme " .. colorscheme)
+  end
   vim.notify("Theme mode: " .. vim.o.background)
 end, { desc = "Toggle light/dark theme mode" })
 

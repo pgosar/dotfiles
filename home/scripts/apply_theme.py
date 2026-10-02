@@ -520,17 +520,49 @@ radio-btn-active   = {light["peach"]}
 
 def generate_nvim(colors):
     # Generated module (ignored); seed theme_colors.lua is the fallback.
+    # Outputs both light and dark variants so :CyberThemeToggle can switch.
     nvim_colors_path = CONFIG_DIR / "nvim" / "lua" / "theme_colors_generated.lua"
     mode = "light" if wallpaper_is_light() else "dark"
+
+    def format_palette(palette_colors, palette_mode):
+        lines = []
+        for k, v in palette_colors.items():
+            # On light backgrounds, darken text/accent colors for readability.
+            if palette_mode == "light" and k not in ("base", "mantle", "surface", "mode"):
+                v = _light_bg_ansi(v)
+            lines.append(f'    {k} = "{v}",')
+        return "\n".join(lines)
+
+    # Wallpaper-derived palette (current mode)
+    current_palette = format_palette(colors, mode)
+
+    # Opposite mode: use a standard palette since we don't have wallpaper colors for it
+    if mode == "light":
+        # Standard dark palette (from seed)
+        dark_colors = {
+            "base": "#211b1c", "mantle": "#191415", "surface": "#2f2728",
+            "text": "#b2b9b8", "muted": "#707574", "white": "#b2b9b8",
+            "red": "#82adc9", "green": "#c98282", "yellow": "#c9a982",
+            "blue": "#82a9c9", "purple": "#a982c9", "peach": "#c98282",
+        }
+        opposite_palette = format_palette(dark_colors, "dark")
+        light_palette, dark_palette = current_palette, opposite_palette
+    else:
+        # Standard light palette
+        light_colors = {
+            "base": "#e8eaec", "mantle": "#dde0e3", "surface": "#f3f4f5",
+            "text": "#193166", "muted": "#5a6a8a", "white": "#ffffff",
+            "red": "#a02020", "green": "#206020", "yellow": "#806000",
+            "blue": "#2040a0", "purple": "#6020a0", "peach": "#a04020",
+        }
+        opposite_palette = format_palette(light_colors, "light")
+        light_palette, dark_palette = opposite_palette, current_palette
+
     content = "-- Auto-generated nvim colors\n"
     content += "return {\n"
     content += f'  mode = "{mode}",\n'
-    for k, v in colors.items():
-        # On light backgrounds, darken text/accent colors for readability.
-        # Background colors (base/mantle/surface) stay light.
-        if mode == "light" and k not in ("base", "mantle", "surface", "mode"):
-            v = _light_bg_ansi(v)
-        content += f'  {k} = "{v}",\n'
+    content += "  light = {\n" + light_palette + "\n  },\n"
+    content += "  dark = {\n" + dark_palette + "\n  },\n"
     content += "}\n"
     write_text(nvim_colors_path, content)
 
@@ -1138,9 +1170,16 @@ def set_wallpaper(wallpaper_path):
             with open(hp_conf, "w") as hf:
                 hf.write(hp_text)
             # Reload hyprpaper if running
+            # Ensure HYPRLAND_INSTANCE_SIGNATURE is set for hyprctl
+            import glob as _glob
+            env = dict(os.environ)
+            if "HYPRLAND_INSTANCE_SIGNATURE" not in env:
+                hypr_sockets = _glob.glob("/run/user/*/hypr/*")
+                if hypr_sockets:
+                    env["HYPRLAND_INSTANCE_SIGNATURE"] = os.path.basename(hypr_sockets[0])
             subprocess.run(
                 ["hyprctl", "hyprpaper", "reload", f",{wallpaper_path}"],
-                capture_output=True, check=False,
+                capture_output=True, check=False, env=env,
             )
             print(f"Updated hyprpaper wallpaper to {wallpaper_path}")
     except (OSError, ValueError) as e:

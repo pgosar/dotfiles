@@ -13,7 +13,7 @@ end
 -- Custom theme: darker bar backgrounds in light mode
 local lualine_theme = require("lualine.themes.auto")
 if vim.o.background == "light" then
-  local bar_bg = "#e2e4ea"
+  local bar_bg = "#eef0f3"
   for _, mode in pairs(lualine_theme) do
     if type(mode) == "table" then
       for _, section in pairs(mode) do
