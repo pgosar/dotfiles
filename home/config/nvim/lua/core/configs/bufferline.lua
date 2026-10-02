@@ -1,7 +1,7 @@
 require("bufferline").setup({
   highlights = {
-    fill = { bg = require("theme_colors").base },
-    background = { bg = require("theme_colors").base },
+    fill = { bg = require("theme_colors").surface },
+    background = { bg = require("theme_colors").surface },
   },
   options = {
     diagnostics = "nvim_lsp",
