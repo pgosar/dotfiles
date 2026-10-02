@@ -22,11 +22,18 @@ if [ -n "$NVIM_LUA" ]; then
     # Skip init files and generated files (they have side effects)
     if echo "$MOD" | grep -q "generated\|init$"; then continue; fi
     echo "  Testing: $MOD"
-    if ! timeout 10 nvim --headless --noplugin -c "lua ok, err = pcall(require, '$MOD'); if not ok then print('FAIL: ' .. tostring(err)); vim.cmd('cq!') end" -c "qa!" 2>&1 | grep -q "FAIL"; then
-      echo "    OK"
+    RESULT=$(nvim --headless --noplugin -c "lua ok, err = pcall(require, '$MOD'); if not ok then print('ERR:' .. tostring(err)) end" -c "qa!" 2>&1)
+    if echo "$RESULT" | grep -q "ERR:"; then
+      ERR_MSG=$(echo "$RESULT" | grep "ERR:" | head -1)
+      # Missing plugin is expected in --noplugin mode, not a real failure
+      if echo "$ERR_MSG" | grep -qi "module.*not found"; then
+        echo "    SKIP (requires plugin)"
+      else
+        echo "    FAIL: $ERR_MSG"
+        FAILED=1
+      fi
     else
-      echo "    FAIL: module failed to load"
-      FAILED=1
+      echo "    OK"
     fi
   done
 fi

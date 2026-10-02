@@ -17,9 +17,7 @@ if vim.o.background == "light" then
   for _, mode in pairs(lualine_theme) do
     if type(mode) == "table" then
       for _, section in pairs(mode) do
-        if type(section) == "table" and section.bg then
-          section.bg = bar_bg
-        end
+        if type(section) == "table" and section.bg then section.bg = bar_bg end
       end
     end
   end
@@ -186,4 +184,3 @@ insert_right({
 })
 
 lualine.setup(config)
-

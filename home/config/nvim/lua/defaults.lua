@@ -52,9 +52,7 @@ M.setup_sources = function(b)
     }),
     b.diagnostics.revive,
     b.diagnostics.selene.with({
-      condition = function()
-        return vim.fn.executable("selene") == 1
-      end,
+      condition = function() return vim.fn.executable("selene") == 1 end,
     }),
     b.code_actions.gitsigns,
     b.code_actions.gomodifytags,

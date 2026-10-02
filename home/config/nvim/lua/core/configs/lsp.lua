@@ -91,9 +91,7 @@ end
 -- 6. Setup Mason (must be before mason-lspconfig)
 if group.plugins.mason then
   local mason_ok, mason = pcall(require, "mason")
-  if mason_ok then
-    mason.setup()
-  end
+  if mason_ok then mason.setup() end
 end
 
 -- 6b. Setup Mason LSPConfig
