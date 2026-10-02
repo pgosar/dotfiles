@@ -32,6 +32,10 @@ fi
 
 # Theme-generated eza colors
 [ -f "$HOME/.config/shell/eza-colors.sh" ] && source "$HOME/.config/shell/eza-colors.sh"
+# Do not inherit an old Vivid palette from the desktop session.
+unset LS_COLORS
+# Eza owns listing colors; prevent Oh My Zsh from creating a default LS_COLORS.
+export DISABLE_LS_COLORS=true
 
 if [ "$OS" = "Darwin" ]; then
   export HOMEBREW_NO_AUTO_UPDATE=1
@@ -100,11 +104,6 @@ bindkey '^d' autosuggest-accept
 bindkey '^k' edit-command-line
 
 # ---- Cross-Platform Tool Setup ---------------------------------------------
-
-if command -v vivid >/dev/null 2>&1; then
-  LS_COLORS="$(vivid generate catppuccin-mocha)"
-  export LS_COLORS
-fi
 
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
