@@ -701,10 +701,12 @@ def generate_firefox(colors):
         firefox_wallpaper = textfox_chrome_dir / "wallpaper.png"
         shutil.copy2(bg_path, firefox_wallpaper)
         bg_url = "wallpaper.png"
+        # Solid base color behind the image reduces transparency/distraction.
         css_content += (
-            "\n/* Auto-generated wallpaper background */\n"
+            "\n/* Auto-generated wallpaper background (dimmed) */\n"
             "body, #navigator-toolbox, #sidebar-box, #sidebar-main,\n"
             "#vertical-tabs, #sidebar-select-box {\n"
+            f"  background-color: color-mix(in srgb, {tf_bg} 75%, transparent) !important;\n"
             f'  background-image: url("{bg_url}") !important;\n'
             "  background-size: cover !important;\n"
             "  background-position: center !important;\n"
