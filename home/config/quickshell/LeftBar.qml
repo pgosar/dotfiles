@@ -27,10 +27,11 @@ PanelWindow {
     }
     property bool collapsed: true
     implicitWidth: collapsed ? 14 : 60
+    color: "transparent"  // PanelWindow defaults to white; keep it transparent
     exclusiveZone: 0
     exclusionMode: PanelWindow.ExclusionMode.Ignore
 
-    Behavior on implicitWidth { NumberAnimation { duration: 200 } }
+    Behavior on implicitWidth { NumberAnimation { duration: 100 } }
 
     // Background (no border)
     Rectangle {
