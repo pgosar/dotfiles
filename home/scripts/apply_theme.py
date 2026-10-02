@@ -1623,16 +1623,57 @@ def reload_dunst():
 
 
 def reload_spicetify():
-    # Applies color.ini; apply restarts a running Spotify, refresh patches
-    # the files without launching it. Failures are printed, not swallowed.
+    # Spotify keeps injected CSS in memory, so applying a theme must be
+    # followed by a restart when it is already running.
     if not shutil.which("spicetify"):
         return
-    running = subprocess.run(["pgrep", "-x", "Spotify"], capture_output=True, check=False).returncode == 0
+    process_names = ("Spotify", "spotify") if sys.platform == "darwin" else ("spotify", "Spotify")
+    running = any(
+        subprocess.run(["pgrep", "-x", name], capture_output=True, check=False).returncode == 0
+        for name in process_names
+    )
     cmd = ["spicetify", "apply"] if running else ["spicetify", "refresh"]
     result = subprocess.run(cmd, capture_output=True, text=True, check=False)
     if result.returncode != 0:
         detail = result.stderr.strip() or result.stdout.strip()
         print(f"spicetify {cmd[1]} failed: {detail}", file=sys.stderr)
+    elif running:
+        for name in process_names:
+            subprocess.run(["pkill", "-x", name], capture_output=True, check=False)
+        # Spotify's single-instance lock is released shortly after its main
+        # process exits; launching immediately can silently fail.
+        time.sleep(1)
+        spotify_bin = shutil.which("spotify")
+        if not spotify_bin:
+            try:
+                cfg = configparser.ConfigParser()
+                cfg.read(Path.home() / ".config" / "spicetify" / "config-xpui.ini")
+                spotify_path = Path(cfg.get("Setting", "spotify_path"))
+                candidates = (
+                    spotify_path,
+                    spotify_path / "spotify",
+                    spotify_path / "Contents" / "MacOS" / "Spotify",
+                )
+                spotify_bin = next((str(path) for path in candidates if path.is_file()), None)
+            except (configparser.Error, OSError, ValueError):
+                pass
+        if not spotify_bin and sys.platform == "darwin":
+            for candidate in (
+                Path("/Applications/Spotify.app/Contents/MacOS/Spotify"),
+                Path.home() / "Applications/Spotify.app/Contents/MacOS/Spotify",
+            ):
+                if candidate.is_file():
+                    spotify_bin = str(candidate)
+                    break
+        if spotify_bin:
+            subprocess.Popen(
+                [spotify_bin],
+                start_new_session=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        else:
+            print("Spotify theme applied, but Spotify could not be relaunched.", file=sys.stderr)
 
 
 def sync_linux_appearance():
