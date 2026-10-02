@@ -1132,8 +1132,27 @@ def set_wallpaper(wallpaper_path):
                 check=False,
             )
         return
-    # Hyprland wallpaper is managed by quickshell's WallpaperSwitcher via
-    # hyprpaper.conf; nothing to do here.
+    # Hyprland: update hyprpaper.conf and reload hyprpaper.
+    try:
+        hp_conf = HYPRPAPER_CONFIG
+        if os.path.isfile(hp_conf):
+            with open(hp_conf) as hf:
+                hp_text = hf.read()
+            # Update preload and wallpaper path entries
+            import re as _re
+            hp_text = _re.sub(r'^preload\s*=.*$', f'preload = {wallpaper_path}', hp_text, flags=_re.MULTILINE)
+            hp_text = _re.sub(r'^(\s*path\s*=).*$', f'\\1 {wallpaper_path}', hp_text, flags=_re.MULTILINE)
+            with open(hp_conf, "w") as hf:
+                hf.write(hp_text)
+            # Reload hyprpaper if running
+            subprocess.run(
+                ["hyprctl", "hyprpaper", "reload", f",{wallpaper_path}"],
+                capture_output=True, check=False,
+            )
+            print(f"Updated hyprpaper wallpaper to {wallpaper_path}")
+    except (OSError, ValueError) as e:
+        print(f"Warning: failed to set Hyprland wallpaper: {e}")
+    return
 
 
 def sync_macos_appearance():
