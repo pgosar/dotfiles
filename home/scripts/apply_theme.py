@@ -474,12 +474,14 @@ radio-btn-active   = {light["peach"]}
             check=False,
         )
 
+    # Always generate the base Comfy stylesheet so the installer link
+    # never dangles on fresh clones; append wallpaper overlay if available.
+    css = '@import url("https://comfy-themes.github.io/Spicetify/Comfy/app.css");\n'
     # Wallpaper behind the Spotify UI via a theme overlay.
     wallpaper = current_wallpaper()
     if wallpaper:
         # Preserve the Comfy theme's @import; append our wallpaper overlay.
-        css = (
-            '@import url("https://comfy-themes.github.io/Spicetify/Comfy/app.css");\n'
+        css += (
             "\n"
             "/* Auto-generated wallpaper background - do not edit, run apply_theme.py */\n"
             ".Root__top-container::before {\n"
@@ -493,7 +495,7 @@ radio-btn-active   = {light["peach"]}
             "  pointer-events: none;\n"
             "}\n"
         )
-        write_text(spicetify_dir / "user.css", css)
+    write_text(spicetify_dir / "user.css", css)
     # Ensure Spicetify knows which theme to apply; without current_theme,
     # spicetify refresh/apply silently does nothing.
     try:
@@ -1589,6 +1591,7 @@ def main():
         update_dunstrc(colors)
     generate_spicetify(colors)
     generate_nvim(colors)
+    generate_eza(colors)
     generate_firefox(colors)
     sync_linux_appearance()
     generate_gtk(colors)
