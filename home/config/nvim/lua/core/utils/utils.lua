@@ -102,12 +102,25 @@ M.update_all = function()
       end
     end,
     on_exit = function(_, code)
-      if code == 0 then
-        vim.notify("Dotfiles updated successfully.")
-      else
+      if code ~= 0 then
         local err_msg = #stderr > 0 and table.concat(stderr, "\n") or "Unknown error"
         vim.notify("Failed to pull latest dotfiles:\n" .. err_msg, vim.log.levels.ERROR)
+        return -- Stop: do not update plugins on failed pull
       end
+      vim.notify("Dotfiles updated successfully.")
+      -- Regenerate theme outputs from saved theme state
+      local script = vim.fn.expand("~/.config/nvim/../scripts/apply_theme.py")
+      -- Actually, dotfiles repo location: ~/.config is symlinked, find real path
+      local config_dir = vim.fn.resolve(vim.fn.stdpath("config"))
+      -- config_dir is ~/code/dotfiles/home/config/nvim, go up to find scripts
+      local repo_scripts = config_dir:gsub("/home/config/nvim$", "/home/scripts/apply_theme.py")
+      vim.fn.jobstart({ "python3", repo_scripts }, {
+        on_exit = function(_, theme_code)
+          if theme_code ~= 0 then
+            vim.notify("Theme regeneration failed (exit " .. theme_code .. ")", vim.log.levels.WARN)
+          end
+        end,
+      })
       M.update_plugins()
 
       if require("core.utils.plugins").enabled("mason") then
