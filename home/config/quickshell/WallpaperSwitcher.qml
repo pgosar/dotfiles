@@ -115,7 +115,7 @@ PanelWindow {
                 Layout.fillHeight: true
                 spacing: 8
 
-                // Left arrow
+                // Left arrow: step one card left (reveal previous)
                 Text {
                     text: "\u276e"  // ❮
                     color: colors.muted
@@ -123,7 +123,7 @@ PanelWindow {
                     Layout.alignment: Qt.AlignVCenter
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: wallpaperListView.flick(-400, 0)
+                        onClicked: wallpaperListView.contentX = Math.max(0, wallpaperListView.contentX - 152)
                     }
                 }
 
@@ -132,7 +132,13 @@ PanelWindow {
                     id: wallpaperListView
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                orientation: ListView.Horizontal
+                    orientation: ListView.Horizontal
+                    Behavior on contentX {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                    }
                 spacing: 12
                 clip: true
                 
@@ -230,7 +236,7 @@ PanelWindow {
                 }
             }
 
-            // Right arrow
+            // Right arrow: step one card right (reveal next)
             Text {
                 text: "\u276f"  // ❯
                 color: colors.muted
@@ -238,7 +244,10 @@ PanelWindow {
                 Layout.alignment: Qt.AlignVCenter
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: wallpaperListView.flick(400, 0)
+                    onClicked: {
+                        var maxX = wallpaperListView.contentWidth - wallpaperListView.width;
+                        wallpaperListView.contentX = Math.min(maxX, wallpaperListView.contentX + 152);
+                    }
                 }
             }
         }
