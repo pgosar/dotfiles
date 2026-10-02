@@ -109,8 +109,7 @@ M.update_all = function()
       end
       vim.notify("Dotfiles updated successfully.")
       -- Regenerate theme outputs from saved theme state
-      local script = vim.fn.expand("~/.config/nvim/../scripts/apply_theme.py")
-      -- Actually, dotfiles repo location: ~/.config is symlinked, find real path
+      -- Dotfiles repo location: ~/.config is symlinked, find real path
       local config_dir = vim.fn.resolve(vim.fn.stdpath("config"))
       -- config_dir is ~/code/dotfiles/home/config/nvim, go up to find scripts
       local repo_scripts = config_dir:gsub("/home/config/nvim$", "/home/scripts/apply_theme.py")
