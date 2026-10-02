@@ -112,6 +112,15 @@ end
 local color_ok, _ = pcall(vim.cmd.colorscheme, require("defaults").colorscheme)
 if not color_ok then vim.cmd.colorscheme("default") end
 
+-- Ensure solid background from theme (not transparent/terminal bg)
+do
+  local ok, theme = pcall(require, "theme_colors")
+  if ok and theme and theme.base then
+    vim.api.nvim_set_hl(0, "Normal", { bg = theme.base })
+    vim.api.nvim_set_hl(0, "NormalNC", { bg = theme.base })
+  end
+end
+
 -- Only update LSP diagnostics on insert leave
 vim.diagnostic.config({
   update_in_insert = false,

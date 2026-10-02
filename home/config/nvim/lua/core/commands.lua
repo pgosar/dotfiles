@@ -6,6 +6,35 @@ vim.api.nvim_create_user_command(
   { desc = "Updates plugins, mason packages, treesitter parsers" }
 )
 
+-- Toggle between light and dark theme mode
+vim.api.nvim_create_user_command("CyberThemeToggle", function()
+  vim.g.cyber_theme_manual = true
+  vim.o.background = (vim.o.background == "dark") and "light" or "dark"
+  -- Clear cached theme_colors so it returns the new palette
+  package.loaded["theme_colors"] = nil
+  package.loaded["theme_colors_generated"] = nil
+  -- Reload colorscheme; the BgSync autocmd applies theme background
+  local colorscheme = vim.g.colors_name
+  if colorscheme then
+    vim.cmd("colorscheme " .. colorscheme)
+  end
+  vim.notify("Theme mode: " .. vim.o.background)
+end, { desc = "Toggle light/dark theme mode" })
+
+-- Sync editor background from theme_colors after colorscheme loads.
+-- Ensures Neovim background is independent of terminal background.
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = vim.api.nvim_create_augroup("ThemeBgSync", { clear = true }),
+  callback = function()
+    local ok, theme = pcall(require, "theme_colors")
+    if ok and theme and theme.base then
+      vim.api.nvim_set_hl(0, "Normal", { bg = theme.base })
+      vim.api.nvim_set_hl(0, "NormalNC", { bg = theme.base })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = theme.base })
+    end
+  end,
+})
+
 -- close buffer windows without messing up layout
 local M = {}
 local plugins = require("core.utils.plugins")

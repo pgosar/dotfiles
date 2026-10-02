@@ -1,6 +1,8 @@
 local defaults = require("defaults")
 local colors = defaults.colors.mocha_override
 local plugins = defaults.group.plugins
+local theme = require("theme_colors")
+local flavour = vim.o.background == "light" and "latte" or "mocha"
 
 require("catppuccin").setup({
   integrations = {
@@ -19,9 +21,9 @@ require("catppuccin").setup({
     enabled = true,
     percentage = require("defaults").plugin_settings.catppuccin_dim_percentage,
   },
-  flavour = "mocha",
+  flavour = flavour,
   color_overrides = {
-    mocha = {
+    [flavour] = {
       base = colors.base,
       mantle = colors.mantle,
       crust = colors.crust,
