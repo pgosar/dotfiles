@@ -19,3 +19,7 @@ home/config/spicetify/Themes/Comfy/user.css
 home/config/spicetify/config-xpui.ini
 home/scripts/wallpaper-linux.txt
 home/scripts/wallpaper-linux.txt
+home/config/kitty/colors-generated.conf
+home/config/nvim/lua/theme_colors_generated.lua
+home/config/spicetify/Themes/Comfy/color.ini
+home/config/dunst/dunstrc
