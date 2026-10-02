@@ -554,8 +554,13 @@ def generate_firefox(colors):
     light = wallpaper_is_light()
 
     # Webpages follow the system theme (2 = system; 0 = dark, 1 = light).
-    # The macOS appearance itself is synced to the wallpaper, so pages match
-    # the wallpaper's light/dark (see sync_macos_appearance).
+    # On macOS, the system appearance is synced to the wallpaper, so 2 works.
+    # On Linux/KDE, xdg-desktop-portal-kde doesn't reliably report light/dark
+    # for custom schemes, so use explicit 1/0.
+    if sys.platform == "darwin":
+        override = 2
+    else:
+        override = 1 if light else 0
     user_js = profile_dir / "user.js"
     existing = user_js.read_text() if user_js.exists() else ""
     lines = [
@@ -563,7 +568,7 @@ def generate_firefox(colors):
         for line in existing.splitlines()
         if "prefers-color-scheme.content-override" not in line
     ]
-    lines.append('user_pref("layout.css.prefers-color-scheme.content-override", 2);')
+    lines.append(f'user_pref("layout.css.prefers-color-scheme.content-override", {override});')
     write_text(user_js, "\n".join(lines) + "\n")
 
     textfox_chrome_dir = profile_dir / "chrome"
@@ -1169,6 +1174,21 @@ def _kde_rgb(hex_color):
     return f"{r},{g},{b}"
 
 
+def _kde_scheme_name():
+    # xdg-desktop-portal-kde only reports correct light/dark for the
+    # built-in BreezeLight/BreezeDark names. Custom names always report dark.
+    # We write our pywal colors to user-local BreezeLight/Dark.colors
+    # (which override the system ones) so the portal works.
+    from paths import THEME_JSON
+    import json as _json
+    try:
+        _t = _json.load(open(THEME_JSON))
+        _is_light = _hex_luminance(_t.get("base", "#000000")) > 0.5
+    except Exception:
+        _is_light = False
+    return "BreezeLight" if _is_light else "BreezeDark"
+
+
 def generate_kde(colors):
     # Write a Plasma color scheme derived from the wallpaper theme, so the
     # whole KDE desktop (windows, buttons, selections, titlebars) matches.
@@ -1313,7 +1333,14 @@ inactiveForeground={rgb(t["muted"])}
 inactiveTitleBtnBg={rgb(t["mantle"])}
 """
     scheme_dir = Path.home() / ".local" / "share" / "color-schemes"
+    # Write to both Dotfiles.colors (for Plasma UI) and BreezeLight/Dark.colors
+    # (for xdg-desktop-portal-kde, which only recognizes built-in names).
+    # User-local schemes override system ones.
+    portal_name = _kde_scheme_name()
+    portal_scheme = scheme.replace("ColorScheme=Dotfiles", f"ColorScheme={portal_name}")
+    portal_scheme = portal_scheme.replace("Name=Dotfiles", f"Name={portal_name}")
     write_text(scheme_dir / "Dotfiles.colors", scheme)
+    write_text(scheme_dir / f"{portal_name}.colors", portal_scheme)
 
 
 def reload_kde():
@@ -1330,7 +1357,7 @@ def reload_kde():
                 "General",
                 "--key",
                 "ColorScheme",
-                "Dotfiles",
+                _kde_scheme_name(),
             ],
             capture_output=True,
             check=False,
