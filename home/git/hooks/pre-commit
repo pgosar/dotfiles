@@ -1,6 +1,7 @@
 #!/bin/bash
 # Pre-commit hook: mechanical enforcement of code quality rules.
 # Runs linters on changed files. Blocks commit on errors.
+export PATH="/opt/homebrew/bin:$PATH"
 
 set -e
 
@@ -16,12 +17,12 @@ FAILED=0
 if [ -n "$LUA_FILES" ]; then
     echo "Checking Lua files..."
     for f in $LUA_FILES; do
-        if ! luacheck "$f" 2>&1 | tail -1 | grep -q "0 errors"; then
+        if ! luacheck --no-color "$f" 2>&1 | tail -1 | grep -q "0 errors"; then
             echo "FAIL: luacheck errors in $f"
-            luacheck "$f" 2>&1 | tail -5
+            luacheck --no-color "$f" 2>&1 | tail -5
             FAILED=1
         fi
-        if ! stylua --check "$f" 2>&1 | head -1; then
+        if ! stylua --check "$f" >/dev/null 2>&1; then
             echo "FAIL: stylua formatting in $f (run: stylua $f)"
             FAILED=1
         fi
@@ -33,7 +34,7 @@ if [ -n "$SHELL_FILES" ]; then
     echo "Checking shell files..."
     for f in $SHELL_FILES; do
         if [ -f "$f" ]; then
-            if ! shellcheck "$f" 2>&1 | head -1; then
+            if ! shellcheck -S warning "$f" >/dev/null 2>&1; then
                 echo "FAIL: shellcheck errors in $f"
                 FAILED=1
             fi
