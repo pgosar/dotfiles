@@ -1486,6 +1486,9 @@ def main():
         print("Successfully generated macOS color configs!")
         return
     desktop = _linux_desktop()
+    # Set wallpaper first for instant visual feedback; theme configs follow.
+    if args.wallpaper:
+        set_wallpaper(wallpaper_path)
     generate_css(colors)
     generate_kitty(colors)
     if desktop == "kde":
@@ -1512,8 +1515,6 @@ def main():
     if desktop != "kde":
         reload_dunst()
     reload_spicetify()
-    if args.wallpaper:
-        set_wallpaper(wallpaper_path)
     print("Successfully generated and applied color configs!")
 
 
