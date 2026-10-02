@@ -9,12 +9,39 @@ M.monitor2 = ""
 
 local variables = {}
 
+-- Load variable definitions from sourced files (e.g. monitor-vars.conf)
+local function load_vars_file(var_path)
+  local vf = io.open(var_path, "r")
+  if not vf then return end
+  for line in vf:lines() do
+    local content = line:gsub("#.*$", ""):gsub("^%s+", ""):gsub("%s+$", "")
+    if content ~= "" then
+      local var_name, var_val = content:match("^%s*(%$[%w_]+)%s*=%s*(.-)%s*$")
+      if var_name then
+        variables[var_name] = var_val
+        if var_name == "$monitor1" then
+          M.monitor1 = var_val
+        elseif var_name == "$monitor2" then
+          M.monitor2 = var_val
+        end
+      end
+    end
+  end
+  vf:close()
+end
+
 local f = io.open(monitors_conf_path, "r")
 if f then
   for line in f:lines() do
     -- strip comments and spaces
     local content = line:gsub("#.*$", ""):gsub("^%s+", ""):gsub("%s+$", "")
     if content ~= "" then
+      -- follow source directives to load variable files
+      local src = content:match("^%s*source%s*=%s*(.-)%s*$")
+      if src then
+        src = src:gsub("^~", home)
+        load_vars_file(src)
+      end
       -- Variable definition: $name = value
       local var_name, var_val = content:match("^%s*(%$[%w_]+)%s*=%s*(.-)%s*$")
       if var_name then
@@ -39,7 +66,12 @@ if f then
           if #parts >= 4 then
             local output = parts[1]
             -- expand variable if starts with $
-            if output:sub(1, 1) == "$" then output = variables[output] or output end
+            if output:sub(1, 1) == "$" then
+              output = variables[output]
+              if not output then
+                error("monitors.lua: unresolved variable " .. parts[1])
+              end
+            end
 
             local mode = parts[2]
             local position = parts[3]
