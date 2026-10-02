@@ -1,0 +1,11 @@
+type(scope): short description
+
+Longer explanation if needed.
+
+Test plan:
+- [ ] Static: (luacheck/stylua/shellcheck/py_compile - list what ran)
+- [ ] Behavioral: (what code path was exercised, what command, what output)
+- [ ] Visual: (screenshot taken? what does it show?)
+
+Evidence:
+(paste command output, screenshot reference, or describe what was observed)
