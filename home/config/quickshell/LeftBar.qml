@@ -25,7 +25,7 @@ PanelWindow {
         top: true
         bottom: true
     }
-    property bool collapsed: false
+    property bool collapsed: true
     implicitWidth: collapsed ? 14 : 60
     exclusiveZone: 0
     exclusionMode: PanelWindow.ExclusionMode.Ignore
@@ -47,18 +47,14 @@ PanelWindow {
         anchors.rightMargin: 4
     }
 
-    // Collapse handle: thin strip visible when collapsed, click to expand
+    // Hover to expand: hover-only MouseArea (no buttons accepted so it
+    // never blocks clicks to the widgets underneath).
     MouseArea {
         anchors.fill: parent
-        visible: leftBarWindow.collapsed
-        onClicked: leftBarWindow.collapsed = false
-        // Chevron indicator
-        Text {
-            anchors.centerIn: parent
-            text: "\u276f"  // ❯
-            color: colors.muted
-            font.pixelSize: 10
-        }
+        hoverEnabled: true
+        acceptedButtons: Qt.NoButton
+        onEntered: leftBarWindow.collapsed = false
+        onExited: leftBarWindow.collapsed = true
     }
 
     ColumnLayout {
@@ -242,19 +238,6 @@ PanelWindow {
         // Custom Power Menu Widget
         PowerMenu {
             colors: leftBarWindow.colors
-        }
-
-        // Collapse button
-        Text {
-            text: "\u276e"  // ❮
-            color: colors.muted
-            Layout.alignment: Qt.AlignHCenter
-            font.pixelSize: 16
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: leftBarWindow.collapsed = true
-            }
         }
     }
 }
