@@ -1033,6 +1033,19 @@ def set_wallpaper(wallpaper_path):
         except (OSError, ValueError) as e:
             print(f"Warning: failed to set macOS wallpaper: {e}")
         return
+    # Linux
+    if _linux_desktop() == "kde":
+        _ensure_dbus()
+        if shutil.which("plasma-apply-wallpaperimage"):
+            subprocess.run(
+                ["plasma-apply-wallpaperimage", wallpaper_path],
+                capture_output=True,
+                check=False,
+            )
+        return
+    # Hyprland wallpaper is managed by quickshell's WallpaperSwitcher via
+    # hyprpaper.conf; nothing to do here.
+
 
 def sync_macos_appearance():
     # Keep the macOS light/dark mode in sync with the wallpaper, so apps
@@ -1074,6 +1087,220 @@ def _ancestor_is_quickshell():
         except (OSError, ValueError, IndexError):
             return False
     return False
+
+
+def _ensure_dbus():
+    # Plasma tools (plasma-apply-wallpaperimage) need the session bus.
+    # Over SSH there is none; point at the user's bus socket if it exists.
+    if os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
+        return
+    try:
+        uid = os.getuid()
+    except AttributeError:
+        return
+    sock = f"/run/user/{uid}/bus"
+    if os.path.exists(sock):
+        os.environ["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path={sock}"
+        os.environ.setdefault("XDG_RUNTIME_DIR", f"/run/user/{uid}")
+
+
+def _linux_desktop():
+    # "kde" or "hyprland". XDG_CURRENT_DESKTOP is set in a graphical
+    # session; fall back to process detection (e.g. when run over SSH).
+    desktop = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
+    if "kde" in desktop:
+        return "kde"
+    if "hyprland" in desktop:
+        return "hyprland"
+    if shutil.which("pgrep"):
+        if (
+            subprocess.run(
+                ["pgrep", "-x", "plasmashell"], capture_output=True, check=False
+            ).returncode
+            == 0
+        ):
+            return "kde"
+        if (
+            subprocess.run(
+                ["pgrep", "-x", "Hyprland"], capture_output=True, check=False
+            ).returncode
+            == 0
+        ):
+            return "hyprland"
+    return "hyprland"  # historical default
+
+
+def _kde_rgb(hex_color):
+    r, g, b = hex_to_rgb_tuple(hex_color)
+    return f"{r},{g},{b}"
+
+
+def generate_kde(colors):
+    # Write a Plasma color scheme derived from the wallpaper theme, so the
+    # whole KDE desktop (windows, buttons, selections, titlebars) matches.
+    t = colors
+    rgb = _kde_rgb
+    scheme = f"""# Auto-generated KDE color scheme - do not edit, run apply_theme.py
+
+[ColorEffects:Disabled]
+Color=56,56,56
+ColorAmount=0
+ColorEffect=0
+ContrastAmount=0.65
+ContrastEffect=1
+IntensityAmount=0.1
+IntensityEffect=2
+
+[ColorEffects:Inactive]
+ChangeSelectionColor=true
+Color=112,111,110
+ColorAmount=0.025
+ColorEffect=2
+ContrastAmount=0.1
+ContrastEffect=2
+Enable=false
+IntensityAmount=0
+IntensityEffect=0
+
+[Colors:Button]
+BackgroundAlternate={rgb(t["surface"])}
+BackgroundNormal={rgb(t["surface"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["purple"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["text"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["purple"])}
+
+[Colors:Complementary]
+BackgroundAlternate={rgb(t["mantle"])}
+BackgroundNormal={rgb(t["base"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["purple"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["text"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["purple"])}
+
+[Colors:Header]
+BackgroundAlternate={rgb(t["base"])}
+BackgroundNormal={rgb(t["surface"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["purple"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["text"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["purple"])}
+
+[Colors:Selection]
+BackgroundAlternate={rgb(t["purple"])}
+BackgroundNormal={rgb(t["purple"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["base"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["base"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["base"])}
+
+[Colors:Tooltip]
+BackgroundAlternate={rgb(t["surface"])}
+BackgroundNormal={rgb(t["surface"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["purple"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["text"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["purple"])}
+
+[Colors:View]
+BackgroundAlternate={rgb(t["base"])}
+BackgroundNormal={rgb(t["mantle"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["purple"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["text"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["purple"])}
+
+[Colors:Window]
+BackgroundAlternate={rgb(t["surface"])}
+BackgroundNormal={rgb(t["base"])}
+DecorationFocus={rgb(t["purple"])}
+DecorationHover={rgb(t["purple"])}
+ForegroundActive={rgb(t["purple"])}
+ForegroundInactive={rgb(t["muted"])}
+ForegroundLink={rgb(t["blue"])}
+ForegroundNegative={rgb(t["red"])}
+ForegroundNeutral={rgb(t["yellow"])}
+ForegroundNormal={rgb(t["text"])}
+ForegroundPositive={rgb(t["green"])}
+ForegroundVisited={rgb(t["purple"])}
+
+[General]
+ColorScheme=Dotfiles
+Name=Dotfiles
+shadeSortColumn=true
+
+[KDE]
+contrast=7
+
+[WM]
+activeBackground={rgb(t["surface"])}
+activeBlend=255,255,255
+activeForeground={rgb(t["text"])}
+activeTitleBtnBg={rgb(t["surface"])}
+inactiveBackground={rgb(t["mantle"])}
+inactiveBlend=255,255,255
+inactiveForeground={rgb(t["muted"])}
+inactiveTitleBtnBg={rgb(t["mantle"])}
+"""
+    scheme_dir = Path.home() / ".local" / "share" / "color-schemes"
+    write_text(scheme_dir / "Dotfiles.colors", scheme)
+
+
+def reload_kde():
+    # Apply the generated Dotfiles color scheme. kwriteconfig6 writes
+    # kdeglobals directly (works over SSH, no DBus needed); Plasma picks
+    # up the change via KConfig file watching.
+    if shutil.which("kwriteconfig6"):
+        subprocess.run(
+            [
+                "kwriteconfig6",
+                "--file",
+                "kdeglobals",
+                "--group",
+                "General",
+                "--key",
+                "ColorScheme",
+                "Dotfiles",
+            ],
+            capture_output=True,
+            check=False,
+        )
 
 
 def reload_hyprland():
@@ -1147,6 +1374,10 @@ def sync_linux_appearance():
     # Keep the Linux light/dark mode in sync with the wallpaper, so apps
     # that follow the system theme (including Firefox webpages) match it.
     if sys.platform == "darwin":
+        return
+    if _linux_desktop() == "kde":
+        # Plasma's color scheme governs light/dark; the gsettings key is
+        # GNOME-only and meaningless here.
         return
     if not shutil.which("gsettings"):
         return
@@ -1235,23 +1466,32 @@ def main():
         reload_spicetify()
         print("Successfully generated macOS color configs!")
         return
+    desktop = _linux_desktop()
     generate_css(colors)
     generate_kitty(colors)
-    generate_hyprland(colors)
-    update_dunstrc(colors)
+    if desktop == "kde":
+        generate_kde(colors)
+    else:
+        generate_hyprland(colors)
+        update_dunstrc(colors)
     generate_spicetify(colors)
     generate_nvim(colors)
     generate_firefox(colors)
     sync_linux_appearance()
     generate_gtk(colors)
     generate_qt(colors)
-    generate_quickshell(colors)
-    generate_quickshell_paths()
+    if desktop == "kde":
+        reload_kde()
+    else:
+        generate_quickshell(colors)
+        generate_quickshell_paths()
     # Apply to running apps
-    reload_hyprland()
-    reload_quickshell()
+    if desktop != "kde":
+        reload_hyprland()
+        reload_quickshell()
     reload_kitty()
-    reload_dunst()
+    if desktop != "kde":
+        reload_dunst()
     reload_spicetify()
     if args.wallpaper:
         set_wallpaper(wallpaper_path)
