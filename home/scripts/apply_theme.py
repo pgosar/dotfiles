@@ -1243,10 +1243,40 @@ def set_wallpaper(wallpaper_path):
             with open(hp_conf, "w") as hf:
                 hf.write(hp_text)
             # Reload hyprpaper if running
-            subprocess.run(
-                ["hyprctl", "hyprpaper", "reload", f",{wallpaper_path}"],
-                capture_output=True, check=False,
+            # Ensure HYPRLAND_INSTANCE_SIGNATURE is set for hyprctl
+            import glob as _glob
+            env = dict(os.environ)
+            if "HYPRLAND_INSTANCE_SIGNATURE" not in env:
+                hypr_sockets = _glob.glob("/run/user/*/hypr/*")
+                if hypr_sockets:
+                    env["HYPRLAND_INSTANCE_SIGNATURE"] = os.path.basename(hypr_sockets[0])
+            # A wildcard reload does not replace monitor-specific wallpapers
+            # that hyprpaper already has assigned. Apply the image to each
+            # connected monitor so the switcher works in either state.
+            monitors_result = subprocess.run(
+                ["hyprctl", "monitors", "-j"],
+                capture_output=True,
+                text=True,
+                check=False,
+                env=env,
             )
+            try:
+                monitors = json.loads(monitors_result.stdout)
+                monitor_names = [
+                    monitor["name"]
+                    for monitor in monitors
+                    if monitor.get("name") and not monitor.get("disabled", False)
+                ]
+            except (json.JSONDecodeError, TypeError):
+                monitor_names = []
+
+            for monitor_name in monitor_names or [""]:
+                subprocess.run(
+                    ["hyprctl", "hyprpaper", "wallpaper", f"{monitor_name},{wallpaper_path}"],
+                    capture_output=True,
+                    check=False,
+                    env=env,
+                )
             print(f"Updated hyprpaper wallpaper to {wallpaper_path}")
     except (OSError, ValueError) as e:
         print(f"Warning: failed to set Hyprland wallpaper: {e}")
