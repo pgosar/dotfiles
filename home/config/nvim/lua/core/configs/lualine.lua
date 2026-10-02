@@ -10,9 +10,24 @@ local show_width = function()
   return total_width > 80
 end
 
+-- Custom theme: darker bar backgrounds in light mode
+local lualine_theme = require("lualine.themes.auto")
+if vim.o.background == "light" then
+  local bar_bg = "#e2e4ea"
+  for _, mode in pairs(lualine_theme) do
+    if type(mode) == "table" then
+      for _, section in pairs(mode) do
+        if type(section) == "table" and section.bg then
+          section.bg = bar_bg
+        end
+      end
+    end
+  end
+end
+
 local config = {
   options = {
-    theme = "auto",
+    theme = lualine_theme,
     component_separators = "",
     section_separators = "",
     always_divide_middle = false,
@@ -171,3 +186,4 @@ insert_right({
 })
 
 lualine.setup(config)
+
