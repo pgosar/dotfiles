@@ -68,9 +68,7 @@ if f then
             -- expand variable if starts with $
             if output:sub(1, 1) == "$" then
               output = variables[output]
-              if not output then
-                error("monitors.lua: unresolved variable " .. parts[1])
-              end
+              if not output then error("monitors.lua: unresolved variable " .. parts[1]) end
             end
 
             local mode = parts[2]

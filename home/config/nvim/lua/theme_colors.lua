@@ -4,7 +4,11 @@ local ok, generated = pcall(require, "theme_colors_generated")
 if ok and type(generated) == "table" then
   -- Return the palette matching vim.o.background (light/dark).
   -- The generated file contains both variants for :CyberThemeToggle.
-  if not vim.g.cyber_theme_manual and generated.mode and type(generated[generated.mode]) == "table" then
+  if
+    not vim.g.cyber_theme_manual
+    and generated.mode
+    and type(generated[generated.mode]) == "table"
+  then
     vim.o.background = generated.mode
   end
   local bg = vim.o.background

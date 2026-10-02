@@ -15,9 +15,7 @@ vim.api.nvim_create_user_command("CyberThemeToggle", function()
   package.loaded["theme_colors_generated"] = nil
   -- Reload colorscheme; the BgSync autocmd applies theme background
   local colorscheme = vim.g.colors_name
-  if colorscheme then
-    vim.cmd("colorscheme " .. colorscheme)
-  end
+  if colorscheme then vim.cmd("colorscheme " .. colorscheme) end
   vim.notify("Theme mode: " .. vim.o.background)
 end, { desc = "Toggle light/dark theme mode" })
 

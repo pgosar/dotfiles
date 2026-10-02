@@ -33,7 +33,10 @@ local function format_and_save_buffer(bufnr)
     end
     -- Verify the write actually succeeded (no silent failures)
     if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then
-      vim.notify(string.format("Failed to save %s: still modified after write", name), vim.log.levels.ERROR)
+      vim.notify(
+        string.format("Failed to save %s: still modified after write", name),
+        vim.log.levels.ERROR
+      )
       return false
     end
   end
