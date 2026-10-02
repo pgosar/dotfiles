@@ -31,7 +31,12 @@ PanelWindow {
     exclusiveZone: 0
     exclusionMode: PanelWindow.ExclusionMode.Ignore
 
-    Behavior on implicitWidth { NumberAnimation { duration: 100 } }
+    Behavior on implicitWidth {
+        NumberAnimation {
+            duration: 300
+            easing.type: Easing.OutQuint
+        }
+    }
 
     // Background (no border)
     Rectangle {
