@@ -150,7 +150,10 @@ def _light_bg_ansi(hex_color):
     # wallpaper hue, but dark and saturated (body text stays near-black).
     r, g, b = hex_to_rgb_tuple(hex_color)
     h, _l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
-    r2, g2, b2 = colorsys.hls_to_rgb(h, 0.25, max(s, 0.6))
+    # Yellow hues need to be darker for readability on light backgrounds.
+    # Hue 0.13-0.19 is yellow; use lightness 0.18 instead of 0.25.
+    lightness = 0.18 if 0.13 <= h <= 0.19 else 0.25
+    r2, g2, b2 = colorsys.hls_to_rgb(h, lightness, max(s, 0.6))
     return f"#{int(r2 * 255):02x}{int(g2 * 255):02x}{int(b2 * 255):02x}"
 
 
