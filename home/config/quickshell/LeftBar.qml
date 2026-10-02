@@ -25,17 +25,18 @@ PanelWindow {
         top: true
         bottom: true
     }
-    implicitWidth: 60
+    property bool collapsed: false
+    implicitWidth: collapsed ? 14 : 60
     exclusiveZone: 0
     exclusionMode: PanelWindow.ExclusionMode.Ignore
 
-    // Background
+    Behavior on implicitWidth { NumberAnimation { duration: 200 } }
+
+    // Background (no border)
     Rectangle {
         anchors.fill: parent
         color: colors.base
         opacity: 0.90
-        border.color: colors.purple
-        border.width: 1.5
         topLeftRadius: 0
         bottomLeftRadius: 0
         topRightRadius: 12
@@ -46,10 +47,25 @@ PanelWindow {
         anchors.rightMargin: 4
     }
 
+    // Collapse handle: thin strip visible when collapsed, click to expand
+    MouseArea {
+        anchors.fill: parent
+        visible: leftBarWindow.collapsed
+        onClicked: leftBarWindow.collapsed = false
+        // Chevron indicator
+        Text {
+            anchors.centerIn: parent
+            text: "\u276f"  // ❯
+            color: colors.muted
+            font.pixelSize: 10
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 10
         spacing: 16
+        visible: !leftBarWindow.collapsed
 
         // Operating System / Arch Logo
         Text {
@@ -226,6 +242,19 @@ PanelWindow {
         // Custom Power Menu Widget
         PowerMenu {
             colors: leftBarWindow.colors
+        }
+
+        // Collapse button
+        Text {
+            text: "\u276e"  // ❮
+            color: colors.muted
+            Layout.alignment: Qt.AlignHCenter
+            font.pixelSize: 16
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: leftBarWindow.collapsed = true
+            }
         }
     }
 }
