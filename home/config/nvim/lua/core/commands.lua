@@ -6,6 +6,12 @@ vim.api.nvim_create_user_command(
   { desc = "Updates plugins, mason packages, treesitter parsers" }
 )
 
+-- Toggle between light and dark theme mode
+vim.api.nvim_create_user_command("CyberThemeToggle", function()
+  vim.o.background = (vim.o.background == "dark") and "light" or "dark"
+  vim.notify("Theme mode: " .. vim.o.background)
+end, { desc = "Toggle light/dark theme mode" })
+
 -- close buffer windows without messing up layout
 local M = {}
 local plugins = require("core.utils.plugins")

@@ -521,8 +521,10 @@ radio-btn-active   = {light["peach"]}
 def generate_nvim(colors):
     # Generated module (ignored); seed theme_colors.lua is the fallback.
     nvim_colors_path = CONFIG_DIR / "nvim" / "lua" / "theme_colors_generated.lua"
+    mode = "light" if wallpaper_is_light() else "dark"
     content = "-- Auto-generated nvim colors\n"
     content += "return {\n"
+    content += f'  mode = "{mode}",\n'
     for k, v in colors.items():
         content += f'  {k} = "{v}",\n'
     content += "}\n"

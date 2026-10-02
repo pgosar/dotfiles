@@ -2,6 +2,10 @@
 -- (ignored) overrides this when present. Do not edit the generated file.
 local ok, generated = pcall(require, "theme_colors_generated")
 if ok and type(generated) == "table" then
+  -- Sync Neovim background with theme mode (light/dark)
+  if generated.mode == "light" or generated.mode == "dark" then
+    vim.o.background = generated.mode
+  end
   return generated
 end
 
