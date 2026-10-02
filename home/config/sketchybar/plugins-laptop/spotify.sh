@@ -15,7 +15,7 @@ SPOTIFY_JSON="$INFO"
 update_track() {
 
   if [[ -z $SPOTIFY_JSON ]]; then
-    sketchybar --set $NAME icon.color=$PEACH label.drawing=no
+    sketchybar --set $NAME icon.color=$GREEN label.drawing=no
     return
   fi
 
@@ -48,11 +48,11 @@ update_track() {
     sketchybar --set $NAME label="${TRACK}  ${ARTIST}" label.drawing=yes icon.color=$GREEN
 
   elif [ $PLAYER_STATE = "Paused" ]; then
-    sketchybar --set $NAME icon.color=$PEACH
+    sketchybar --set $NAME icon.color=$GREEN
   elif [ $PLAYER_STATE = "Stopped" ]; then
-    sketchybar --set $NAME icon.color=$PEACH label.drawing=no
+    sketchybar --set $NAME icon.color=$GREEN label.drawing=no
   else
-    sketchybar --set $NAME icon.color=$PEACH
+    sketchybar --set $NAME icon.color=$GREEN
   fi
 }
 

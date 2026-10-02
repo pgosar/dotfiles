@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+source "$HOME/.config/sketchybar/colors.sh"
 
 CORE_COUNT=$(sysctl -n machdep.cpu.thread_count)
 CPU_INFO=$(ps -eo pcpu,user)
@@ -7,4 +8,4 @@ CPU_USER=$(echo "$CPU_INFO" | grep $(whoami) | sed "s/[^ 0-9\.]//g" | awk "{sum+
 
 CPU_PERCENT="$(echo "$CPU_SYS $CPU_USER" | awk '{printf "%.0f\n", ($1 + $2)*100}')"
 
-sketchybar --set $NAME icon.padding_right=5 label="$CPU_PERCENT%"
+sketchybar --set $NAME icon.padding_right=5 label="$CPU_PERCENT%" icon.color=$BLUE
