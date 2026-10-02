@@ -1596,6 +1596,11 @@ def reload_kitty():
     # the old wallpaper layer explicitly.
     if shutil.which("kitty"):
         subprocess.run(["kitty", "@", "load-config"], capture_output=True, check=False)
+        subprocess.run(
+            ["kitty", "@", "set-background-image", "none"],
+            capture_output=True,
+            check=False,
+        )
 
 
 def reload_dunst():
@@ -1699,11 +1704,6 @@ def main():
                 if _cu and _cu != "root":
                     _cmd = ["sudo", "-u", _cu] + _cmd
             subprocess.run(_cmd, capture_output=True, check=False)
-        subprocess.run(
-            ["kitty", "@", "set-background-image", "none"],
-            capture_output=True,
-            check=False,
-        )
         except Exception as e:
             print(f"Warning: could not sync macOS appearance: {e}")
         if args.wallpaper:
