@@ -223,6 +223,23 @@ def choose_target(path: str) -> str | None:
 class ProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
+    def _read_chunked_body(self):
+        """Read and decode a chunked request body."""
+        body = b""
+        while True:
+            line = self.rfile.readline().strip()
+            if not line:
+                break
+            chunk_size = int(line.split(b";")[0], 16)
+            if chunk_size == 0:
+                # Consume trailing headers and final CRLF
+                while self.rfile.readline().strip():
+                    pass
+                break
+            body += self.rfile.read(chunk_size)
+            self.rfile.readline()  # Consume trailing CRLF
+        return body
+
     def do_GET(self):
         self.proxy()
 
@@ -260,13 +277,25 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 if scheme == "https"
                 else http.client.HTTPConnection
             )
-            length = int(self.headers.get("Content-Length", "0") or "0")
-            body = self.rfile.read(length) if length else None
-            headers = {
-                k: v
-                for k, v in self.headers.items()
-                if k.lower() not in {"host", "connection"}
-            }
+            # Handle chunked transfer encoding: decode the body and
+            # normalize to Content-Length so upstream gets a complete body.
+            te = self.headers.get("Transfer-Encoding", "").lower()
+            if "chunked" in te:
+                body = self._read_chunked_body()
+                headers = {
+                    k: v
+                    for k, v in self.headers.items()
+                    if k.lower() not in {"host", "connection", "transfer-encoding"}
+                }
+                headers["Content-Length"] = str(len(body))
+            else:
+                length = int(self.headers.get("Content-Length", "0") or "0")
+                body = self.rfile.read(length) if length else None
+                headers = {
+                    k: v
+                    for k, v in self.headers.items()
+                    if k.lower() not in {"host", "connection"}
+                }
 
             conn = None
             try:
