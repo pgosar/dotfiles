@@ -144,11 +144,21 @@ PanelWindow {
 
                     Behavior on border.color { ColorAnimation { duration: 150 } }
 
+                    // Thumbnail URL: same filename in the thumbs cache dir.
+                    // Full-size images (esp. the 95MP collage) are slow or
+                    // fail to decode in Qt; thumbnails are pre-generated.
+                    property string thumbUrl: {
+                        var url = fileUrl.toString();
+                        var slash = url.lastIndexOf("/");
+                        var filename = slash >= 0 ? url.substring(slash + 1) : url;
+                        return paths.thumbsFolderUrl + "/" + filename;
+                    }
+
                     // Image container
                     Image {
                         anchors.fill: parent
                         anchors.margins: 3
-                        source: fileUrl
+                        source: thumbUrl
                         sourceSize.width: 134
                         sourceSize.height: 84
                         fillMode: Image.PreserveAspectCrop

@@ -759,6 +759,7 @@ QtObject {{
     readonly property string hyprpaperConfigPath: "{HYPRPAPER_CONFIG}"
     readonly property string setWallpaperScriptPath: "{APPLY_THEME_SCRIPT}"
     readonly property string wallpaperFolderUrl: "{file_uri(WALLPAPERS_DIR)}"
+    readonly property string thumbsFolderUrl: "file://{Path.home() / '.cache' / 'dotfiles' / 'wallpaper-thumbs'}"
 }}
 """
 
