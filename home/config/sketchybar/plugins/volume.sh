@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+source "$HOME/.config/sketchybar/colors.sh"
 
 # volume_change passes the new level in $INFO; otherwise read it directly
 # so the label is correct on load, not just after the first change.
@@ -19,4 +20,4 @@ case ${VOLUME} in
   ;;
 esac
 
-sketchybar --set $NAME icon=$ICON icon.padding_right=$ICON_PADDING_RIGHT label="${VOLUME}%"
+sketchybar --set $NAME icon=$ICON icon.padding_right=$ICON_PADDING_RIGHT label="${VOLUME}%" icon.color=$BLUE
