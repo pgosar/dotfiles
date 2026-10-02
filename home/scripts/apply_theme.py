@@ -469,6 +469,21 @@ misc               = {light["blue"]}
             "}\n"
         )
         write_text(spicetify_dir / "user.css", css)
+    # Ensure Spicetify knows which theme to apply; without current_theme,
+    # spicetify refresh/apply silently does nothing.
+    try:
+        import configparser
+        cfg_path = Path.home() / ".config" / "spicetify" / "config-xpui.ini"
+        if cfg_path.is_file():
+            cfg = configparser.ConfigParser()
+            cfg.read(cfg_path)
+            if cfg.get("Setting", "current_theme", fallback="") != "Comfy":
+                cfg.set("Setting", "current_theme", "Comfy")
+                with open(cfg_path, "w") as cf:
+                    cfg.write(cf)
+                print("Set spicetify current_theme=Comfy")
+    except Exception as e:
+        print(f"Warning: could not set spicetify theme: {e}")
 
     # Ensure spicetify actually applies the Comfy theme.
     # If current_theme is empty, `spicetify refresh` silently does nothing.
