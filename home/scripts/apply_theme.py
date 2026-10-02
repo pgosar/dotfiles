@@ -400,43 +400,68 @@ def generate_spicetify(colors):
     # Light scheme accents: same hues, darkened for light surfaces.
     light = {k: _light_bg_ansi(v).lstrip("#") for k, v in colors.items()}
 
-    # Light wallpaper -> Sunrise (light), dark -> Twilight-Sunset (dark).
-    _is_light = _hex_luminance(colors.get("base", "#000000")) > 0.5
-    _scheme = "Sunrise" if _is_light else "Twilight-Sunset"
+    # Comfy theme expects all these variables. Generate both dark
+    # (Twilight-Sunset) and light (Sunrise) schemes with wallpaper colors.
+    # Dark scheme uses wallpaper-derived colors directly.
+    dark = s_colors
+    # Light scheme: use light surfaces with dark text.
+    light = {k: _light_bg_ansi(v).lstrip("#") for k, v in colors.items()}
 
-    content = f"""[{_scheme}]
-text               = {s_colors["text"]}
-subtext            = {s_colors["purple"]}
-main               = {s_colors["surface"]}
-sidebar            = {s_colors["mantle"]}
-player             = {s_colors["mantle"]}
-card               = {s_colors["base"]}
-shadow             = {s_colors["base"]}
-selected-row       = {s_colors["purple"]}
-button             = {s_colors["peach"]}
-button-active      = {s_colors["peach"]}
-button-disabled    = {s_colors["muted"]}
-tab-active         = {s_colors["purple"]}
-notification       = {s_colors["surface"]}
-notification-error = {s_colors["red"]}
-misc               = {s_colors["blue"]}
+    content = f"""[Twilight-Sunset]
+text               = {dark["text"]}
+subtext            = {dark["purple"]}
+main               = {dark["surface"]}
+main-elevated      = {dark["surface"]}
+main-transition    = {dark["mantle"]}
+highlight          = {dark["surface"]}
+highlight-elevated = {dark["base"]}
+sidebar            = {dark["mantle"]}
+player             = {dark["mantle"]}
+card               = {dark["base"]}
+shadow             = {dark["base"]}
+selected-row       = {dark["text"]}
+button             = {dark["peach"]}
+button-active      = {dark["peach"]}
+button-disabled    = {dark["muted"]}
+tab-active         = {dark["text"]}
+notification       = {dark["surface"]}
+notification-error = {dark["red"]}
+misc               = {dark["blue"]}
+play-button        = {dark["peach"]}
+play-button-active = {dark["peach"]}
+progress-fg        = {dark["peach"]}
+progress-bg        = {dark["muted"]}
+heart              = {dark["red"]}
+pagelink-active    = {dark["peach"]}
+radio-btn-active   = {dark["peach"]}
 
 [Sunrise]
 text               = 161616
 subtext            = {light["purple"]}
 main               = f2f2f2
+main-elevated      = ffffff
+main-transition    = e9e9e9
+highlight          = e9e9e9
+highlight-elevated = ffffff
 sidebar            = e9e9e9
 player             = e9e9e9
 card               = ffffff
 shadow             = ffffff
-selected-row       = {light["purple"]}
+selected-row       = 161616
 button             = {light["peach"]}
 button-active      = {light["peach"]}
 button-disabled    = {light["muted"]}
-tab-active         = {light["purple"]}
+tab-active         = 161616
 notification       = f2f2f2
 notification-error = {light["red"]}
 misc               = {light["blue"]}
+play-button        = {light["peach"]}
+play-button-active = {light["peach"]}
+progress-fg        = {light["peach"]}
+progress-bg        = {light["muted"]}
+heart              = {light["red"]}
+pagelink-active    = {light["peach"]}
+radio-btn-active   = {light["peach"]}
 """
     write_text(spicetify_dir / "color.ini", content)
 
