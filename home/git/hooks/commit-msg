@@ -20,3 +20,13 @@ if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|revert)(\
     echo "Got: $MSG"
     exit 1
 fi
+
+# Require test plan section (warn, don't block - allows --no-verify for trivial)
+FULL_MSG=$(cat "$MSG_FILE")
+if ! echo "$FULL_MSG" | grep -qi "test plan"; then
+    echo ""
+    echo "WARNING: No 'Test plan' section found in commit message."
+    echo "Every commit should document what was tested and the evidence."
+    echo "Add a 'Test plan:' section or use --no-verify to skip (not recommended)."
+    echo ""
+fi
