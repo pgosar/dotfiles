@@ -820,6 +820,8 @@ def generate_sketchybar(colors):
     lines.append(f'BAR_BG="{sketchybar_hex(colors["mantle"])}"')
     lines.append(f'BAR_BG_DIM="0x66{colors["surface"].lstrip("#")}"')
     lines.append(f'TEXT="{sketchybar_hex(colors["text"])}"')
+    # Bar is always solid black (notch), so bar text is always light
+    lines.append('BAR_FG="0xfff3f4f5"')
     lines.append(f'DARK="{sketchybar_hex(colors["mantle"])}"')
     lines.append(f'GREEN="{sketchybar_hex(colors["green"])}"')
     lines.append(f'BLUE="{sketchybar_hex(colors["blue"])}"')
@@ -827,6 +829,27 @@ def generate_sketchybar(colors):
     lines.append(f'PEACH="{sketchybar_hex(colors["peach"])}"')
     lines.append(f'PURPLE="{sketchybar_hex(colors["purple"])}"')
     write_text(CONFIG_DIR / "sketchybar" / "colors.sh", "\n".join(lines) + "\n")
+
+
+def generate_eza(colors):
+    # EZA_COLORS for readable ls output on both light and dark themes
+    # Format: ANSI codes, di=directory, fi=file, ln=symlink, ex=executable
+    def ansi(hex_color, bold=False):
+        h = hex_color.lstrip("#")
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        code = f"38;2;{r};{g};{b}"
+        return f"1;{code}" if bold else code
+
+    # On light backgrounds, darken the accent colors for readability
+    is_light = _hex_luminance(colors.get("base", "#000000")) > 0.5
+    def maybe_darken(c):
+        return _light_bg_ansi(c) if is_light else c
+
+    lines = [
+        "# Auto-generated eza colors - do not edit, run apply_theme.py",
+        f'export EZA_COLORS="di={ansi(maybe_darken(colors["blue"]), True)}:fi={ansi(colors["text"])}:ln={ansi(maybe_darken(colors["purple"]))}:ex={ansi(maybe_darken(colors["green"]), True)}:*.zip={ansi(maybe_darken(colors["yellow"]))}:*.tar={ansi(maybe_darken(colors["yellow"]))}"',
+    ]
+    write_text(CONFIG_DIR / "shell" / "eza-colors.sh", "\n".join(lines) + "\n")
 
 
 def generate_yabai(colors):
@@ -1498,6 +1521,7 @@ def main():
     colors = load_theme()
     if sys.platform == "darwin":
         generate_sketchybar(colors)
+        generate_eza(colors)
         generate_yabai(colors)
         generate_kitty(colors)
         generate_starship(colors)
