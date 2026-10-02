@@ -1,6 +1,7 @@
 -- Autocommands
 local augroup = require("core.utils.utils").augroup
 local cmd = vim.api.nvim_create_autocmd
+local group = require("defaults").group
 local plugins = require("core.utils.plugins")
 
 -- Removes any trailing white space when saving a file
