@@ -615,12 +615,29 @@ def generate_firefox(colors):
         override = 1 if light else 0
     user_js = profile_dir / "user.js"
     existing = user_js.read_text() if user_js.exists() else ""
+    theme_prefs = (
+        "layout.css.prefers-color-scheme.content-override",
+        "extensions.activeThemeID",
+        "browser.theme.content-theme",
+        "browser.theme.toolbar-theme",
+    )
     lines = [
         line
         for line in existing.splitlines()
-        if "prefers-color-scheme.content-override" not in line
+        if not any(pref in line for pref in theme_prefs)
     ]
     lines.append(f'user_pref("layout.css.prefers-color-scheme.content-override", {override});')
+    # Firefox Compact Dark was selected in this profile, which overrides the
+    # desktop color scheme. Use Firefox's built-in default theme and set the
+    # chrome explicitly to the wallpaper-derived light/dark mode.
+    ui_mode = 1 if light else 0
+    lines.extend(
+        (
+            'user_pref("extensions.activeThemeID", "default-theme@mozilla.org");',
+            f'user_pref("browser.theme.content-theme", {ui_mode});',
+            f'user_pref("browser.theme.toolbar-theme", {ui_mode});',
+        )
+    )
     write_text(user_js, "\n".join(lines) + "\n")
 
     textfox_chrome_dir = profile_dir / "chrome"
@@ -676,7 +693,11 @@ def generate_firefox(colors):
     # #browser shows through the margin around the content. body covers any
     # other transparent regions.
     if bg_path and bg_path.is_file():
-        bg_url = wallpaper_file_url(str(bg_path))
+        # Chrome CSS is more reliable with a profile-local asset than with a
+        # file:// URL, which Firefox can cache or reject across restarts.
+        firefox_wallpaper = textfox_chrome_dir / "wallpaper.png"
+        shutil.copy2(bg_path, firefox_wallpaper)
+        bg_url = "wallpaper.png"
         css_content += (
             "\n/* Auto-generated wallpaper background */\n"
             "body, #navigator-toolbox, #sidebar-box, #sidebar-main,\n"
