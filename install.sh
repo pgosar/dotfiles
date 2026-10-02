@@ -287,6 +287,7 @@ SHARED_LINKS=(
   "$DOTFILES_CONFIG_DIR/topgrade.toml|$CONFIG_HOME/topgrade.toml"
   "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/color.ini|$CONFIG_HOME/spicetify/Themes/Comfy/color.ini"
   "$DOTFILES_CONFIG_DIR/spicetify/Themes/Comfy/user.css|$CONFIG_HOME/spicetify/Themes/Comfy/user.css"
+  "$DOTFILES_CONFIG_DIR/shell/eza-colors.sh|$CONFIG_HOME/shell/eza-colors.sh"
   "$DOTFILES_SCRIPTS_DIR|$CONFIG_HOME/dotfiles-scripts"
 )
 
