@@ -450,7 +450,10 @@ misc               = {light["blue"]}
     # macOS: wallpaper behind the Spotify UI via a theme overlay.
     wallpaper = current_wallpaper()
     if wallpaper:
+        # Preserve the Comfy theme's @import; append our wallpaper overlay.
         css = (
+            '@import url("https://comfy-themes.github.io/Spicetify/Comfy/app.css");\n'
+            "\n"
             "/* Auto-generated wallpaper background - do not edit, run apply_theme.py */\n"
             ".Root__top-container::before {\n"
             '  content: "";\n'
