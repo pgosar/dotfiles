@@ -1,5 +1,8 @@
 require("bufferline").setup({
-  highlights = { fill = { bg = require("defaults").colors.mocha_override.mantle } },
+  highlights = {
+    fill = { bg = require("theme_colors").base },
+    background = { bg = require("theme_colors").base },
+  },
   options = {
     diagnostics = "nvim_lsp",
     separator_style = "thin",

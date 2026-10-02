@@ -526,6 +526,10 @@ def generate_nvim(colors):
     content += "return {\n"
     content += f'  mode = "{mode}",\n'
     for k, v in colors.items():
+        # On light backgrounds, darken text/accent colors for readability.
+        # Background colors (base/mantle/surface) stay light.
+        if mode == "light" and k not in ("base", "mantle", "surface", "mode"):
+            v = _light_bg_ansi(v)
         content += f'  {k} = "{v}",\n'
     content += "}\n"
     write_text(nvim_colors_path, content)
