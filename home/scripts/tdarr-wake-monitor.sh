@@ -155,6 +155,8 @@ immich_recent_or_active() {
 }
 
 pc_user_active() {
+  # Returns: 0=user active, 1=idle (confirmed), 2=inspection failed
+  local ssh_rc
   ssh -o BatchMode=yes -o ConnectTimeout="$SSH_CONNECT_TIMEOUT" "$PC_HOST" \
     "BLOCK_REMOTE_USER_SESSIONS=$BLOCK_REMOTE_USER_SESSIONS bash -s" <<'REMOTE'
 set -euo pipefail
@@ -183,6 +185,11 @@ while read -r sid uid _user seat _rest; do
 done < <(loginctl list-sessions --no-legend 2>/dev/null || true)
 exit 1
 REMOTE
+  ssh_rc=$?
+  if [ $ssh_rc -ne 0 ] && [ $ssh_rc -ne 1 ]; then
+    return 2
+  fi
+  return $ssh_rc
 }
 
 cleanup_idle_pc() {
@@ -201,10 +208,16 @@ cleanup_idle_pc() {
   if immich_recent_or_active; then
     return 0
   fi
-  if pc_user_active; then
+  pc_user_active
+  local user_rc=$?
+  if [ $user_rc -eq 0 ]; then
     log "PC has an active user session; not stopping workers or powering off"
     return 0
+  elif [ $user_rc -eq 2 ]; then
+    log "User session inspection failed; not stopping workers or powering off"
+    return 0
   fi
+  # rc=1: confirmed idle, proceed
 
   if [ "$STOP_WORKERS_WHEN_IDLE" = "true" ]; then
     if stop_pc_workers; then
@@ -239,11 +252,23 @@ fi
 tdarr_state="unknown"
 
 if ! in_night_window; then
+  # Check for active work BEFORE stopping: don't interrupt Immich requests
+  # or active user sessions crossing the window boundary.
   if [ "$STOP_WORKERS_OUTSIDE_WINDOW" = "true" ] && pc_reachable && pc_workers_running; then
-    if stop_pc_workers; then
-      log "Stopped running PC workers outside ${NIGHT_START}-${NIGHT_END}"
+    if immich_recent_or_active; then
+      log "Immich has recent/active requests; not stopping workers outside window"
     else
-      log "Failed to stop PC worker containers outside ${NIGHT_START}-${NIGHT_END}"
+      pc_user_active
+      _purc=$?
+      if [ $_purc -eq 0 ]; then
+        log "PC has active user session; not stopping workers outside window"
+      elif [ $_purc -eq 2 ]; then
+        log "User session inspection failed; not stopping workers outside window"
+      elif stop_pc_workers; then
+        log "Stopped running PC workers outside ${NIGHT_START}-${NIGHT_END}"
+      else
+        log "Failed to stop PC worker containers outside ${NIGHT_START}-${NIGHT_END}"
+      fi
     fi
   fi
   tdarr_state="idle"
