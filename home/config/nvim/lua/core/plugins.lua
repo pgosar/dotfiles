@@ -5,6 +5,12 @@ local function enabled(key) return group.plugins[key] == true end
 
 local plugins = {
   { name = "plenary.nvim", key = "plenary", url = "https://github.com/nvim-lua/plenary.nvim" },
+  {
+    name = "nvim-lspconfig",
+    key = "nvim_lspconfig",
+    url = "https://github.com/neovim/nvim-lspconfig",
+    lazy = true,
+  },
   { name = "nui.nvim", key = "nui", url = "https://github.com/MunifTanjim/nui.nvim", lazy = true },
   { name = "dropbar.nvim", key = "dropbar", url = "https://github.com/Bekaboo/dropbar.nvim" },
   {

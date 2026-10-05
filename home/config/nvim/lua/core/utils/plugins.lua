@@ -50,6 +50,7 @@ local specs = {
   lsp = {
     key = "lsp",
     packages = {
+      { name = "nvim-lspconfig", key = "nvim_lspconfig" },
       { name = "mason.nvim", key = "mason" },
       { name = "mason-lspconfig.nvim", key = "mason_lspconfig" },
       { name = "none-ls.nvim", key = "none_ls" },
