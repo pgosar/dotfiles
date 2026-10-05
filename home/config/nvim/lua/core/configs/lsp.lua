@@ -123,7 +123,8 @@ if group.plugins.none_ls then
   if mn_ok and type(mason_null_ls_setup) == "function" then
     mason_null_ls_setup({
       ensure_installed = require("defaults").ensure_installed.null_ls,
-      automatic_installation = true,
+      -- The explicit list covers every source; two installers otherwise race.
+      automatic_installation = false,
     })
   end
 end

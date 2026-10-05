@@ -151,3 +151,9 @@ if [ -f "$ZSH_SYNTAX_HIGHLIGHTING" ]; then
   # shellcheck source=/dev/null
   source "$ZSH_SYNTAX_HIGHLIGHTING"
 fi
+
+# Neovim 0.12 terminal queries can time out across SSH.
+# Disable the fast-terminal assumption before Neovim starts (config is too late).
+if [[ -n "${SSH_CONNECTION:-}" ]]; then
+  export NVIM_NOTTYFAST=1
+fi
