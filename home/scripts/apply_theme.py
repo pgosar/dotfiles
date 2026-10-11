@@ -620,6 +620,7 @@ def generate_firefox(colors):
     existing = user_js.read_text() if user_js.exists() else ""
     theme_prefs = (
         "layout.css.prefers-color-scheme.content-override",
+        "toolkit.legacyUserProfileCustomizations.stylesheets",
         "extensions.activeThemeID",
         "browser.theme.content-theme",
         "browser.theme.toolbar-theme",
@@ -639,13 +640,37 @@ def generate_firefox(colors):
             'user_pref("extensions.activeThemeID", "default-theme@mozilla.org");',
             f'user_pref("browser.theme.content-theme", {ui_mode});',
             f'user_pref("browser.theme.toolbar-theme", {ui_mode});',
+            # userContent.css (solid page background) is ignored without this.
+            'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);',
         )
     )
     write_text(user_js, "\n".join(lines) + "\n")
 
     textfox_chrome_dir = profile_dir / "chrome"
+    textfox_chrome_dir.mkdir(parents=True, exist_ok=True)
 
-    if not textfox_chrome_dir.exists():
+    # Photographic <body> backgrounds break a site's own designed contrast
+    # (dark photo behind dark text) and turn unreadable. Strip the image
+    # layer only and keep the site's own background color: forcing a theme
+    # color as well backfires on light-designed sites (dark text on black).
+    # Scoped to http(s) so browser chrome (which also loads config.css via
+    # userChrome.css) is untouched.
+    page_bg_css = (
+        "\n/* Auto-generated: strip photographic page backgrounds */\n"
+        '@-moz-document url-prefix("http://"), url-prefix("https://") {\n'
+        "  html, body {\n"
+        "    background-image: none !important;\n"
+        "  }\n"
+        "}\n"
+    )
+    # Textfox's userContent.css @imports config.css, so the rule reaches web
+    # pages through it. Without textfox there is no userContent.css, so write
+    # a standalone one carrying just this rule.
+    if not (textfox_chrome_dir / "userContent.css").exists():
+        write_text(textfox_chrome_dir / "userContent.css", page_bg_css)
+
+    if not (textfox_chrome_dir / "userChrome.css").exists():
+        # No textfox install; page background is handled above.
         return
 
     config_path = textfox_chrome_dir / "config.css"
@@ -722,6 +747,7 @@ def generate_firefox(colors):
             "}\n"
         )
 
+    css_content += page_bg_css
     write_text(config_path, css_content)
 
 def generate_gtk(colors):
