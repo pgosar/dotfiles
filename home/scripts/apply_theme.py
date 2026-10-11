@@ -690,11 +690,10 @@ def generate_firefox(colors):
 
     css_content += "}\n"
 
-    # Blurred wallpaper behind the browser chrome. Pre-blurred with
-    # PIL: CSS can't blur an element's own background-image. The left strip
-    # is #sidebar-select-box (textfox paints it with the dark theme accent);
-    # #browser shows through the margin around the content. body covers any
-    # other transparent regions.
+    # Blurred wallpaper behind the top toolbar and sidebars only.
+    # Pre-blurred with PIL: CSS can't blur an element's own background-image.
+    # The left strip is #sidebar-select-box (textfox paints it with the dark
+    # theme accent). The webpage content area keeps the solid theme color.
     if bg_path and bg_path.is_file():
         # Chrome CSS is more reliable with a profile-local asset than with a
         # file:// URL, which Firefox can cache or reject across restarts.
@@ -704,18 +703,17 @@ def generate_firefox(colors):
         # Solid base color behind the image reduces transparency/distraction.
         css_content += (
             "\n/* Auto-generated wallpaper background (dimmed) */\n"
-            "body, #navigator-toolbox, #sidebar-box, #sidebar-main,\n"
+            "#navigator-toolbox, #sidebar-box, #sidebar-main,\n"
             "#vertical-tabs, #sidebar-select-box {\n"
             f"  background-color: color-mix(in srgb, {tf_bg} 75%, transparent) !important;\n"
             f'  background-image: url("{bg_url}") !important;\n'
             "  background-size: cover !important;\n"
             "  background-position: center !important;\n"
             "}\n"
-            "/* Textfox repaints these under lightweight themes: the sidebar\n"
-            "   image gets unset, and #browser gets the dark theme accent.\n"
-            "   Re-assert the wallpaper with matching specificity. */\n"
-            ":root[lwtheme] #sidebar-main,\n"
-            ":root[lwtheme] #browser:not(.browser-toolbox-background) {\n"
+            "/* Textfox unsets the sidebar image under lightweight themes.\n"
+            "   Re-assert the wallpaper with matching specificity. (#browser\n"
+            "   intentionally keeps textfox's solid styling.) */\n"
+            ":root[lwtheme] #sidebar-main {\n"
             f'  background-image: url("{bg_url}") !important;\n'
             "  background-size: cover !important;\n"
             "  background-position: center !important;\n"
