@@ -265,6 +265,29 @@ install_npm_tools() {
   fi
 }
 
+# Optional feature: phantom-display game streaming (home/game-streaming).
+# Runs the per-OS feature installer; a failure here only warns, it must
+# never break the rest of the install.
+install_game_streaming() {
+  local installer
+  if [ "$OS" = "Darwin" ]; then
+    installer="$DOTFILES_HOME_DIR/game-streaming/mac/install-mac.sh"
+  elif [ "$OS" = "Linux" ]; then
+    installer="$DOTFILES_HOME_DIR/game-streaming/pc/install-pc.sh"
+  else
+    return 0
+  fi
+
+  if [ ! -f "$installer" ]; then
+    return 0
+  fi
+
+  echo "Setting up game streaming..."
+  if ! bash "$installer"; then
+    warn "game streaming setup failed; skipping it"
+  fi
+}
+
 configure_kde() {
   if [ "$OS" != "Linux" ] || ! command_exists kpackagetool6 || ! command_exists kwriteconfig6; then
     return 0
@@ -421,6 +444,10 @@ elif [ "$OS" = "Darwin" ]; then
   # Generate macOS theme colors (sketchybar/yabai) from the seed theme-macos.json
   python3 "$APPLY_THEME_SCRIPT"
 fi
+
+# ---- Game Streaming ---------------------------------------------------------
+
+install_game_streaming
 
 # Ensure generated runtime files exist (seed fallback for fresh installs)
 ensure_generated_theme_files
