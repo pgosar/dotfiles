@@ -26,7 +26,7 @@ Options:
 The source is auto-detected under /Volumes, /run/media, /media, or /mnt when
 exactly one DCIM folder is present. Run this once per computer before importing:
 
-  immich login http://192.168.1.196:2283/api YOUR_API_KEY
+  immich login http://stealth-nas.taile47b24.ts.net:2283/api YOUR_API_KEY
 
 The API key is stored by the Immich CLI, not in this script or repository.
 EOF
