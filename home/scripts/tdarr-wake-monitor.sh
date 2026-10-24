@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-NAS_LAN_IP="${NAS_LAN_IP:-192.168.1.196}"
+NAS_LAN_IP="${NAS_LAN_IP:-127.0.0.1}"
 TDARR_URL="${TDARR_URL:-http://$NAS_LAN_IP:8266}"
 TDARR_API_KEY="${TDARR_API_KEY:-}"
 TDARR_ENV_FILE="${TDARR_ENV_FILE:-/data/docker/compose/tdarr/.env}"
