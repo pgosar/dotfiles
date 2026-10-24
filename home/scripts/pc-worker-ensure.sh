@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PC_HOST="${PC_HOST:-pc}"
-PC_IP="${PC_IP:-192.168.1.223}"
+PC_IP="${PC_IP:-192.168.1.50}"
 PC_WORKER_DIR="${PC_WORKER_DIR:-~/docker/pc-workers}"
 LOG_FILE="${LOG_FILE:-/data/docker/appdata/nightly-orchestrator/pc-worker-ensure.log}"
 WAKE_SCRIPT="${WAKE_SCRIPT:-$HOME/.config/dotfiles-scripts/wake-pc.sh}"
