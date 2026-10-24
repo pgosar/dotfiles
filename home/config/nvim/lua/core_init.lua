@@ -116,8 +116,12 @@ if not color_ok then vim.cmd.colorscheme("default") end
 do
   local theme_ok, theme = pcall(require, "theme_colors")
   if theme_ok and theme and theme.base then
-    vim.api.nvim_set_hl(0, "Normal", { bg = theme.base })
-    vim.api.nvim_set_hl(0, "NormalNC", { bg = theme.base })
+    for _, name in ipairs({ "Normal", "NormalNC" }) do
+      local hl = vim.api.nvim_get_hl(0, { name = name })
+      hl.link = nil
+      hl.bg = theme.base
+      vim.api.nvim_set_hl(0, name, hl)
+    end
   end
 end
 
