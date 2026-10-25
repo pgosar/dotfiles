@@ -35,7 +35,7 @@ install_file() {
 }
 
 echo "== user scripts -> ~/.local/bin =="
-for script in stream-mode.sh desk-mode.sh phantom-watcher.sh; do
+for script in stream-mode.sh desk-mode.sh phantom-watcher.sh sunshine-pick-primary.sh sunshine-display-keeper.sh; do
   install_file "$SCRIPT_DIR/$script" "$HOME/.local/bin/$script"
   chmod +x "$HOME/.local/bin/$script"
 done
