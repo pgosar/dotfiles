@@ -157,3 +157,9 @@ fi
 if [[ -n "${SSH_CONNECTION:-}" ]]; then
   export NVIM_NOTTYFAST=1
 fi
+
+# Open Atuin only with Ctrl-R; keep normal history and autosuggestions elsewhere.
+eval "$(atuin init zsh --disable-up-arrow --disable-ai)"
+bindkey -M vicmd '/' vi-history-search-backward
+bindkey -M vicmd '^r' atuin-search-vicmd
+ZSH_AUTOSUGGEST_STRATEGY=(history)
