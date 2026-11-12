@@ -46,6 +46,9 @@ trap cleanup EXIT
 
 is_media_file() {
   case "$1" in
+  */._*) # macOS AppleDouble sidecar, not a photo
+    return 1
+    ;;
   *.[Jj][Pp][Gg] | *.[Jj][Pp][Ee][Gg] | *.[Rr][Aa][Ff] | *.[Hh][Ee][Ii][Cc] | *.[Hh][Ee][Ii][Ff] | *.[Hh][Ii][Ff] | *.[Mm][Oo][Vv] | *.[Mm][Pp]4 | *.[Aa][Vv][Ii] | *.[Mm][Tt][Ss] | *.[Mm]2[Tt][Ss] | *.[Tt][Ii][Ff] | *.[Tt][Ii][Ff][Ff] | *.[Pp][Nn][Gg])
     return 0
     ;;
