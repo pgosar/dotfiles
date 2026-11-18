@@ -66,17 +66,33 @@ if command -v hyprctl >/dev/null 2>&1 && pgrep -u "$USER" -x Hyprland >/dev/null
 fi
 
 if command -v kscreen-doctor >/dev/null 2>&1 && pgrep -u "$USER" -x kwin_wayland >/dev/null 2>&1; then
-  XDG_RUNTIME_DIR="$runtime_dir" WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}" kscreen-doctor --dpms off >/dev/null 2>&1 \
-    && { display_off_success=1; log_remote "kscreen dpms off without disabling outputs"; } \
-    || log_remote "kscreen dpms off failed"
+  # The Wayland socket name varies per session (wayland-0, wayland-1, ...),
+  # so try each socket in the runtime dir until one accepts the command.
+  for wayland_socket in "$runtime_dir"/wayland-*; do
+    case "$wayland_socket" in *.lock) continue ;; esac
+    [ -e "$wayland_socket" ] || continue
+    if XDG_RUNTIME_DIR="$runtime_dir" WAYLAND_DISPLAY="$(basename "$wayland_socket")" DBUS_SESSION_BUS_ADDRESS="unix:path=$runtime_dir/bus" kscreen-doctor --dpms off >/dev/null 2>&1; then
+      display_off_success=1
+      log_remote "kscreen dpms off without disabling outputs ($(basename "$wayland_socket"))"
+      break
+    fi
+  done
+  [ "$display_off_success" -eq 1 ] || log_remote "kscreen dpms off failed"
 fi
 
 if command -v kscreen-doctor >/dev/null 2>&1 && id plasmalogin >/dev/null 2>&1 && pgrep -u plasmalogin -x kwin_wayland >/dev/null 2>&1; then
   login_uid="$(id -u plasmalogin)"
-  sudo -n -u plasmalogin XDG_RUNTIME_DIR="/run/user/$login_uid" WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}" \
-    kscreen-doctor --dpms off >/dev/null 2>&1 \
-    && { display_off_success=1; log_remote "plasmalogin kscreen dpms off without disabling outputs"; } \
-    || log_remote "plasmalogin kscreen dpms off failed"
+  login_runtime_dir="/run/user/$login_uid"
+  for wayland_socket in "$login_runtime_dir"/wayland-*; do
+    case "$wayland_socket" in *.lock) continue ;; esac
+    [ -e "$wayland_socket" ] || continue
+    if sudo -n -u plasmalogin XDG_RUNTIME_DIR="$login_runtime_dir" WAYLAND_DISPLAY="$(basename "$wayland_socket")" DBUS_SESSION_BUS_ADDRESS="unix:path=$login_runtime_dir/bus" kscreen-doctor --dpms off >/dev/null 2>&1; then
+      display_off_success=1
+      log_remote "plasmalogin kscreen dpms off without disabling outputs ($(basename "$wayland_socket"))"
+      break
+    fi
+  done
+  [ "$display_off_success" -eq 1 ] || log_remote "plasmalogin kscreen dpms off failed"
 fi
 
 if command -v xset >/dev/null 2>&1; then
