@@ -46,4 +46,36 @@ function M.toggle_terminal(cmd)
   vim.cmd("startinsert")
 end
 
+-- Bottom split terminal toggle (regular terminal, not floating)
+local bottom_state = {}
+
+function M.toggle_bottom_terminal(cmd)
+  cmd = cmd or "shell"
+  local s = bottom_state[cmd] or {}
+  bottom_state[cmd] = s
+
+  -- 1. Close window if it's currently open and valid
+  if s.win and vim.api.nvim_win_is_valid(s.win) then
+    vim.api.nvim_win_close(s.win, true)
+    s.win = nil
+    return
+  end
+
+  -- 2. Create buffer if it doesn't exist
+  if not s.buf or not vim.api.nvim_buf_is_valid(s.buf) then
+    s.buf = vim.api.nvim_create_buf(false, true)
+  end
+
+  -- 3. Open a horizontal split at the bottom and show the buffer in it
+  vim.cmd("belowright 25split") -- 25 lines, matching the old toggleterm size
+  s.win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(s.win, s.buf)
+
+  -- 4. Open shell or cmd in terminal if not already running
+  if vim.bo[s.buf].buftype ~= "terminal" then
+    vim.fn.jobstart(cmd == "shell" and vim.o.shell or cmd, { term = true })
+  end
+  vim.cmd("startinsert")
+end
+
 return M
