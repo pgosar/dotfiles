@@ -80,6 +80,12 @@ map(
 )
 map(
   "n",
+  "<C-\\>",
+  function() require("core.utils.terminal").toggle_bottom_terminal() end,
+  { desc = "Toggle bottom terminal" }
+)
+map(
+  "n",
   "<leader>gg",
   function() require("core.utils.terminal").toggle_terminal("lazygit") end,
   { desc = "Open lazygit" }
