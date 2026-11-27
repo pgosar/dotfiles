@@ -43,7 +43,19 @@ jobs:
       - name: Shellcheck (changed files only)
         if: steps.changed.outputs.any_changed == 'true'
         run: |
-          echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.sh$' | xargs -r shellcheck -S warning
+          # shellcheck cannot parse zsh (SC1071); zsh files are checked
+          # with zsh -n in the step below.
+          for f in $(echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.sh$'); do
+            head -1 "$f" | grep -q 'zsh' || echo "$f"
+          done | xargs -r shellcheck -S warning
+
+      - name: Zsh syntax check (changed files only)
+        if: steps.changed.outputs.any_changed == 'true'
+        run: |
+          command -v zsh >/dev/null || sudo apt-get install -y zsh
+          for f in $(echo "${{ steps.changed.outputs.all_changed_files }}" | tr ' ' '\n' | grep '\.sh$'); do
+            head -1 "$f" | grep -q 'zsh' && echo "$f"
+          done | xargs -r -I{} zsh -n {}
 
       - name: Python syntax (changed files only)
         if: steps.changed.outputs.any_changed == 'true'
