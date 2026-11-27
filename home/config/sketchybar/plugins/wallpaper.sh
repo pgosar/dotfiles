@@ -29,6 +29,17 @@ mkdir -p "$STATE_DIR" "$THUMB_DIR"
 CARD_W=168
 CARD_H=96
 
+# Popup open/close animation: the popup slides down from the notch when it
+# opens and back up into it when it closes. y_offset is the property that
+# gives a slide without knowing the popup's content height. POPUP_Y_OPEN
+# must match popup.y_offset in sketchybarrc-laptop.
+POPUP_Y_OPEN=10
+# Further up than the popup is tall (~116px: 96px cards + popup padding),
+# so the popup starts fully retracted behind the bar and sweeps out of
+# the top instead of appearing mostly visible and nudging down.
+POPUP_Y_HIDDEN=-120
+POPUP_ANIM_SECS=0.15
+
 wallpapers() {
   for f in "$WALLS_DIR"/*.png "$WALLS_DIR"/*.jpg \
     "$WALLS_DIR"/*.jpeg "$WALLS_DIR"/*.webp; do
@@ -76,11 +87,23 @@ acquire_lock() {
 
 release_lock() { rm -rf "$STATE_DIR/lock"; }
 
+# Slide the popup back up into the notch. Callers wait out the
+# animation (the sleep below) and re-check their generation before
+# removing the items.
+slide_popup_up() {
+  # Curve/duration written literally: zsh does not word-split a
+  # variable, so --animate $VAR would pass "tanh 15" as one argument.
+  sketchybar --animate tanh 6 --set "$PARENT" popup.y_offset=$POPUP_Y_HIDDEN 2>/dev/null
+  sleep $POPUP_ANIM_SECS
+}
+
 close_popup_items() {
   sketchybar --set "$PARENT" popup.drawing=off 2>/dev/null
   sketchybar --remove '/^wallpaper\.slot_/' 2>/dev/null
   sketchybar --remove '/^wallpaper\.arrow_/' 2>/dev/null
   rm -f "$STATE_DIR/open"
+  # Leave the offset at its resting value so the next open starts clean.
+  sketchybar --set "$PARENT" popup.y_offset=$POPUP_Y_OPEN 2>/dev/null
 }
 
 # Render the 5 slots around the centered index (modulo wraps, so any
@@ -126,6 +149,8 @@ popup_alive() {
 show_popup() {
   bump_gen
   if [ -f "$STATE_DIR/open" ] && popup_alive; then
+    # A close cancelled mid-slide leaves the popup raised; drop it back.
+    sketchybar --animate tanh 6 --set "$PARENT" popup.y_offset=$POPUP_Y_OPEN 2>/dev/null
     return 0
   fi
   rm -f "$STATE_DIR/open"
@@ -137,41 +162,53 @@ show_popup() {
   files=("${(@f)$(wallpapers)}")
   [ "${#files[@]}" -eq 0 ] && return 0
 
+  # Add all popup items in one sketchybar call: one process spawn
+  # instead of seven keeps the open fast.
   # Arrows bracket the cards so the framed center card is truly centered.
   # Opaque pills: a bare glyph would wash out against a bright wallpaper.
-  add_arrow() { # $1 = l|r, $2 = -1|1
-    sketchybar --add item "wallpaper.arrow_$1" "popup.$PARENT" \
-      --set "wallpaper.arrow_$1" \
-      icon.drawing=off \
-      background.drawing=on background.color=0xe62c2c2e \
-      background.corner_radius=16 \
-      label="$([ "$1" = l ] && printf '‹' || printf '›')" \
-      label.font="SF Pro:Bold:24.0" label.color=0xffffffff \
-      label.padding_left=12 label.padding_right=12 \
-      click_script="$SCRIPT rotate $2" \
-      script="$SCRIPT" \
-      --subscribe "wallpaper.arrow_$1" mouse.entered mouse.exited
-  }
-  add_arrow l -1
-
+  local -a add_args
+  add_args+=(--add item "wallpaper.arrow_l" "popup.$PARENT"
+    --set "wallpaper.arrow_l"
+    icon.drawing=off
+    background.drawing=on background.color=0xe62c2c2e
+    background.corner_radius=16
+    label="‹"
+    label.font="SF Pro:Bold:24.0" label.color=0xffffffff
+    label.padding_left=12 label.padding_right=12
+    click_script="$SCRIPT rotate -1"
+    script="$SCRIPT"
+    --subscribe "wallpaper.arrow_l" mouse.entered mouse.exited)
   local s
   for s in 1 2 3 4 5; do
-    sketchybar --add item "wallpaper.slot_$s" "popup.$PARENT" \
-      --set "wallpaper.slot_$s" \
-      icon.drawing=off label.drawing=off \
-      width=$CARD_W background.height=$CARD_H \
-      background.drawing=on background.corner_radius=10 \
-      background.image.drawing=on \
-      script="$SCRIPT" \
-      --subscribe "wallpaper.slot_$s" mouse.entered mouse.exited
+    add_args+=(--add item "wallpaper.slot_$s" "popup.$PARENT"
+      --set "wallpaper.slot_$s"
+      icon.drawing=off label.drawing=off
+      width=$CARD_W background.height=$CARD_H
+      background.drawing=on background.corner_radius=10
+      background.image.drawing=on
+      script="$SCRIPT"
+      --subscribe "wallpaper.slot_$s" mouse.entered mouse.exited)
   done
-
-  add_arrow r 1
+  add_args+=(--add item "wallpaper.arrow_r" "popup.$PARENT"
+    --set "wallpaper.arrow_r"
+    icon.drawing=off
+    background.drawing=on background.color=0xe62c2c2e
+    background.corner_radius=16
+    label="›"
+    label.font="SF Pro:Bold:24.0" label.color=0xffffffff
+    label.padding_left=12 label.padding_right=12
+    click_script="$SCRIPT rotate 1"
+    script="$SCRIPT"
+    --subscribe "wallpaper.arrow_r" mouse.entered mouse.exited)
+  sketchybar "${add_args[@]}"
 
   [ -f "$STATE_DIR/idx" ] || printf '1' >"$STATE_DIR/idx"
   render || return 1
   touch "$STATE_DIR/open"
-  sketchybar --set "$PARENT" popup.drawing=on
+  # Slide down from the notch: park the popup fully retracted behind
+  # the bar, then animate it down into place as it appears.
+  sketchybar --set "$PARENT" popup.y_offset=$POPUP_Y_HIDDEN 2>/dev/null
+  sketchybar --animate tanh 6 --set "$PARENT" popup.drawing=on popup.y_offset=$POPUP_Y_OPEN
 }
 
 # Grace period after the pointer leaves before the popup closes: without
@@ -183,6 +220,9 @@ hide_popup() {
   local mygen=$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)
   (
     sleep "$HIDE_DELAY"
+    [ "$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)" = "$mygen" ] || exit 0
+    slide_popup_up
+    # A re-hover during the slide-up must cancel the close.
     [ "$(cat "$STATE_DIR/gen" 2>/dev/null || echo 0)" = "$mygen" ] &&
       close_popup_items
   ) &|
@@ -220,6 +260,7 @@ slotclick() { # $1 = slot offset from center (-2..2); applies that wallpaper
     printf '%s' "$t" >"$STATE_DIR/idx"
     bump_gen
     "$APPLY_THEME" "${files[$t]}" >/tmp/sketchybar-wallpaper.log 2>&1 &
+    slide_popup_up
     close_popup_items
   fi
   release_lock
