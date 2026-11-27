@@ -164,6 +164,10 @@ sketchybar --add item wallpaper.notch center \
   script="$PLUGIN_SHARED_DIR/wallpaper.sh" \
   --subscribe wallpaper.notch mouse.entered mouse.exited
 
+# Pre-generate wallpaper thumbnails in the background so the first hover
+# opens instantly instead of waiting on thumbnail generation.
+"$PLUGIN_SHARED_DIR/wallpaper.sh" warmup &
+
 ##### Finalizing Setup #####
 sketchybar --update
 sketchybar --trigger space_change

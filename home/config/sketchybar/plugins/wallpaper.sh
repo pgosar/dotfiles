@@ -22,7 +22,9 @@ fi
 APPLY_THEME="$REPO_HOME/scripts/apply_theme.py"
 PARENT="wallpaper.notch"
 STATE_DIR="/tmp/sketchybar-wallpaper"
-THUMB_DIR="$STATE_DIR/thumbs"
+# Thumbnails live in a persistent cache, not /tmp: macOS wipes /tmp on
+# reboot, which made every first hover after a reboot pay for generation.
+THUMB_DIR="$HOME/.cache/sketchybar-wallpaper/thumbs"
 mkdir -p "$STATE_DIR" "$THUMB_DIR"
 
 # All cards render at the same size.
@@ -53,14 +55,27 @@ thumb_for() {
   local f="$1" t
   t="$THUMB_DIR/$(printf '%s' "${CARD_W}x${CARD_H}:$f" | md5 -q).png"
   if [ ! -f "$t" ]; then
-    python3 - "$f" "$t" "$CARD_W" "$CARD_H" <<'EOF' >/dev/null 2>&1
-import sys
-from PIL import Image, ImageOps
-src, dst, w, h = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
-ImageOps.fit(Image.open(src).convert("RGB"), (w, h), Image.LANCZOS).save(dst)
-EOF
+    # sips scales to cover the card then center-crops to exactly the card
+    # size (verified 168x96 on all current wallpapers); ~2-3x faster than
+    # python3 + PIL and needs no extra dependency. -s format png is
+    # required: without it sips keeps the source format, so JPG
+    # wallpapers came out as JPEG bytes in a .png file, which sketchybar
+    # refuses to open.
+    sips -s format png -Z "$CARD_W" --cropToHeightWidth "$CARD_H" "$CARD_W" "$f" --out "$t" >/dev/null 2>&1
   fi
   [ -f "$t" ] && printf '%s' "$t"
+}
+
+# Generate thumbnails for every wallpaper that lacks one. Runs in the
+# background at bar load and after the popup opens, so the first hover
+# never waits on generation.
+warmup() {
+  local -a files
+  files=("${(@f)$(wallpapers)}")
+  local f
+  for f in "${files[@]}"; do
+    thumb_for "$f" >/dev/null
+  done
 }
 
 bump_gen() {
@@ -209,6 +224,9 @@ show_popup() {
   # the bar, then animate it down into place as it appears.
   sketchybar --set "$PARENT" popup.y_offset=$POPUP_Y_HIDDEN 2>/dev/null
   sketchybar --animate tanh 6 --set "$PARENT" popup.drawing=on popup.y_offset=$POPUP_Y_OPEN
+  # Warm the remaining thumbnails in the background so rotating to a
+  # not-yet-seen card never stalls on generation.
+  ( warmup ) &|
 }
 
 # Grace period after the pointer leaves before the popup closes: without
@@ -269,6 +287,7 @@ slotclick() { # $1 = slot offset from center (-2..2); applies that wallpaper
 # Sketchybar fires event scripts with $SENDER set and no positional args;
 # click_script lines invoke "$SCRIPT <cmd> ..." with positional args instead.
 case "${1:-}" in
+warmup) warmup ;;
 rotate) rotate "$2" ;;
 slotclick) slotclick "$2" ;;
 *)
